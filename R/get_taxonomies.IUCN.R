@@ -6,6 +6,7 @@
 #' @param path_to_output_local_taxa_list String specifying path to output species list (in CSV format with '.csv' extension) with formatted taxonomies.
 #' @param domain_name String specifying the domain name to use for all species. The IUCN Red List files do not include domain information, so a domain name must be provided. If using a reference database from UNITE, provide a kingdom name here (e.g., `'Fungi'`). The default is `'Eukaryota'`.
 #' @param path_to_taxonomy_edits String specifying path to taxonomy edits file in CSV format (with '.csv' extension). The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon. If no taxonomy edits are desired, then set this variable to `NA` (the default).
+#' @export
 get_taxonomies.IUCN<-function(path_to_IUCN_taxonomies,path_to_IUCN_common_names,path_to_output_local_taxa_list,domain_name="Eukaryota",path_to_taxonomy_edits=NA){
   
   # Read in IUCN taxonomies.
