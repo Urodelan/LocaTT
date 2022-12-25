@@ -8,7 +8,7 @@ Authors@R: c(
     )
 Description: A tool for performing taxonomic assignment of DNA metabarcoding
     sequence data while considering geographic location. A detailed tutorial
-    is available at <https://urodelan.github.io/2022_Local_Taxa_Tool_Tutorial/>.
+    is available at <https://urodelan.github.io/Local_Taxa_Tool_Tutorial/>.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
