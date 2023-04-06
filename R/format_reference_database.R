@@ -17,6 +17,9 @@ format_reference_database<-function(path_to_input_reference_database,path_to_out
   # Throw an error if the user-defined reference database source is not MIDORI or UNITE.
   if(!(input_reference_database_source %in% c("MIDORI","UNITE"))) stop("User-defined input reference database source must be 'MIDORI' or 'UNITE'.")
   
+  # Throw an error if the path to the user-defined output BLAST database contains spaces.
+  if(grepl(pattern=" ",x=path_to_output_BLAST_database)) stop("There cannot be spaces in path_to_output_BLAST_database.")
+  
   # Read in reference database.
   reference<-read.fasta(file=path_to_input_reference_database)
   

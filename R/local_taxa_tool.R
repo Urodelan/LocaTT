@@ -27,6 +27,12 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
   # Throw an error if the blastn command cannot not be found.
   if(!blast_command_found(blast_command=blastn_command)) stop("The blastn command could not be found. If using a non-standard installation of BLAST, set the path to the blastn command using the blastn_command argument.")
   
+  # Throw an error if the path to the user-defined fasta file to classify contains spaces.
+  if(grepl(pattern=" ",x=path_to_sequences_to_classify)) stop("There cannot be spaces in path_to_sequences_to_classify.")
+  
+  # Throw an error if the path to the user-defined BLAST database contains spaces.
+  if(grepl(pattern=" ",x=path_to_BLAST_database)) stop("There cannot be spaces in path_to_BLAST_database.")
+  
   # Read in sequences to classify.
   sequences_to_classify<-read.fasta(file=path_to_sequences_to_classify)
   colnames(sequences_to_classify)[1]<-"Sequence_name"
