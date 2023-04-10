@@ -18,7 +18,12 @@ blast_version<-function(blast_command="blastn"){
       return(blast_version)
     },
     # Replace the default error message with a custom one.
+    ## If an error was encountered.
     error=function(e){
+      message(paste0("The ",blast_command," program could not be found. If using a non-standard installation of BLAST, set the path to the BLAST program using the blast_command argument."))
+    },
+    ## If a warning was encountered.
+    warning=function(w){
       message(paste0("The ",blast_command," program could not be found. If using a non-standard installation of BLAST, set the path to the BLAST program using the blast_command argument."))
     }
   )

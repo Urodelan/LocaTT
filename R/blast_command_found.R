@@ -24,7 +24,12 @@ blast_command_found<-function(blast_command){
       return(command_was_found)
     },
     # Return whether the command was found.
+    ## If an error was encountered.
     error=function(e){
+      return(command_was_found)
+    },
+    ## If a warning was encountered.
+    warning=function(w){
       return(command_was_found)
     }
   )
