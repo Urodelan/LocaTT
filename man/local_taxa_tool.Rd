@@ -34,7 +34,7 @@ local_taxa_tool(
 
 \item{full_names}{Logical. If \code{TRUE}, then full taxonomies are returned in the output CSV file. If \code{FALSE} (the default), then only the lowest taxonomic levels (e.g., species binomials instead of the full species taxonomies) are returned in the output CSV file.}
 
-\item{separator}{String specifying the separator to use between taxa in the output CSV file. The default is \code{', '}.}
+\item{separator}{String specifying the separator to use between taxa names in the output CSV file. The default is \code{', '}.}
 
 \item{blastn_command}{String specifying path to the blastn program. The default (\code{'blastn'}) should work for standard BLAST installations. The user can provide a path to the blastn program for non-standard BLAST installations.}
 }
