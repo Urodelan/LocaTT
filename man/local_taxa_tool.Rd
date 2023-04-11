@@ -12,6 +12,8 @@ local_taxa_tool(
   blast_e_value = 1e-05,
   blast_max_target_seqs = 2000,
   blast_task = "megablast",
+  full_names = FALSE,
+  separator = ", ",
   blastn_command = "blastn"
 )
 }
@@ -29,6 +31,10 @@ local_taxa_tool(
 \item{blast_max_target_seqs}{Numeric. Maximum number of BLAST target sequences returned per query sequence. Enough target sequences should be returned to ensure that all minimum E-value matches are returned for each query sequence. A warning will be produced if this value is not sufficient. The default is \code{2000}.}
 
 \item{blast_task}{String specifying BLAST task specification. Use \code{'megablast'} (the default) to find very similar sequences (e.g., intraspecies or closely related species). Use \code{'blastn-short'} for sequences shorter than 50 bases. See the blastn program help documentation for additional options and details.}
+
+\item{full_names}{Logical. If \code{TRUE}, then full taxonomies are returned in the output CSV file. If \code{FALSE} (the default), then only the lowest taxonomic levels (e.g., species binomials instead of the full species taxonomies) are returned in the output CSV file.}
+
+\item{separator}{String specifying the separator to use between taxa in the output CSV file. The default is \code{', '}.}
 
 \item{blastn_command}{String specifying path to the blastn program. The default (\code{'blastn'}) should work for standard BLAST installations. The user can provide a path to the blastn program for non-standard BLAST installations.}
 }

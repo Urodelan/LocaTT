@@ -1,6 +1,6 @@
 Package: LocaTT
 Title: Geographically-Conscious Taxonomic Assignment for Metabarcoding
-Version: 1.0.2
+Version: 1.0.3
 Authors@R: c(
     person("Kenen", "Goodwin", email="urodelan@gmail.com", role=c("aut","cre"),
            comment=c(ORCID="0000-0002-9219-7693")),
@@ -10,6 +10,8 @@ Description: A tool for performing taxonomic assignment of DNA metabarcoding
     sequence data while considering geographic location. A detailed tutorial
     is available at <https://urodelan.github.io/Local_Taxa_Tool_Tutorial/>.
 License: GPL (>= 3)
+URL: https://github.com/Urodelan/LocaTT
+BugReports: https://github.com/Urodelan/LocaTT/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3

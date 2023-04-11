@@ -20,9 +20,11 @@
 #' @param blast_e_value Numeric. Maximum E-value of returned BLAST hits (lower E-values are associated with more 'significant' matches). The default is `1e-05`.
 #' @param blast_max_target_seqs Numeric. Maximum number of BLAST target sequences returned per query sequence. Enough target sequences should be returned to ensure that all minimum E-value matches are returned for each query sequence. A warning will be produced if this value is not sufficient. The default is `2000`.
 #' @param blast_task String specifying BLAST task specification. Use `'megablast'` (the default) to find very similar sequences (e.g., intraspecies or closely related species). Use `'blastn-short'` for sequences shorter than 50 bases. See the blastn program help documentation for additional options and details.
+#' @param full_names Logical. If `TRUE`, then full taxonomies are returned in the output CSV file. If `FALSE` (the default), then only the lowest taxonomic levels (e.g., species binomials instead of the full species taxonomies) are returned in the output CSV file.
+#' @param separator String specifying the separator to use between taxa in the output CSV file. The default is `', '`.
 #' @param blastn_command String specifying path to the blastn program. The default (`'blastn'`) should work for standard BLAST installations. The user can provide a path to the blastn program for non-standard BLAST installations.
 #' @export
-local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,path_to_output_file,path_to_list_of_local_taxa=NA,blast_e_value=1e-5,blast_max_target_seqs=2000,blast_task="megablast",blastn_command="blastn"){
+local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,path_to_output_file,path_to_list_of_local_taxa=NA,blast_e_value=1e-5,blast_max_target_seqs=2000,blast_task="megablast",full_names=FALSE,separator=", ",blastn_command="blastn"){
   
   # Throw an error if the blastn command cannot not be found.
   if(!blast_command_found(blast_command=blastn_command)) stop("The blastn command could not be found. If using a non-standard installation of BLAST, set the path to the blastn command using the blastn_command argument.")
@@ -32,6 +34,12 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
   
   # Throw an error if the path to the user-defined BLAST database contains spaces.
   if(grepl(pattern=" ",x=path_to_BLAST_database)) stop("There cannot be spaces in path_to_BLAST_database.")
+  
+  # Throw an error if the full names argument is not TRUE or FALSE.
+  if(!is.logical(full_names) | is.na(full_names)) stop("The full_names argument must be TRUE or FALSE.")
+  
+  # Throw an error if the separator argument is not a character string.
+  if(!is.character(separator)) stop("The separator argument must be a character string.")
   
   # Read in sequences to classify.
   sequences_to_classify<-read.fasta(file=path_to_sequences_to_classify)
@@ -194,7 +202,11 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
       min_E_value_names<-unique(sequence_to_classify_df$Matches)
       
       # Get the species names for the best-matching reference sequences.
-      best_match_references<-sapply(X=strsplit(x=min_E_value_names,split=";"),FUN="[[",7)
+      if(full_names){ # If full names are requested, get the full taxonomies.
+        best_match_references<-min_E_value_names
+      } else { # If full names are not requested, get the species binomials.
+        best_match_references<-sapply(X=strsplit(x=min_E_value_names,split=";"),FUN="[[",7)
+      }
       
       # If any of the minimum E-value taxa are local.
       if(any(min_E_value_names %in% local$Name)){
@@ -203,12 +215,16 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
         min_E_value_names<-min_E_value_names[min_E_value_names %in% local$Name]
         
         # Get the local taxa species names.
-        local_spp<-local$Species[local$Name %in% min_E_value_names]
+        if(full_names){ # If full names are requested, get the full taxonomies.
+          local_spp<-local$Name[local$Name %in% min_E_value_names]
+        } else { # If full names are not requested, get the species binomials.
+          local_spp<-local$Species[local$Name %in% min_E_value_names]
+        }
         
         # Collect classification information in a data frame.
-        sequence_information<-data.frame(Local_taxa=paste(local_spp,collapse=", "),
-                                         Local_species=paste(local_spp,collapse=", "),
-                                         Best_match_references=paste(best_match_references,collapse=", "),
+        sequence_information<-data.frame(Local_taxa=paste(local_spp,collapse=separator),
+                                         Local_species=paste(local_spp,collapse=separator),
+                                         Best_match_references=paste(best_match_references,collapse=separator),
                                          Best_match_E_value=min_E_value,
                                          Best_match_bit_score=bit_score,
                                          Sequence_name=sequence_to_classify,
@@ -244,16 +260,23 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
             # Get the inclusive taxa.
             inclusive_taxa<-min_E_value_names_simplified[min_E_value_names_simplified %in% local_names_simplified]
             
-            # Get potential local species.
-            potential_spp<-local$Species[local_names_simplified %in% inclusive_taxa]
-            
-            # Get the inclusive taxa as simple names.
-            inclusive_taxa_simple<-sapply(X=strsplit(x=inclusive_taxa,split=";"),FUN="[[",current_taxonomic_level)
+            # Format potential local species and inclusive taxa.
+            if(full_names){ # If full names are requested, get the full taxonomies.
+              # Get potential local species.
+              potential_spp<-local$Name[local_names_simplified %in% inclusive_taxa]
+              # Get the inclusive taxa.
+              inclusive_taxa_simple<-inclusive_taxa
+            } else { # If full names are not requested, get the species binomials.
+              # Get potential local species.
+              potential_spp<-local$Species[local_names_simplified %in% inclusive_taxa]
+              # Get the inclusive taxa as simple names.
+              inclusive_taxa_simple<-sapply(X=strsplit(x=inclusive_taxa,split=";"),FUN="[[",current_taxonomic_level)
+            }
             
             # Collect classification information in a data frame.
-            sequence_information<-data.frame(Local_taxa=paste(inclusive_taxa_simple,collapse=", "),
-                                             Local_species=paste(potential_spp,collapse=", "),
-                                             Best_match_references=paste(best_match_references,collapse=", "),
+            sequence_information<-data.frame(Local_taxa=paste(inclusive_taxa_simple,collapse=separator),
+                                             Local_species=paste(potential_spp,collapse=separator),
+                                             Best_match_references=paste(best_match_references,collapse=separator),
                                              Best_match_E_value=min_E_value,
                                              Best_match_bit_score=bit_score,
                                              Sequence_name=sequence_to_classify,
@@ -273,8 +296,8 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
               
               # Collect classification information in a data frame.
               sequence_information<-data.frame(Local_taxa="Root",
-                                               Local_species=paste(local$Species,collapse=", "),
-                                               Best_match_references=paste(best_match_references,collapse=", "),
+                                               Local_species=ifelse(full_names,paste(local$Name,collapse=separator),paste(local$Species,collapse=separator)),
+                                               Best_match_references=paste(best_match_references,collapse=separator),
                                                Best_match_E_value=min_E_value,
                                                Best_match_bit_score=bit_score,
                                                Sequence_name=sequence_to_classify,
@@ -305,13 +328,17 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
   } else { # If a local taxa list is not provided.
     
     # Get the species names for the best-matching reference sequences.
-    blast_output$Species_names<-sapply(X=strsplit(x=blast_output$Matches,split=";"),FUN="[[",7)
+    if(full_names){ # If full names are requested, get the full taxonomies.
+      blast_output$Species_names<-blast_output$Matches
+    } else { # If full names are not requested, get the species binomials.
+      blast_output$Species_names<-sapply(X=strsplit(x=blast_output$Matches,split=";"),FUN="[[",7)
+    }
     
     # Get unique species names for each sequence.
     blast_output<-unique(blast_output)
     
     # Get best-matching references.
-    best_matches<-aggregate(Species_names~Sequence_name,data=blast_output,FUN=paste,collapse=", ")
+    best_matches<-aggregate(Species_names~Sequence_name,data=blast_output,FUN=paste,collapse=separator)
     
     # Get the E-values of best-matches.
     best_matches_E_value<-aggregate(E_value~Sequence_name,data=blast_output,FUN="[",1)
