@@ -56,6 +56,12 @@ get_taxonomies.IUCN<-function(path_to_IUCN_taxonomies,path_to_IUCN_common_names,
     # Old_Taxonomy, New_Taxonomy, Notes.
     if(!identical(colnames(taxonomy_edits),c("Old_Taxonomy","New_Taxonomy","Notes"))) stop("The fields of the taxonomy edits file must be: 'Old_Taxonomy', 'New_Taxonomy' ,'Notes'.")
     
+    # Check that there are no NAs in the taxonomy edits fields.
+    if(any(is.na(taxonomy_edits[,c("Old_Taxonomy","New_Taxonomy")]) | taxonomy_edits[,c("Old_Taxonomy","New_Taxonomy")]=="")) stop("There are NAs or blanks in the 'Old_Taxonomy' or 'New_Taxonomy' fields of the taxonomy edits file. Please ensure that these fields have entries for all records.")
+    
+    # Check that there are no spaces in the taxonomy edits fields.
+    if(any(t(apply(X=taxonomy_edits[,c("Old_Taxonomy","New_Taxonomy")],MARGIN=1,FUN=grepl,pattern=" ")))) stop("There cannot be spaces in the 'Old_Taxonomy' or 'New_Taxonomy' fields of the taxonomy edits file.")
+    
     # Add a carrot to anchor the start of the old taxonomies field.
     taxonomy_edits$Old_Taxonomy<-paste0("^",taxonomy_edits$Old_Taxonomy)
     

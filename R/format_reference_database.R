@@ -6,7 +6,7 @@
 #' @param input_reference_database_source String specifying input reference database source (`'MIDORI'` or `'UNITE'`). The default is `'MIDORI'`.
 #' @param path_to_taxonomy_edits String specifying path to taxonomy edits file in CSV format (with '.csv' extension). The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon. If no taxonomy edits are desired, then set this variable to `NA` (the default).
 #' @param path_to_sequence_edits String specifying path to sequence edits file in CSV format (with '.csv' extension). The file must contain the following fields: 'Action', 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species', 'Sequence', 'Notes'. The values in the 'Action' field must be either 'Add' or 'Remove', which will add or remove the respective sequence from the reference database. Values in the 'Common_Name' field are optional. Values should be supplied to all taxonomy fields. If using a reference database from MIDORI, then use NCBI superkingdom names (e.g., 'Eukaryota') in the 'Domain' field. If using a reference database from UNITE, then use kingdom names (e.g., 'Fungi') in the 'Domain' field. The 'Species' field should contain species binomials. Sequence edits are performed after taxonomy edits, if applied. If no sequence edits are desired, then set this variable to `NA` (the default).
-#' @param path_to_list_of_local_taxa_to_subset String specifying path to list of species (in CSV format with '.csv' extension) to subset the reference database to. This option is helpful if the user wants the reference database to include only the sequences of local species. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. All records in the species field should be unique. Subsetting the reference database to the sequences of certain species is performed after taxonomy and sequence edits are applied to the reference database, and species must match at all taxonomic levels in order to be retained in the reference database. If subsetting the reference database to the sequences of certain species is not desired, set this variable to `NA` (the default).
+#' @param path_to_list_of_local_taxa_to_subset String specifying path to list of species (in CSV format with '.csv' extension) to subset the reference database to. This option is helpful if the user wants the reference database to include only the sequences of local species. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. There should be no duplicate species (i.e., multiple records with the same species binomial and taxonomy) in the species list. Subsetting the reference database to the sequences of certain species is performed after taxonomy and sequence edits are applied to the reference database, and species must match at all taxonomic levels in order to be retained in the reference database. If subsetting the reference database to the sequences of certain species is not desired, set this variable to `NA` (the default).
 #' @param makeblastdb_command String specifying path to the makeblastdb program, which is a part of BLAST. The default (`'makeblastdb'`) should work for standard BLAST installations. The user can provide a path to the makeblastdb program for non-standard BLAST installations.
 #' @export
 format_reference_database<-function(path_to_input_reference_database,path_to_output_BLAST_database,input_reference_database_source="MIDORI",path_to_taxonomy_edits=NA,path_to_sequence_edits=NA,path_to_list_of_local_taxa_to_subset=NA,makeblastdb_command="makeblastdb"){
@@ -74,6 +74,12 @@ format_reference_database<-function(path_to_input_reference_database,path_to_out
     # Old_Taxonomy, New_Taxonomy, Notes.
     if(!identical(colnames(taxonomy_edits),c("Old_Taxonomy","New_Taxonomy","Notes"))) stop("The fields of the taxonomy edits file must be: 'Old_Taxonomy', 'New_Taxonomy' ,'Notes'.")
     
+    # Check that there are no NAs in the taxonomy edits fields.
+    if(any(is.na(taxonomy_edits[,c("Old_Taxonomy","New_Taxonomy")]) | taxonomy_edits[,c("Old_Taxonomy","New_Taxonomy")]=="")) stop("There are NAs or blanks in the 'Old_Taxonomy' or 'New_Taxonomy' fields of the taxonomy edits file. Please ensure that these fields have entries for all records.")
+    
+    # Check that there are no spaces in the taxonomy edits fields.
+    if(any(t(apply(X=taxonomy_edits[,c("Old_Taxonomy","New_Taxonomy")],MARGIN=1,FUN=grepl,pattern=" ")))) stop("There cannot be spaces in the 'Old_Taxonomy' or 'New_Taxonomy' fields of the taxonomy edits file.")
+    
     # Add a carrot to anchor the start of the old taxonomies field.
     taxonomy_edits$Old_Taxonomy<-paste0("^",taxonomy_edits$Old_Taxonomy)
     
@@ -104,6 +110,12 @@ format_reference_database<-function(path_to_input_reference_database,path_to_out
     # Throw an error if there are values in the Action field of the sequence
     # edits file which are not Add or Remove.
     if(!all(sequence_edits$Action %in% c("Add","Remove"))) stop("There are values in the 'Action' field of the sequence edits file which are not 'Add' or 'Remove'.")
+    
+    # Check that there are no NAs in the sequence edits fields.
+    if(any(is.na(sequence_edits[,c("Domain","Phylum","Class","Order","Family","Genus","Species","Sequence")]) | sequence_edits[,c("Domain","Phylum","Class","Order","Family","Genus","Species","Sequence")]=="")) stop("There are NAs or blanks in the taxonomy or sequence fields of the sequence edits file. Please ensure that these fields have entries for all records.")
+    
+    # Check that there are no underscores in the taxonomy fields of the sequence edits file.
+    if(any(t(apply(X=sequence_edits[,c("Domain","Phylum","Class","Order","Family","Genus","Species")],MARGIN=1,FUN=grepl,pattern="_")))) stop("There cannot be underscores in the taxonomy fields of the sequence edits file.")
     
     # Collapse sequence edit taxonomies by semi-colons.
     sequence_edits$Name<-apply(X=sequence_edits[,c("Domain","Phylum","Class","Order","Family","Genus","Species")],MARGIN=1,FUN=paste,collapse=";")
@@ -159,6 +171,9 @@ format_reference_database<-function(path_to_input_reference_database,path_to_out
   # Subset reference database to unique sequence-species combinations.
   reference<-unique(reference)
   
+  # Throw an error if the reference database contains spaces in sequence names.
+  if(any(grepl(pattern=" ",x=reference$Name))) stop("The reference database cannot contain spaces in sequence names.")
+  
   # Get the number of taxonomic levels each sequence has.
   check_num_taxonomic_levels<-sapply(X=strsplit(x=reference$Name,split=";"),FUN=length)
   
@@ -186,11 +201,14 @@ format_reference_database<-function(path_to_input_reference_database,path_to_out
     # Check that there are no NAs in the taxonomies of the local taxa list.
     if(any(is.na(local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")]) | local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")]=="")) stop("There are NAs or blanks in the taxonomies of the local taxa list file. Please ensure that all taxonomy fields have entries for all records.")
     
-    # Check that all species are unique.
-    if(any(duplicated(local$Species))) stop("There are duplicate records in the species field of the local taxa list file.")
+    # Check that there are no underscores in the taxonomy fields of the local taxa list.
+    if(any(t(apply(X=local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")],MARGIN=1,FUN=grepl,pattern="_")))) stop("There cannot be underscores in the taxonomy fields of the local taxa list file.")
     
     # Collapse local taxa names by semi-colons.
     local$Name<-apply(X=local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")],MARGIN=1,FUN=paste,collapse=";")
+    
+    # Check that all species are unique.
+    if(any(duplicated(local$Name))) stop("There are duplicate species (i.e., there are multiple records with the same taxonomy) in the local taxa list file.")
     
     # Replace spaces in the local name field with underscores.
     local$Name<-gsub(pattern=" ",replacement="_",x=local$Name)
