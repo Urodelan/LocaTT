@@ -13,6 +13,7 @@ local_taxa_tool(
   blast_max_target_seqs = 2000,
   blast_task = "megablast",
   full_names = FALSE,
+  underscores = FALSE,
   separator = ", ",
   blastn_command = "blastn"
 )
@@ -24,7 +25,7 @@ local_taxa_tool(
 
 \item{path_to_output_file}{String specifying path to output file of classified sequences in CSV format (with '.csv' extension).}
 
-\item{path_to_list_of_local_taxa}{String specifying path to list of local species in CSV format (with '.csv' extension). The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. All records in the species field should be unique. If local taxa suggestions are not desired, set this variable to \code{NA} (the default).}
+\item{path_to_list_of_local_taxa}{String specifying path to list of local species in CSV format (with '.csv' extension). The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. There should be no duplicate species (i.e., multiple records with the same species binomial and taxonomy) in the local species list. If local taxa suggestions are not desired, set this variable to \code{NA} (the default).}
 
 \item{blast_e_value}{Numeric. Maximum E-value of returned BLAST hits (lower E-values are associated with more 'significant' matches). The default is \code{1e-05}.}
 
@@ -33,6 +34,8 @@ local_taxa_tool(
 \item{blast_task}{String specifying BLAST task specification. Use \code{'megablast'} (the default) to find very similar sequences (e.g., intraspecies or closely related species). Use \code{'blastn-short'} for sequences shorter than 50 bases. See the blastn program help documentation for additional options and details.}
 
 \item{full_names}{Logical. If \code{TRUE}, then full taxonomies are returned in the output CSV file. If \code{FALSE} (the default), then only the lowest taxonomic levels (e.g., species binomials instead of the full species taxonomies) are returned in the output CSV file.}
+
+\item{underscores}{Logical. If \code{TRUE}, then taxa names in the output CSV file use underscores instead of spaces. If \code{FALSE} (the default), then taxa names in the output CSV file use spaces.}
 
 \item{separator}{String specifying the separator to use between taxa names in the output CSV file. The default is \code{', '}.}
 

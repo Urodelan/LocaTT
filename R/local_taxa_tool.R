@@ -16,15 +16,16 @@
 #' @param path_to_sequences_to_classify String specifying path to FASTA file containing sequences to classify (with '.fasta' extension).
 #' @param path_to_BLAST_database String specifying path to BLAST reference database in FASTA format (with '.fasta' extension).
 #' @param path_to_output_file String specifying path to output file of classified sequences in CSV format (with '.csv' extension).
-#' @param path_to_list_of_local_taxa String specifying path to list of local species in CSV format (with '.csv' extension). The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. All records in the species field should be unique. If local taxa suggestions are not desired, set this variable to `NA` (the default).
+#' @param path_to_list_of_local_taxa String specifying path to list of local species in CSV format (with '.csv' extension). The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. There should be no duplicate species (i.e., multiple records with the same species binomial and taxonomy) in the local species list. If local taxa suggestions are not desired, set this variable to `NA` (the default).
 #' @param blast_e_value Numeric. Maximum E-value of returned BLAST hits (lower E-values are associated with more 'significant' matches). The default is `1e-05`.
 #' @param blast_max_target_seqs Numeric. Maximum number of BLAST target sequences returned per query sequence. Enough target sequences should be returned to ensure that all minimum E-value matches are returned for each query sequence. A warning will be produced if this value is not sufficient. The default is `2000`.
 #' @param blast_task String specifying BLAST task specification. Use `'megablast'` (the default) to find very similar sequences (e.g., intraspecies or closely related species). Use `'blastn-short'` for sequences shorter than 50 bases. See the blastn program help documentation for additional options and details.
 #' @param full_names Logical. If `TRUE`, then full taxonomies are returned in the output CSV file. If `FALSE` (the default), then only the lowest taxonomic levels (e.g., species binomials instead of the full species taxonomies) are returned in the output CSV file.
+#' @param underscores Logical. If `TRUE`, then taxa names in the output CSV file use underscores instead of spaces. If `FALSE` (the default), then taxa names in the output CSV file use spaces.
 #' @param separator String specifying the separator to use between taxa names in the output CSV file. The default is `', '`.
 #' @param blastn_command String specifying path to the blastn program. The default (`'blastn'`) should work for standard BLAST installations. The user can provide a path to the blastn program for non-standard BLAST installations.
 #' @export
-local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,path_to_output_file,path_to_list_of_local_taxa=NA,blast_e_value=1e-5,blast_max_target_seqs=2000,blast_task="megablast",full_names=FALSE,separator=", ",blastn_command="blastn"){
+local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,path_to_output_file,path_to_list_of_local_taxa=NA,blast_e_value=1e-5,blast_max_target_seqs=2000,blast_task="megablast",full_names=FALSE,underscores=FALSE,separator=", ",blastn_command="blastn"){
   
   # Throw an error if the blastn command cannot not be found.
   if(!blast_command_found(blast_command=blastn_command)) stop("The blastn command could not be found. If using a non-standard installation of BLAST, set the path to the blastn command using the blastn_command argument.")
@@ -37,6 +38,9 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
   
   # Throw an error if the full names argument is not TRUE or FALSE.
   if(!is.logical(full_names) | is.na(full_names)) stop("The full_names argument must be TRUE or FALSE.")
+  
+  # Throw an error if the underscores argument is not TRUE or FALSE.
+  if(!is.logical(underscores) | is.na(underscores)) stop("The underscores argument must be TRUE or FALSE.")
   
   # Throw an error if the separator argument is not a character string.
   if(!is.character(separator)) stop("The separator argument must be a character string.")
@@ -70,8 +74,10 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
   blast_output<-as.data.frame(do.call("rbind",strsplit(x=blast_output,split="\t")),stringsAsFactors=F)
   ## Provide field names.
   colnames(blast_output)<-c("Sequence_name","Matches","E_value","Bit_score","Query_cover","PID")
-  ## Replace underscores in matches with spaces.
-  blast_output$Matches<-gsub(pattern="_",replacement=" ",x=blast_output$Matches)
+  ## If spaces in taxa names are desired, replace underscores in matches with spaces.
+  if(!underscores){
+    blast_output$Matches<-gsub(pattern="_",replacement=" ",x=blast_output$Matches)
+  }
   ## Format the fields for E-value and after as numeric.
   blast_output[,3:ncol(blast_output)]<-sapply(X=blast_output[,3:ncol(blast_output)],FUN=as.numeric)
   
@@ -166,11 +172,17 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
     # Check that there are no NAs in the taxonomies of the local taxa list.
     if(any(is.na(local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")]) | local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")]=="")) stop("There are NAs or blanks in the taxonomies of the local taxa list file. Please ensure that all taxonomy fields have entries for all records.")
     
-    # Check that all species are unique.
-    if(any(duplicated(local$Species))) stop("There are duplicate records in the species field of the local taxa list file.")
+    # If underscores are desired, replace spaces with underscores in the
+    # taxonomy fields of the local taxa list.
+    if(underscores){
+      local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")]<-data.frame(lapply(X=local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")],FUN=gsub,pattern=" ",replacement="_"))
+    }
     
     # Collapse local taxa names by semi-colons.
     local$Name<-apply(X=local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")],MARGIN=1,FUN=paste,collapse=";")
+    
+    # Check that all species are unique.
+    if(any(duplicated(local$Name))) stop("There are duplicate species (i.e., there are multiple records with the same taxonomy) in the local taxa list file.")
     
     # Get unique sequence names from BLAST output. Sequences not included
     # in the BLAST output had no significant matches.
