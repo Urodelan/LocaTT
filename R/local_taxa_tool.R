@@ -172,6 +172,9 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
     # Check that there are no NAs in the taxonomies of the local taxa list.
     if(any(is.na(local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")]) | local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")]=="")) stop("There are NAs or blanks in the taxonomies of the local taxa list file. Please ensure that all taxonomy fields have entries for all records.")
     
+    # Check that there are no underscores in the taxonomy fields of the local taxa list.
+    if(any(t(apply(X=local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")],MARGIN=1,FUN=grepl,pattern="_")))) stop("There cannot be underscores in the taxonomy fields of the local taxa list file.")
+    
     # If underscores are desired, replace spaces with underscores in the
     # taxonomy fields of the local taxa list.
     if(underscores){

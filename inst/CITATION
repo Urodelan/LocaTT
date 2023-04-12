@@ -5,7 +5,7 @@ citEntry(
   title="Local Taxa Tool (LocaTT): Geographically-conscious taxonomic assignment for DNA metabarcoding",
   author="Kenen B Goodwin and Taal Levi",
   year="2023",
-  note="R package version 1.0.4",
+  note="R package version 1.0.5",
   url="https://github.com/Urodelan/LocaTT",
-  textVersion="Kenen B Goodwin and Taal Levi (2023). Local Taxa Tool (LocaTT): Geographically-conscious taxonomic assignment for DNA metabarcoding. R package version 1.0.4, https://github.com/Urodelan/LocaTT."
+  textVersion="Kenen B Goodwin and Taal Levi (2023). Local Taxa Tool (LocaTT): Geographically-conscious taxonomic assignment for DNA metabarcoding. R package version 1.0.5, https://github.com/Urodelan/LocaTT."
 )
