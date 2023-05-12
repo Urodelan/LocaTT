@@ -58,12 +58,12 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
   
   # Perform the command line BLAST algorithm between the query and reference sequences.
   blast_output<-system2(command=blastn_command,
-                        args=c(paste0("-task ",blast_task),
-                               paste0("-db ",path_to_BLAST_database),
-                               paste0("-query ",path_to_sequences_to_classify),
-                               "-outfmt '6 qseqid sseqid evalue bitscore qcovs pident'",
-                               "-max_target_seqs ",blast_max_target_seqs,
-                               "-evalue ",blast_e_value),
+                        args=c(paste0('-task ',blast_task),
+                               paste0('-db ',path_to_BLAST_database),
+                               paste0('-query ',path_to_sequences_to_classify),
+                               '-outfmt "6 qseqid sseqid evalue bitscore qcovs pident"',
+                               paste0('-max_target_seqs ',blast_max_target_seqs),
+                               paste0('-evalue ',blast_e_value)),
                         stdout=T)
   
   # Check that BLAST returned results for at least one sequence.
