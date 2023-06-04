@@ -5,6 +5,20 @@
 #' @param path_to_output_local_taxa_list String specifying path to output species list with added NCBI taxonomies. The output file will be in CSV format, and the file path should have a '.csv' extension.
 #' @param path_to_taxonomy_edits String specifying path to taxonomy edits file in CSV format with a '.csv' extension. The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon. If no taxonomy edits are desired, then set this variable to `NA` (the default).
 #' @param print_taxize_queries Logical. Whether taxa queries should be printed. The default is `TRUE`.
+#' @examplesIf interactive()
+#' # Get path to example input species binomials CSV file.
+#' path_to_input_file<-system.file("extdata",
+#'                                 "example_species_binomials.csv",
+#'                                  package="LocaTT",
+#'                                  mustWork=TRUE)
+#' 
+#' # Create a temporary file path for the output CSV file.
+#' path_to_output_file<-tempfile(fileext=".csv")
+#' 
+#' # Fetch taxonomies from species binomials.
+#' get_taxonomies.species_binomials(path_to_input_species_binomials=path_to_input_file,
+#'                                  path_to_output_local_taxa_list=path_to_output_file,
+#'                                  print_taxize_queries=FALSE)
 #' @export
 get_taxonomies.species_binomials<-function(path_to_input_species_binomials,path_to_output_local_taxa_list,path_to_taxonomy_edits=NA,print_taxize_queries=TRUE){
   
@@ -12,7 +26,7 @@ get_taxonomies.species_binomials<-function(path_to_input_species_binomials,path_
   if((!is.logical(print_taxize_queries)) | is.na(print_taxize_queries)) stop("The value supplied to whether taxize messages should be printed must be TRUE or FALSE.")
   
   # Read in input csv file.
-  taxa<-read.csv(file=path_to_input_species_binomials,stringsAsFactors=F)
+  taxa<-utils::read.csv(file=path_to_input_species_binomials,stringsAsFactors=FALSE)
   
   # Check that field names are right.
   if(!identical(colnames(taxa),c("Common_Name","Scientific_Name"))) stop('Fields in the input csv file should be "Common_Name" and "Scientific_Name".')
@@ -38,7 +52,7 @@ get_taxonomies.species_binomials<-function(path_to_input_species_binomials,path_
   # Rename fields.
   colnames(taxa)<-c("Common_Name","Query","Domain","Phylum","Class","Order","Family","Genus","Species")
   
-  # Throw an error if NCBI taxonomies were not found any local taxa.
+  # Throw an error if NCBI taxonomies were not found for any local taxa.
   if(all(is.na(taxa$Species))) stop("NCBI taxonomies were not found for any local taxa.")
   
   # Check whether any taxa did not receive NCBI taxonomies.
@@ -102,7 +116,7 @@ get_taxonomies.species_binomials<-function(path_to_input_species_binomials,path_
   if(!is.na(path_to_taxonomy_edits)){
     
     # Read in edits to reference taxonomies.
-    taxonomy_edits<-read.csv(file=path_to_taxonomy_edits,stringsAsFactors=F)
+    taxonomy_edits<-utils::read.csv(file=path_to_taxonomy_edits,stringsAsFactors=FALSE)
     
     # Throw an error if the fields of the taxonomy edits file are not
     # Old_Taxonomy, New_Taxonomy, Notes.
@@ -184,6 +198,6 @@ get_taxonomies.species_binomials<-function(path_to_input_species_binomials,path_
   taxa[is.na(taxa)]<-""
   
   # Write out taxonomies.
-  write.csv(x=taxa,file=path_to_output_local_taxa_list,row.names=F)
+  utils::write.csv(x=taxa,file=path_to_output_local_taxa_list,row.names=FALSE)
   
 }

@@ -23,3 +23,20 @@ get_taxonomies.species_binomials(
 \description{
 Remotely fetches taxonomies from the NCBI taxonomy database for a list of species binomials.
 }
+\examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# Get path to example input species binomials CSV file.
+path_to_input_file<-system.file("extdata",
+                                "example_species_binomials.csv",
+                                 package="LocaTT",
+                                 mustWork=TRUE)
+
+# Create a temporary file path for the output CSV file.
+path_to_output_file<-tempfile(fileext=".csv")
+
+# Fetch taxonomies from species binomials.
+get_taxonomies.species_binomials(path_to_input_species_binomials=path_to_input_file,
+                                 path_to_output_local_taxa_list=path_to_output_file,
+                                 print_taxize_queries=FALSE)
+\dontshow{\}) # examplesIf}
+}

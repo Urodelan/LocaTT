@@ -8,6 +8,19 @@
 #' @param path_to_sequence_edits String specifying path to sequence edits file in CSV format (with '.csv' extension). The file must contain the following fields: 'Action', 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species', 'Sequence', 'Notes'. The values in the 'Action' field must be either 'Add' or 'Remove', which will add or remove the respective sequence from the reference database. Values in the 'Common_Name' field are optional. Values should be supplied to all taxonomy fields. If using a reference database from MIDORI, then use NCBI superkingdom names (e.g., 'Eukaryota') in the 'Domain' field. If using a reference database from UNITE, then use kingdom names (e.g., 'Fungi') in the 'Domain' field. The 'Species' field should contain species binomials. Sequence edits are performed after taxonomy edits, if applied. If no sequence edits are desired, then set this variable to `NA` (the default).
 #' @param path_to_list_of_local_taxa_to_subset String specifying path to list of species (in CSV format with '.csv' extension) to subset the reference database to. This option is helpful if the user wants the reference database to include only the sequences of local species. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. There should be no duplicate species (i.e., multiple records with the same species binomial and taxonomy) in the species list. Subsetting the reference database to the sequences of certain species is performed after taxonomy and sequence edits are applied to the reference database, and species must match at all taxonomic levels in order to be retained in the reference database. If subsetting the reference database to the sequences of certain species is not desired, set this variable to `NA` (the default).
 #' @param makeblastdb_command String specifying path to the makeblastdb program, which is a part of BLAST. The default (`'makeblastdb'`) should work for standard BLAST installations. The user can provide a path to the makeblastdb program for non-standard BLAST installations.
+#' @examplesIf blast_command_found(blast_command="makeblastdb")
+#' # Get path to example reference sequences FASTA file.
+#' path_to_input_file<-system.file("extdata",
+#'                                 "example_reference_sequences.fasta",
+#'                                  package="LocaTT",
+#'                                  mustWork=TRUE)
+#' 
+#' # Create a temporary file path for the output reference database FASTA file.
+#' path_to_output_file<-tempfile(fileext=".fasta")
+#' 
+#' # Format reference database.
+#' format_reference_database(path_to_input_reference_database=path_to_input_file,
+#'                           path_to_output_BLAST_database=path_to_output_file)
 #' @export
 format_reference_database<-function(path_to_input_reference_database,path_to_output_BLAST_database,input_reference_database_source="MIDORI",path_to_taxonomy_edits=NA,path_to_sequence_edits=NA,path_to_list_of_local_taxa_to_subset=NA,makeblastdb_command="makeblastdb"){
   
@@ -31,11 +44,11 @@ format_reference_database<-function(path_to_input_reference_database,path_to_out
     # Split up taxonomies by semi-colon.
     reference_taxonomy<-strsplit(x=reference$Name,split=";")
     # Remove everything after and including the last underscore of taxonomic level names.
-    reference_taxonomy<-as.data.frame(t(sapply(X=reference_taxonomy,FUN=sub,pattern="_[^_]+$",replacement="")),stringsAsFactors=F)
+    reference_taxonomy<-as.data.frame(t(sapply(X=reference_taxonomy,FUN=sub,pattern="_[^_]+$",replacement="")),stringsAsFactors=FALSE)
     # Remove any trailing underscores in the taxonomic level names.
-    reference_taxonomy<-as.data.frame(apply(X=reference_taxonomy,MARGIN=2,FUN=gsub,pattern="_*$",replacement=""),stringsAsFactors=F)
+    reference_taxonomy<-as.data.frame(apply(X=reference_taxonomy,MARGIN=2,FUN=gsub,pattern="_*$",replacement=""),stringsAsFactors=FALSE)
     # Replace any sets of repeating underscores with a single underscore.
-    reference_taxonomy<-as.data.frame(apply(X=reference_taxonomy,MARGIN=2,FUN=gsub,pattern="(_)\\1+",replacement="_"),stringsAsFactors=F)
+    reference_taxonomy<-as.data.frame(apply(X=reference_taxonomy,MARGIN=2,FUN=gsub,pattern="(_)\\1+",replacement="_"),stringsAsFactors=FALSE)
     # Name the taxonomic levels.
     colnames(reference_taxonomy)<-c("Domain","Phylum","Class","Order","Family","Genus","Species")
     # Collapse reference taxonomies by semi-colons.
@@ -50,17 +63,17 @@ format_reference_database<-function(path_to_input_reference_database,path_to_out
     # Split up taxonomies by semi-colon.
     reference_taxonomy<-strsplit(x=reference$Name,split=";")
     # Create a data frame of the taxonomic levels.
-    reference_taxonomy<-as.data.frame(do.call("rbind",reference_taxonomy),stringsAsFactors=F)
+    reference_taxonomy<-as.data.frame(do.call("rbind",reference_taxonomy),stringsAsFactors=FALSE)
     # Name the taxonomic levels.
     colnames(reference_taxonomy)<-c("Kingdom","Phylum","Class","Order","Family","Genus","Species")
     # Remove leading taxonomic level indicators from taxon names.
-    reference_taxonomy<-as.data.frame(apply(X=reference_taxonomy,MARGIN=2,FUN=sub,pattern="^[kpcofgs]__",replacement=""),stringsAsFactors=F)
+    reference_taxonomy<-as.data.frame(apply(X=reference_taxonomy,MARGIN=2,FUN=sub,pattern="^[kpcofgs]__",replacement=""),stringsAsFactors=FALSE)
     # Collapse reference taxonomies by semi-colons.
     reference_taxonomy<-apply(X=reference_taxonomy,MARGIN=1,FUN=paste,collapse=";")
     # Add the formatted reference taxonomies back to the reference database.
     reference$Name<-reference_taxonomy
-    # Replace bad characters which BLAST cannot handle.
-    reference$Name<-gsub(pattern="×",replacement="x",x=reference$Name)
+    # Replace bad characters (multiplication sign) which BLAST cannot handle.
+    reference$Name<-gsub(pattern="\u00D7",replacement="x",x=reference$Name)
     
   }
   
@@ -68,7 +81,7 @@ format_reference_database<-function(path_to_input_reference_database,path_to_out
   if(!is.na(path_to_taxonomy_edits)){
     
     # Read in edits to reference taxonomies.
-    taxonomy_edits<-read.csv(file=path_to_taxonomy_edits,stringsAsFactors=F)
+    taxonomy_edits<-utils::read.csv(file=path_to_taxonomy_edits,stringsAsFactors=FALSE)
     
     # Throw an error if the fields of the taxonomy edits file are not
     # Old_Taxonomy, New_Taxonomy, Notes.
@@ -101,7 +114,7 @@ format_reference_database<-function(path_to_input_reference_database,path_to_out
   if(!is.na(path_to_sequence_edits)){
     
     # Read in edits to reference sequences.
-    sequence_edits<-read.csv(file=path_to_sequence_edits,stringsAsFactors=F)
+    sequence_edits<-utils::read.csv(file=path_to_sequence_edits,stringsAsFactors=FALSE)
     
     # Throw an error if the fields of the sequence edits file are not
     # Action, Common_Name, Domain, Phylum, Class, Order, Family, Genus, Species, Sequence, Notes.
@@ -193,7 +206,7 @@ format_reference_database<-function(path_to_input_reference_database,path_to_out
   if(!is.na(path_to_list_of_local_taxa_to_subset)){
     
     # Read in local taxa list.
-    local<-read.csv(file=path_to_list_of_local_taxa_to_subset,stringsAsFactors=F)
+    local<-utils::read.csv(file=path_to_list_of_local_taxa_to_subset,stringsAsFactors=FALSE)
     
     # Check that the correct fields are present in the local taxa list.
     if(!identical(colnames(local),c("Common_Name","Domain","Phylum","Class","Order","Family","Genus","Species"))) stop('The field names in the local taxa list file should be: "Common_Name", "Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species".')
@@ -235,6 +248,6 @@ format_reference_database<-function(path_to_input_reference_database,path_to_out
   # Make a BLAST database out of the formatted reference database fasta file.
   system2(command=makeblastdb_command,args=c(paste0("-in ",path_to_output_BLAST_database),
                                              "-dbtype nucl"),
-          stdout=F)
+          stdout=FALSE)
   
 }

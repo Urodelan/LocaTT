@@ -60,3 +60,35 @@ Sequences are BLASTed against a global reference database, and the tool suggests
 \item Local_species (Field only present if a path to a local taxa list is provided): Species binomials of all local species which belong to the taxonomic unit(s) in the Local_taxa field.
 }
 }
+\examples{
+\dontshow{if (blast_command_found(blast_command="blastn")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# Get path to example query sequences FASTA file.
+path_to_query_sequences<-system.file("extdata",
+                                     "example_query_sequences.fasta",
+                                     package="LocaTT",
+                                     mustWork=TRUE)
+
+# Get path to example reference database FASTA file.
+path_to_reference_database<-system.file("extdata",
+                                        "example_blast_database.fasta",
+                                        package="LocaTT",
+                                        mustWork=TRUE)
+
+# Get path to example local taxa list CSV file.
+path_to_local_taxa_list<-system.file("extdata",
+                                     "example_local_taxa_list.csv",
+                                     package="LocaTT",
+                                     mustWork=TRUE)
+
+# Create a temporary file path for the output CSV file.
+path_to_output_CSV_file<-tempfile(fileext=".csv")
+
+# Run the local taxa tool.
+local_taxa_tool(path_to_sequences_to_classify=path_to_query_sequences,
+                path_to_BLAST_database=path_to_reference_database,
+                path_to_output_file=path_to_output_CSV_file,
+                path_to_list_of_local_taxa=path_to_local_taxa_list,
+                full_names=TRUE,
+                underscores=TRUE)
+\dontshow{\}) # examplesIf}
+}

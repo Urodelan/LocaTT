@@ -16,3 +16,21 @@ write.fasta(names, sequences, file)
 \description{
 Writes FASTA files.
 }
+\examples{
+# Get path to example sequences CSV file.
+path_to_CSV_file<-system.file("extdata",
+                              "example_query_sequences.csv",
+                              package="LocaTT",
+                              mustWork=TRUE)
+
+# Read the example sequences CSV file.
+df<-read.csv(file=path_to_CSV_file)
+
+# Create a temporary file path for the FASTA file to write.
+path_to_FASTA_file<-tempfile(fileext=".fasta")
+
+# Write the example sequences as a FASTA file.
+write.fasta(names=df$Name,
+            sequences=df$Sequence,
+            file=path_to_FASTA_file)
+}

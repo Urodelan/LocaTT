@@ -15,3 +15,6 @@ Logical. Returns \code{TRUE} if the BLAST program could be found.
 \description{
 Checks whether a BLAST program can be found.
 }
+\examples{
+blast_command_found(blast_command="blastn")
+}

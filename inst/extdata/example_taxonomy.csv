@@ -1,0 +1,3 @@
+"internalTaxonId","scientificName","kingdomName","phylumName","className","orderName","familyName","genusName","speciesName","infraType","infraName","infraAuthority","subpopulationName","authority","taxonomicNotes"
+1,"Homo sapiens","ANIMALIA","CHORDATA","MAMMALIA","PRIMATES","HOMINIDAE","Homo","sapiens","","","","","",""
+2,"Gallus gallus","ANIMALIA","CHORDATA","AVES","GALLIFORMES","PHASIANIDAE","Gallus","gallus","","","","","",""

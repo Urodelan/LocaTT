@@ -15,3 +15,13 @@ A data frame with fields for sequence names and sequences.
 \description{
 Reads FASTA files.
 }
+\examples{
+# Get path to example FASTA file.
+path_to_fasta_file<-system.file("extdata",
+                                "example_query_sequences.fasta",
+                                package="LocaTT",
+                                mustWork=TRUE)
+
+# Read the example FASTA file.
+read.fasta(file=path_to_fasta_file)
+}

@@ -32,3 +32,19 @@ format_reference_database(
 \description{
 Formats reference databases from MIDORI or UNITE for use with the \code{local_taxa_tool} function.
 }
+\examples{
+\dontshow{if (blast_command_found(blast_command="makeblastdb")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# Get path to example reference sequences FASTA file.
+path_to_input_file<-system.file("extdata",
+                                "example_reference_sequences.fasta",
+                                 package="LocaTT",
+                                 mustWork=TRUE)
+
+# Create a temporary file path for the output reference database FASTA file.
+path_to_output_file<-tempfile(fileext=".fasta")
+
+# Format reference database.
+format_reference_database(path_to_input_reference_database=path_to_input_file,
+                          path_to_output_BLAST_database=path_to_output_file)
+\dontshow{\}) # examplesIf}
+}

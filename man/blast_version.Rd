@@ -15,3 +15,6 @@ Returns a string of the version of the BLAST program.
 \description{
 Gets the version of a BLAST program.
 }
+\examples{
+blast_version()
+}

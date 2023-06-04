@@ -24,6 +24,35 @@
 #' @param underscores Logical. If `TRUE`, then taxa names in the output CSV file use underscores instead of spaces. If `FALSE` (the default), then taxa names in the output CSV file use spaces.
 #' @param separator String specifying the separator to use between taxa names in the output CSV file. The default is `', '`.
 #' @param blastn_command String specifying path to the blastn program. The default (`'blastn'`) should work for standard BLAST installations. The user can provide a path to the blastn program for non-standard BLAST installations.
+#' @examplesIf blast_command_found(blast_command="blastn")
+#' # Get path to example query sequences FASTA file.
+#' path_to_query_sequences<-system.file("extdata",
+#'                                      "example_query_sequences.fasta",
+#'                                      package="LocaTT",
+#'                                      mustWork=TRUE)
+#' 
+#' # Get path to example reference database FASTA file.
+#' path_to_reference_database<-system.file("extdata",
+#'                                         "example_blast_database.fasta",
+#'                                         package="LocaTT",
+#'                                         mustWork=TRUE)
+#' 
+#' # Get path to example local taxa list CSV file.
+#' path_to_local_taxa_list<-system.file("extdata",
+#'                                      "example_local_taxa_list.csv",
+#'                                      package="LocaTT",
+#'                                      mustWork=TRUE)
+#' 
+#' # Create a temporary file path for the output CSV file.
+#' path_to_output_CSV_file<-tempfile(fileext=".csv")
+#' 
+#' # Run the local taxa tool.
+#' local_taxa_tool(path_to_sequences_to_classify=path_to_query_sequences,
+#'                 path_to_BLAST_database=path_to_reference_database,
+#'                 path_to_output_file=path_to_output_CSV_file,
+#'                 path_to_list_of_local_taxa=path_to_local_taxa_list,
+#'                 full_names=TRUE,
+#'                 underscores=TRUE)
 #' @export
 local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,path_to_output_file,path_to_list_of_local_taxa=NA,blast_e_value=1e-5,blast_max_target_seqs=2000,blast_task="megablast",full_names=FALSE,underscores=FALSE,separator=", ",blastn_command="blastn"){
   
@@ -64,14 +93,14 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
                                '-outfmt "6 qseqid sseqid evalue bitscore qcovs pident"',
                                paste0('-max_target_seqs ',blast_max_target_seqs),
                                paste0('-evalue ',blast_e_value)),
-                        stdout=T)
+                        stdout=TRUE)
   
   # Check that BLAST returned results for at least one sequence.
   if(length(blast_output)==0) stop("BLAST did not return results for any sequences. Try increasing the user-defined minimum E-value parameter and run this function again.")
   
   # Format the BLAST output.
   ## Get output as a data frame.
-  blast_output<-as.data.frame(do.call("rbind",strsplit(x=blast_output,split="\t")),stringsAsFactors=F)
+  blast_output<-as.data.frame(do.call("rbind",strsplit(x=blast_output,split="\t")),stringsAsFactors=FALSE)
   ## Provide field names.
   colnames(blast_output)<-c("Sequence_name","Matches","E_value","Bit_score","Query_cover","PID")
   ## If spaces in taxa names are desired, replace underscores in matches with spaces.
@@ -88,7 +117,7 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
   # these hits can have different bit scores). Using the maximum bit score
   # is equivalent to using the minimum E-value.
   ## Get the maximum bit score match for each query sequence.
-  max_bit_score<-aggregate(Bit_score~Sequence_name,data=blast_output,FUN=max)
+  max_bit_score<-stats::aggregate(Bit_score~Sequence_name,data=blast_output,FUN=max)
   ## Rename field to maximum bit score.
   colnames(max_bit_score)[2]<-"max_bit_score"
   ## Merge maximum bit score with the BLAST output.
@@ -110,9 +139,9 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
     # E-values.
     sequences_at_max_target_seq_matches<-data.frame(
       Sequence_name=names(which(max_best_BLAST_matches_by_sequence)),
-      stringsAsFactors=F)
+      stringsAsFactors=FALSE)
     # Add the actual sequences to the data frame.
-    sequences_at_max_target_seq_matches<-merge(x=sequences_at_max_target_seq_matches,sequences_to_classify,all.x=T)
+    sequences_at_max_target_seq_matches<-merge(x=sequences_at_max_target_seq_matches,sequences_to_classify,all.x=TRUE)
     # Create a single string for each sequence.
     sequences_at_max_target_seq_matches$Message<-paste0(
       sequences_at_max_target_seq_matches$Sequence_name,
@@ -124,14 +153,14 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
   
   # Get average query cover and PID for the best-matching references for each sequence.
   ## Calculate means.
-  best_match_means<-aggregate(.~Sequence_name,data=blast_output[,c("Sequence_name","Query_cover","PID")],FUN=mean)
+  best_match_means<-stats::aggregate(.~Sequence_name,data=blast_output[,c("Sequence_name","Query_cover","PID")],FUN=mean)
   ## Add a mean label to the column names.
   colnames(best_match_means)[2:3]<-paste0(colnames(best_match_means)[2:3],".mean")
   
   # Get standard deviation of query cover and PID for the best-matching references for
   # each sequence.
   ## Calculate standard deviation.
-  best_match_SDs<-aggregate(.~Sequence_name,data=blast_output[,c("Sequence_name","Query_cover","PID")],FUN=sd)
+  best_match_SDs<-stats::aggregate(.~Sequence_name,data=blast_output[,c("Sequence_name","Query_cover","PID")],FUN=stats::sd)
   ## Add a standard deviation label to the column names.
   colnames(best_match_SDs)[2:3]<-paste0(colnames(best_match_SDs)[2:3],".SD")
   
@@ -164,7 +193,7 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
   if(!is.na(path_to_list_of_local_taxa)){
     
     # Read in local taxa list.
-    local<-read.csv(file=path_to_list_of_local_taxa,stringsAsFactors=F)
+    local<-utils::read.csv(file=path_to_list_of_local_taxa,stringsAsFactors=FALSE)
     
     # Check that the correct fields are present in the local taxa list.
     if(!identical(colnames(local),c("Common_Name","Domain","Phylum","Class","Order","Family","Genus","Species"))) stop('The field names in the local taxa list file should be: "Common_Name", "Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species".')
@@ -243,7 +272,7 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
                                          Best_match_E_value=min_E_value,
                                          Best_match_bit_score=bit_score,
                                          Sequence_name=sequence_to_classify,
-                                         stringsAsFactors=F)
+                                         stringsAsFactors=FALSE)
         
       } else { # If none of the maximum PID taxa are local.
         
@@ -295,7 +324,7 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
                                              Best_match_E_value=min_E_value,
                                              Best_match_bit_score=bit_score,
                                              Sequence_name=sequence_to_classify,
-                                             stringsAsFactors=F)
+                                             stringsAsFactors=FALSE)
             
           } else { # If no local taxa are included in this upper taxonomic group.
             
@@ -316,7 +345,7 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
                                                Best_match_E_value=min_E_value,
                                                Best_match_bit_score=bit_score,
                                                Sequence_name=sequence_to_classify,
-                                               stringsAsFactors=F)
+                                               stringsAsFactors=FALSE)
               
             }
             
@@ -335,7 +364,7 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
     sequence_classifications<-merge(sequence_classifications,best_match_means_and_SDs)
     
     # Add sequences to the classification data frame.
-    df<-merge(sequences_to_classify,sequence_classifications,all=T)
+    df<-merge(sequences_to_classify,sequence_classifications,all=TRUE)
     
     # Keep certain fields in the classification data frame.
     df<-df[,c("Sequence_name","Sequence","Best_match_references","Best_match_E_value","Best_match_bit_score","Best_match_query_cover.mean","Best_match_query_cover.SD","Best_match_PID.mean","Best_match_PID.SD","Local_taxa","Local_species")]
@@ -353,13 +382,13 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
     blast_output<-unique(blast_output)
     
     # Get best-matching references.
-    best_matches<-aggregate(Species_names~Sequence_name,data=blast_output,FUN=paste,collapse=separator)
+    best_matches<-stats::aggregate(Species_names~Sequence_name,data=blast_output,FUN=paste,collapse=separator)
     
     # Get the E-values of best-matches.
-    best_matches_E_value<-aggregate(E_value~Sequence_name,data=blast_output,FUN="[",1)
+    best_matches_E_value<-stats::aggregate(E_value~Sequence_name,data=blast_output,FUN="[",1)
     
     # Get the bit-scores of best-matches.
-    best_matches_Bit_score<-aggregate(Bit_score~Sequence_name,data=blast_output,FUN="[",1)
+    best_matches_Bit_score<-stats::aggregate(Bit_score~Sequence_name,data=blast_output,FUN="[",1)
     
     # Combine information on best-matching references.
     best_matches<-merge(best_matches,best_matches_E_value)
@@ -367,7 +396,7 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
     best_matches<-merge(best_matches,best_match_means_and_SDs)
     
     # Add sequences to the classification data frame.
-    df<-merge(sequences_to_classify,best_matches,all=T)
+    df<-merge(sequences_to_classify,best_matches,all=TRUE)
     
     # Rename certain fields.
     colnames(df)[which(colnames(df)=="Species_names")]<-"Best_match_references"
@@ -384,6 +413,6 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
   df[is.na(df$Best_match_E_value),3:ncol(df)]<-"No significant similarity found"
   
   # Write out classified sequences.
-  write.csv(x=df,file=path_to_output_file,row.names=F)
+  utils::write.csv(x=df,file=path_to_output_file,row.names=FALSE)
   
 }

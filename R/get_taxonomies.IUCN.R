@@ -6,14 +6,34 @@
 #' @param path_to_output_local_taxa_list String specifying path to output species list (in CSV format with '.csv' extension) with formatted taxonomies.
 #' @param domain_name String specifying the domain name to use for all species. The IUCN Red List files do not include domain information, so a domain name must be provided. If using a reference database from UNITE, provide a kingdom name here (e.g., `'Fungi'`). The default is `'Eukaryota'`.
 #' @param path_to_taxonomy_edits String specifying path to taxonomy edits file in CSV format (with '.csv' extension). The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon. If no taxonomy edits are desired, then set this variable to `NA` (the default).
+#' @examples
+#' # Get path to example taxonomy CSV file.
+#' path_to_taxonomy_file<-system.file("extdata",
+#'                                    "example_taxonomy.csv",
+#'                                    package="LocaTT",
+#'                                    mustWork=TRUE)
+#' 
+#' # Get path to example common names CSV file.
+#' path_to_common_names_file<-system.file("extdata",
+#'                                        "example_common_names.csv",
+#'                                        package="LocaTT",
+#'                                        mustWork=TRUE)
+#' 
+#' # Create a temporary file path for the output CSV file.
+#' path_to_output_file<-tempfile(fileext=".csv")
+#' 
+#' # Format common names and taxonomies.
+#' get_taxonomies.IUCN(path_to_IUCN_taxonomies=path_to_taxonomy_file,
+#'                     path_to_IUCN_common_names=path_to_common_names_file,
+#'                     path_to_output_local_taxa_list=path_to_output_file)
 #' @export
 get_taxonomies.IUCN<-function(path_to_IUCN_taxonomies,path_to_IUCN_common_names,path_to_output_local_taxa_list,domain_name="Eukaryota",path_to_taxonomy_edits=NA){
   
   # Read in IUCN taxonomies.
-  taxa<-read.csv(file=path_to_IUCN_taxonomies,stringsAsFactors=F)
+  taxa<-utils::read.csv(file=path_to_IUCN_taxonomies,stringsAsFactors=FALSE)
   
   # Read in IUCN common names.
-  common<-read.csv(file=path_to_IUCN_common_names,stringsAsFactors=F)
+  common<-utils::read.csv(file=path_to_IUCN_common_names,stringsAsFactors=FALSE)
   
   # Get the main common names.
   common<-common[common$main=="true",]
@@ -22,7 +42,7 @@ get_taxonomies.IUCN<-function(path_to_IUCN_taxonomies,path_to_IUCN_common_names,
   common<-common[!duplicated(common$internalTaxonId),]
   
   # Adding common names to taxonomies.
-  taxa<-merge(x=taxa,y=common,all.x=T,all.y=F)
+  taxa<-merge(x=taxa,y=common,all.x=TRUE,all.y=FALSE)
   
   # Add a field for domain.
   taxa$domainName<-domain_name
@@ -50,7 +70,7 @@ get_taxonomies.IUCN<-function(path_to_IUCN_taxonomies,path_to_IUCN_common_names,
   if(!is.na(path_to_taxonomy_edits)){
     
     # Read in edits to reference taxonomies.
-    taxonomy_edits<-read.csv(file=path_to_taxonomy_edits,stringsAsFactors=F)
+    taxonomy_edits<-utils::read.csv(file=path_to_taxonomy_edits,stringsAsFactors=FALSE)
     
     # Throw an error if the fields of the taxonomy edits file are not
     # Old_Taxonomy, New_Taxonomy, Notes.
@@ -116,6 +136,6 @@ get_taxonomies.IUCN<-function(path_to_IUCN_taxonomies,path_to_IUCN_common_names,
   taxa$Common_Name<-ifelse(is.na(taxa$Common_Name),"",taxa$Common_Name)
   
   # Write formatted IUCN taxonomies.
-  write.csv(x=taxa,file=path_to_output_local_taxa_list,row.names=F)
+  utils::write.csv(x=taxa,file=path_to_output_local_taxa_list,row.names=FALSE)
   
 }

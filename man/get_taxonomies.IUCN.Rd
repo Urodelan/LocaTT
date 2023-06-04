@@ -26,3 +26,24 @@ get_taxonomies.IUCN(
 \description{
 Formats taxonomies from IUCN Red List taxonomy.csv and common_names.csv files for use with the \code{local_taxa_tool} function.
 }
+\examples{
+# Get path to example taxonomy CSV file.
+path_to_taxonomy_file<-system.file("extdata",
+                                   "example_taxonomy.csv",
+                                   package="LocaTT",
+                                   mustWork=TRUE)
+
+# Get path to example common names CSV file.
+path_to_common_names_file<-system.file("extdata",
+                                       "example_common_names.csv",
+                                       package="LocaTT",
+                                       mustWork=TRUE)
+
+# Create a temporary file path for the output CSV file.
+path_to_output_file<-tempfile(fileext=".csv")
+
+# Format common names and taxonomies.
+get_taxonomies.IUCN(path_to_IUCN_taxonomies=path_to_taxonomy_file,
+                    path_to_IUCN_common_names=path_to_common_names_file,
+                    path_to_output_local_taxa_list=path_to_output_file)
+}

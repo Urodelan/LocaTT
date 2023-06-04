@@ -1,7 +1,7 @@
 .onAttach<-function(libname,pkgname) {
   packageStartupMessage(
     paste0("Welcome to the Local Taxa Tool (LocaTT)! This is version ",
-           packageVersion(pkgname),".\n",
+           utils::packageVersion(pkgname),".\n",
            "   ______  ______  ______   Geographically-conscious\n",
            "    |  | \\/ |  | \\/ |  |    taxonomic assignment\n",
            "   _|__|_/\\_|__|_/\\_|__|_   for DNA metabarcoding.\n",
