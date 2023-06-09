@@ -13,8 +13,8 @@
 #' * Best_match_PID.SD: The standard deviation of percent identity of all best-matching BLAST hits.
 #' * Local_taxa (Field only present if a path to a local taxa list is provided): The finest taxonomic unit(s) which include both any species of the best-matching BLAST hits and any local species. If the species of any of the best-matching BLAST hits are local, then the finest taxonomic unit(s) are at the species level.
 #' * Local_species (Field only present if a path to a local taxa list is provided): Species binomials of all local species which belong to the taxonomic unit(s) in the Local_taxa field.
-#' @param path_to_sequences_to_classify String specifying path to FASTA file containing sequences to classify (with '.fasta' extension).
-#' @param path_to_BLAST_database String specifying path to BLAST reference database in FASTA format (with '.fasta' extension).
+#' @param path_to_sequences_to_classify String specifying path to FASTA file containing sequences to classify (with '.fasta' extension). File path cannot contain spaces.
+#' @param path_to_BLAST_database String specifying path to BLAST reference database in FASTA format (with '.fasta' extension). File path cannot contain spaces.
 #' @param path_to_output_file String specifying path to output file of classified sequences in CSV format (with '.csv' extension).
 #' @param path_to_list_of_local_taxa String specifying path to list of local species in CSV format (with '.csv' extension). The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. There should be no duplicate species (i.e., multiple records with the same species binomial and taxonomy) in the local species list. If local taxa suggestions are not desired, set this variable to `NA` (the default).
 #' @param blast_e_value Numeric. Maximum E-value of returned BLAST hits (lower E-values are associated with more 'significant' matches). The default is `1e-05`.

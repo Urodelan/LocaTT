@@ -19,9 +19,9 @@ local_taxa_tool(
 )
 }
 \arguments{
-\item{path_to_sequences_to_classify}{String specifying path to FASTA file containing sequences to classify (with '.fasta' extension).}
+\item{path_to_sequences_to_classify}{String specifying path to FASTA file containing sequences to classify (with '.fasta' extension). File path cannot contain spaces.}
 
-\item{path_to_BLAST_database}{String specifying path to BLAST reference database in FASTA format (with '.fasta' extension).}
+\item{path_to_BLAST_database}{String specifying path to BLAST reference database in FASTA format (with '.fasta' extension). File path cannot contain spaces.}
 
 \item{path_to_output_file}{String specifying path to output file of classified sequences in CSV format (with '.csv' extension).}
 

@@ -17,7 +17,7 @@ format_reference_database(
 \arguments{
 \item{path_to_input_reference_database}{String specifying path to input reference database in FASTA format (with '.fasta' extension).}
 
-\item{path_to_output_BLAST_database}{String specifying path to output BLAST database in FASTA format (with 'fasta' extension).}
+\item{path_to_output_BLAST_database}{String specifying path to output BLAST database in FASTA format (with '.fasta' extension). File path cannot contain spaces.}
 
 \item{input_reference_database_source}{String specifying input reference database source (\code{'MIDORI'} or \code{'UNITE'}). The default is \code{'MIDORI'}.}
 

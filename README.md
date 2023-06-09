@@ -8,7 +8,7 @@ The Local Taxa Tool (LocaTT, pronounced “locate”) is an R package for perfor
 
 ## Installation
 
-The Local Taxa Tool can be installed from GitHub:
+The development version of the Local Taxa Tool can be installed from GitHub:
 
 ``` r
 
