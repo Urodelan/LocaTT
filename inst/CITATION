@@ -1,7 +1,7 @@
 citHeader("To cite the Local Taxa Tool (LocaTT) in publications use:")
 
-citEntry(
-  entry="Manual",
+bibentry(
+  bibtype="Manual",
   title="Local Taxa Tool (LocaTT): Geographically-conscious taxonomic assignment for DNA metabarcoding",
   author="Kenen B Goodwin and Taal Levi",
   year="2023",

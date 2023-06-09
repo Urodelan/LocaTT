@@ -8,7 +8,19 @@ The Local Taxa Tool (LocaTT, pronounced “locate”) is an R package for perfor
 
 ## Installation
 
-The development version of the Local Taxa Tool can be installed from GitHub:
+The current version of the LocaTT package can be installed from the Comprehensive R Archive Network (CRAN):
+
+``` r
+
+# Install the LocaTT package from the CRAN.
+install.packages("LocaTT")
+
+# Load the LocaTT package.
+library(LocaTT)
+
+```
+
+The development version of the LocaTT package can be installed from GitHub:
 
 ``` r
 
@@ -18,10 +30,10 @@ install.packages("devtools")
 # Load the devtools package.
 library(devtools)
 
-# Install the Local Taxa Tool (LocaTT) package from GitHub.
-install_github("Urodelan/LocaTT")
+# Install the LocaTT package from GitHub.
+devtools::install_github("Urodelan/LocaTT")
 
-# Load the Local Taxa Tool package.
+# Load the LocaTT package.
 library(LocaTT)
 
 ```
