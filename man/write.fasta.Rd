@@ -11,7 +11,7 @@ write.fasta(names, sequences, file)
 
 \item{sequences}{A character vector of sequences.}
 
-\item{file}{A string specifying the path to a FASTA file (with '.fasta' extension) to write.}
+\item{file}{A string specifying the path to a FASTA file to write.}
 }
 \description{
 Writes FASTA files.
@@ -24,7 +24,7 @@ path_to_CSV_file<-system.file("extdata",
                               mustWork=TRUE)
 
 # Read the example sequences CSV file.
-df<-read.csv(file=path_to_CSV_file)
+df<-read.csv(file=path_to_CSV_file,stringsAsFactors=FALSE)
 
 # Create a temporary file path for the FASTA file to write.
 path_to_FASTA_file<-tempfile(fileext=".fasta")

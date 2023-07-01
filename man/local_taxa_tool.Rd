@@ -19,19 +19,19 @@ local_taxa_tool(
 )
 }
 \arguments{
-\item{path_to_sequences_to_classify}{String specifying path to FASTA file containing sequences to classify (with '.fasta' extension). File path cannot contain spaces.}
+\item{path_to_sequences_to_classify}{String specifying path to FASTA file containing sequences to classify. File path cannot contain spaces.}
 
-\item{path_to_BLAST_database}{String specifying path to BLAST reference database in FASTA format (with '.fasta' extension). File path cannot contain spaces.}
+\item{path_to_BLAST_database}{String specifying path to BLAST reference database in FASTA format. File path cannot contain spaces.}
 
-\item{path_to_output_file}{String specifying path to output file of classified sequences in CSV format (with '.csv' extension).}
+\item{path_to_output_file}{String specifying path to output file of classified sequences in CSV format.}
 
-\item{path_to_list_of_local_taxa}{String specifying path to list of local species in CSV format (with '.csv' extension). The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. There should be no duplicate species (i.e., multiple records with the same species binomial and taxonomy) in the local species list. If local taxa suggestions are not desired, set this variable to \code{NA} (the default).}
+\item{path_to_list_of_local_taxa}{String specifying path to list of local species in CSV format. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. There should be no duplicate species (\emph{i.e.}, multiple records with the same species binomial and taxonomy) in the local species list. If local taxa suggestions are not desired, set this variable to \code{NA} (the default).}
 
 \item{blast_e_value}{Numeric. Maximum E-value of returned BLAST hits (lower E-values are associated with more 'significant' matches). The default is \code{1e-05}.}
 
 \item{blast_max_target_seqs}{Numeric. Maximum number of BLAST target sequences returned per query sequence. Enough target sequences should be returned to ensure that all minimum E-value matches are returned for each query sequence. A warning will be produced if this value is not sufficient. The default is \code{2000}.}
 
-\item{blast_task}{String specifying BLAST task specification. Use \code{'megablast'} (the default) to find very similar sequences (e.g., intraspecies or closely related species). Use \code{'blastn-short'} for sequences shorter than 50 bases. See the blastn program help documentation for additional options and details.}
+\item{blast_task}{String specifying BLAST task specification. Use \code{'megablast'} (the default) to find very similar sequences (\emph{e.g.}, intraspecies or closely related species). Use \code{'blastn-short'} for sequences shorter than 50 bases. See the blastn program help documentation for additional options and details.}
 
 \item{full_names}{Logical. If \code{TRUE}, then full taxonomies are returned in the output CSV file. If \code{FALSE} (the default), then only the lowest taxonomic levels (e.g., species binomials instead of the full species taxonomies) are returned in the output CSV file.}
 

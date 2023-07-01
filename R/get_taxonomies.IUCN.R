@@ -3,9 +3,9 @@
 #' Formats taxonomies from IUCN Red List taxonomy.csv and common_names.csv files for use with the `local_taxa_tool` function.
 #' @param path_to_IUCN_taxonomies String specifying path to input IUCN Red List taxonomy.csv file.
 #' @param path_to_IUCN_common_names String specifying path to input IUCN Red List common_names.csv file.
-#' @param path_to_output_local_taxa_list String specifying path to output species list (in CSV format with '.csv' extension) with formatted taxonomies.
-#' @param domain_name String specifying the domain name to use for all species. The IUCN Red List files do not include domain information, so a domain name must be provided. If using a reference database from UNITE, provide a kingdom name here (e.g., `'Fungi'`). The default is `'Eukaryota'`.
-#' @param path_to_taxonomy_edits String specifying path to taxonomy edits file in CSV format (with '.csv' extension). The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon. If no taxonomy edits are desired, then set this variable to `NA` (the default).
+#' @param path_to_output_local_taxa_list String specifying path to output species list (in CSV format) with formatted taxonomies.
+#' @param domain_name String specifying the domain name to use for all species. The IUCN Red List files do not include domain information, so a domain name must be provided. If using a reference database from UNITE, provide a kingdom name here (*e.g.*, `'Fungi'`). The default is `'Eukaryota'`.
+#' @param path_to_taxonomy_edits String specifying path to taxonomy edits file in CSV format. The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon. If no taxonomy edits are desired, then set this variable to `NA` (the default).
 #' @examples
 #' # Get path to example taxonomy CSV file.
 #' path_to_taxonomy_file<-system.file("extdata",

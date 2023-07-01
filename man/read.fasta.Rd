@@ -7,13 +7,13 @@
 read.fasta(file)
 }
 \arguments{
-\item{file}{A string specifying the path to a FASTA file (with '.fasta' extension) to read.}
+\item{file}{A string specifying the path to a FASTA file to read.}
 }
 \value{
 A data frame with fields for sequence names and sequences.
 }
 \description{
-Reads FASTA files.
+Reads FASTA files. Supports the reading of FASTA files with sequences wrapping multiple lines.
 }
 \examples{
 # Get path to example FASTA file.

@@ -3,9 +3,9 @@
 #' Gets the version of a BLAST program.
 #' @param blast_command String specifying the path to a BLAST program. The default (`'blastn'`) should return the version of the blastn program for standard BLAST installations. The user can provide a path to a BLAST program for non-standard BLAST installations.
 #' @returns Returns a string of the version of the BLAST program.
-#' @export
 #' @examples
 #' blast_version()
+#' @export
 blast_version<-function(blast_command="blastn"){
   
   # Run code even if it throws errors or warnings.

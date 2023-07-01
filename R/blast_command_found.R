@@ -3,9 +3,9 @@
 #' Checks whether a BLAST program can be found.
 #' @param blast_command String specifying the path to a BLAST program.
 #' @returns Logical. Returns `TRUE` if the BLAST program could be found.
-#' @export
 #' @examples
 #' blast_command_found(blast_command="blastn")
+#' @export
 blast_command_found<-function(blast_command){
   
   # Throw an error if the blast_command argument is missing.
