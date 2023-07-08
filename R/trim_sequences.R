@@ -1,21 +1,23 @@
 #' Trim Target Nucleotide Sequence from DNA Sequences
 #'
 #' @description Trims a target nucleotide sequence from the front or back of DNA sequences. Ambiguous nucleotides in the target nucleotide sequence are supported.
-#' @details For each DNA sequence, the target nucleotide sequence is searched for at either the front or back of the DNA sequence, depending on the value of the anchor argument. If the target nucleotide sequence is found, then it is removed from the DNA sequence. If the required argument is set to `TRUE`, then DNA sequences in which the target nucleotide sequence was not found will be returned as `NA`s. If the required argument is set to `FALSE`, then untrimmed DNA sequences will be returned along with DNA sequences for which trimming was successful. Ambiguous nucleotides in the target nucleotide sequence are supported through the internal use of the `substitute_wildcards` function on the target nucleotide sequence, and a regular expression with a leading or ending anchor is used to search for the target nucleotide sequence in the DNA sequences. Trimming will fail for DNA sequences which contain ambiguous nucleotides (*e.g.*, Ns) in their target nucleotide sequence region, resulting in `NA`s for those sequences if the required argument is set to `TRUE`.
+#' @details For each DNA sequence, the target nucleotide sequence is searched for at either the front or back of the DNA sequence, depending on the value of the anchor argument. If the target nucleotide sequence is found, then it is removed from the DNA sequence. If the required argument is set to `TRUE`, then DNA sequences in which the target nucleotide sequence was not found will be returned as `NA`s. If the required argument is set to `FALSE`, then untrimmed DNA sequences will be returned along with DNA sequences for which trimming was successful. Ambiguous nucleotides in the target nucleotide sequence are supported through the internal use of the `substitute_wildcards` function on the target nucleotide sequence, and a regular expression with a leading or ending anchor is used to search for the target nucleotide sequence in the DNA sequences. If the fixed argument is set to `FALSE`, then any number of characters are allowed between the start or end of the DNA sequences and the target nucleotide sequence. Trimming will fail for DNA sequences which contain ambiguous nucleotides (*e.g.*, Ns) in their target nucleotide sequence region, resulting in `NA`s for those sequences if the required argument is set to `TRUE`.
 #' @param sequences A character vector of DNA sequences to trim.
 #' @param target A string specifying the target nucleotide sequence.
 #' @param anchor A string specifying whether the target nucleotide sequence should be trimmed from the start or end of the DNA sequences. Allowable values are "start" (the default) and "end".
+#' @param fixed A logical value specifying whether the position of the target nucleotide sequence should be fixed at the ends of the DNA sequences. If `TRUE` (the default), then the position of the target nucleotide sequence is fixed at either the start or end of the DNA sequences, depending on the value of the anchor argument. If `FALSE`, then the target nucleotide sequence is searched for anywhere in the DNA sequences.
 #' @param required A logical value specifying whether trimming is required. If `TRUE` (the default), then sequences which could not be trimmed are returned as `NA`s. If `FALSE`, then untrimmed sequences are returned along with DNA sequences for which trimming was successful.
 #' @param quality_scores An optional character vector of DNA sequence quality scores. If supplied, these will be trimmed to their corresponding trimmed DNA sequences.
 #' @returns If quality scores are not provided, then a character vector of trimmed DNA sequences is returned. If quality scores are provided, then a list containing two elements is returned. The first element is a character vector of trimmed DNA sequences, and the second element is a character vector of quality scores which have been trimmed to their corresponding trimmed DNA sequences.
 #' @examples
-#' trim_sequences(sequences=c("ATATAGCGCG","TGCCGATATA","ATCTATCACCGC"),
+#' trim_sequences(sequences=c("ATATAGCGCG","TGCATATACG","ATCTATCACCGC"),
 #'                target="ATMTA",
 #'                anchor="start",
+#'                fixed=TRUE,
 #'                required=TRUE,
 #'                quality_scores=c("989!.C;F@\"","A((#-#;,2F","HD8I/+67=1>?"))
 #' @export
-trim_sequences<-function(sequences,target,anchor="start",required=TRUE,quality_scores){
+trim_sequences<-function(sequences,target,anchor="start",fixed=TRUE,required=TRUE,quality_scores){
   
   # Create a vector of supported nucleotides.
   supported_nucleotides<-c("A","T","G","C","R","Y","S","W","K","M","B","D","H","V","N")
@@ -54,6 +56,13 @@ trim_sequences<-function(sequences,target,anchor="start",required=TRUE,quality_s
   # Throw an error if required is not TRUE or FALSE (e.g., NA).
   if(!(required %in% c(TRUE,FALSE))) stop("Required must be TRUE or FALSE.")
   
+  # Throw an error if fixed is not a logical string.
+  if(!is.logical(fixed)) stop("Fixed must be a logical value.")
+  # Throw an error if the length of fixed is not one.
+  if(length(fixed)!=1) stop("Fixed must be a logical value of length 1.")
+  # Throw an error if fixed is not TRUE or FALSE (e.g., NA).
+  if(!(fixed %in% c(TRUE,FALSE))) stop("Fixed must be TRUE or FALSE.")
+  
   # If a vector of quality scores is provided.
   if(!missing(quality_scores)){
     # Throw an error if the quality scores are not a character vector.
@@ -71,9 +80,19 @@ trim_sequences<-function(sequences,target,anchor="start",required=TRUE,quality_s
   
   # If the anchor is at the start.
   if(anchor=="start"){
+    # If the position is not fixed at the start.
+    if(!fixed){
+      # Allow for any number of wildcard characters preceding the target.
+      target<-paste0(".*",target)
+    }
     # Anchor the target in front.
     target<-paste0("^",target)
-  } else {
+  } else { # If the anchor is at the end.
+    # If the position is not fixed at the end.
+    if(!fixed){
+      # Allow for any number of wildcard characters following the target.
+      target<-paste0(target,".*")
+    }
     # Anchor the target in back.
     target<-paste0(target,"$")
   }
@@ -105,7 +124,6 @@ trim_sequences<-function(sequences,target,anchor="start",required=TRUE,quality_s
       start_positions<-original_lengths-trimmed_lengths+1  
       # Trim the quality scores to the trimmed sequences.
       trimmed_scores<-substr(x=quality_scores,start=start_positions,stop=original_lengths)
-      
     } else { # If the anchor is at the end of the sequence.
       # Trim the quality scores to the trimmed sequences.
       trimmed_scores<-substr(x=quality_scores,start=1,stop=trimmed_lengths)
