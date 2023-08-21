@@ -13,7 +13,7 @@ reverse_complement(sequence)
 A string of the reverse complement of the DNA sequence.
 }
 \description{
-Gets the reverse complement of a DNA Sequence. Ambiguous nucleotides are supported.
+Gets the reverse complement of a DNA sequence. Ambiguous nucleotides are supported.
 }
 \examples{
 reverse_complement(sequence="TTCTCCASCCGCGGATHTTG")
