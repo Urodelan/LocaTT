@@ -15,8 +15,14 @@ merge_pairs<-function(forward_reads,reverse_reads,minimum_overlap=10){
   # Throw an error if the forward reads are not a character vector.
   if(!is.character(forward_reads)) stop("The forward reads must be a character vector.")
   
+  # Throw an error if the forward reads contain NAs.
+  if(any(is.na(forward_reads))) stop("The forward reads cannot contain NAs.")
+  
   # Throw an error if the reverse reads are not a character vector.
   if(!is.character(reverse_reads)) stop("The reverse reads must be a character vector.")
+  
+  # Throw an error if the reverse reads contain NAs.
+  if(any(is.na(reverse_reads))) stop("The reverse reads cannot contain NAs.")
   
   # Throw an error if the forward and reverse read vectors are not the same length.
   if(length(forward_reads)!=length(reverse_reads)) stop("The forward and reverse read vectors must be the same length.")
