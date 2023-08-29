@@ -20,6 +20,12 @@ isolate_amplicon<-function(sequences,forward_primer,reverse_primer){
   # Throw an error if the sequences are not a character vector.
   if(!is.character(sequences)) stop("The sequences must be a character vector.")
   
+  # Throw an error if there are NAs in the sequences vector.
+  if(any(is.na(sequences))) stop("There are NAs in the sequences vector.")
+  
+  # Remove sequence names, if present.
+  sequences<-unname(sequences)
+  
   # Throw an error if the forward primer is not a character string.
   if(!is.character(forward_primer)) stop("The forward primer must be a character string.")
   # Throw an error if the length of the forward primer character string is not one.

@@ -15,6 +15,9 @@ truncate_sequences.length<-function(sequences,length,quality_scores){
   # Throw an error if the sequences are not a character vector.
   if(!is.character(sequences)) stop("The sequences must be a character vector.")
   
+  # Throw an error if there are NAs in the sequences vector.
+  if(any(is.na(sequences))) stop("There are NAs in the sequences vector.")
+  
   # Remove sequence names, if present.
   sequences<-unname(sequences)
   
@@ -34,6 +37,8 @@ truncate_sequences.length<-function(sequences,length,quality_scores){
   if(!missing(quality_scores)){
     # Throw an error if the quality scores are not a character vector.
     if(!is.character(quality_scores)) stop("The quality scores must be a character vector.")
+    # Throw an error if there are NAs in the quality scores vector.
+    if(any(is.na(quality_scores))) stop("There are NAs in the quality scores vector.")
     # Remove quality score names, if present.
     quality_scores<-unname(quality_scores)
     # Throw an error if the sequence and quality scores vectors are not the same length.

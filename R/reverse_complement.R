@@ -15,8 +15,17 @@ reverse_complement<-function(sequence){
   if(!is.character(sequence)) stop("The sequence must be a character string.")
   # Throw an error if the length of the sequence character string is not one.
   if(length(sequence)!=1) stop("The sequence must be a character string of length 1.")
-  # If the sequence is not a blank character string.
-  if(sequence!=""){
+  # If the sequence is a special case (i.e., NA or blank character string).
+  if(is.na(sequence) | sequence==""){
+    # If the sequence is NA.
+    if(is.na(sequence)){
+      # Set the reverse complement to be NA.
+      r_cmp<-NA
+    } else { # If the sequence is a blank character string.
+      # Set the reverse complement to be a blank character string.
+      r_cmp<-""
+    }
+  } else { # If the sequence is not a special case.
     # Split the sequence into individual nucleotides.
     tmp<-strsplit(x=sequence,split="")[[1]]
     # If any nucleotides in the sequence are not supported.
@@ -32,9 +41,6 @@ reverse_complement<-function(sequence){
     r_cmp<-complements$Complement[match(tmp,complements$Nucleotide)]
     # Collapse the individual nucleotides into a sequence.
     r_cmp<-paste(r_cmp,collapse="")
-  } else { # If the sequence is a blank character string.
-    # Set the reverse complement to be a blank character string.
-    r_cmp<-""
   }
   # Return the reverse complement.
   return(r_cmp)
