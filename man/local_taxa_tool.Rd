@@ -9,6 +9,7 @@ local_taxa_tool(
   path_to_BLAST_database,
   path_to_output_file,
   path_to_list_of_local_taxa = NA,
+  include_missing = FALSE,
   blast_e_value = 1e-05,
   blast_max_target_seqs = 2000,
   blast_task = "megablast",
@@ -26,6 +27,8 @@ local_taxa_tool(
 \item{path_to_output_file}{String specifying path to output file of classified sequences in CSV format.}
 
 \item{path_to_list_of_local_taxa}{String specifying path to list of local species in CSV format. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. There should be no duplicate species (\emph{i.e.}, multiple records with the same species binomial and taxonomy) in the local species list. If local taxa suggestions are not desired, set this variable to \code{NA} (the default).}
+
+\item{include_missing}{Logical. If \code{TRUE}, then additional fields are included in the output CSV file in which local sister taxonomic groups without reference sequences are added to the local taxa suggestions. If \code{FALSE} (the default), then this is not performed.}
 
 \item{blast_e_value}{Numeric. Maximum E-value of returned BLAST hits (lower E-values are associated with more 'significant' matches). The default is \code{1e-05}.}
 
@@ -45,7 +48,7 @@ local_taxa_tool(
 Performs taxonomic assignment of DNA metabarcoding sequences while considering geographic location.
 }
 \details{
-Sequences are BLASTed against a global reference database, and the tool suggests locally occurring species which are most closely related (by taxonomy) to any of the best-matching BLAST hits (by bit score). If a local taxa list is not provided, then local taxa suggestions will be disabled, but all best-matching BLAST hits will still be returned. Alternatively, a reference database containing just the sequences of local species can be used, and local taxa suggestions can be disabled to return all best BLAST matches of local species. The reference database should be formatted with the \code{format_reference_database} function, and the local taxa lists can be prepared using the \code{get_taxonomies.species_binomials} and \code{get_taxonomies.IUCN} functions. Output field definitions are:
+Sequences are BLASTed against a global reference database, and the tool suggests locally occurring species which are most closely related (by taxonomy) to any of the best-matching BLAST hits (by bit score). Optionally, local sister taxonomic groups without reference sequences can be added to the local taxa suggestions by setting the include_missing argument to \code{TRUE}. If a local taxa list is not provided, then local taxa suggestions will be disabled, but all best-matching BLAST hits will still be returned. Alternatively, a reference database containing just the sequences of local species can be used, and local taxa suggestions can be disabled to return all best BLAST matches of local species. The reference database should be formatted with the \code{format_reference_database} function, and the local taxa lists can be prepared using the \code{get_taxonomies.species_binomials} and \code{get_taxonomies.IUCN} functions. Output field definitions are:
 \itemize{
 \item Sequence_name: The query sequence name.
 \item Sequence: The query sequence.
@@ -58,6 +61,8 @@ Sequences are BLASTed against a global reference database, and the tool suggests
 \item Best_match_PID.SD: The standard deviation of percent identity of all best-matching BLAST hits.
 \item Local_taxa (Field only present if a path to a local taxa list is provided): The finest taxonomic unit(s) which include both any species of the best-matching BLAST hits and any local species. If the species of any of the best-matching BLAST hits are local, then the finest taxonomic unit(s) are at the species level.
 \item Local_species (Field only present if a path to a local taxa list is provided): Species binomials of all local species which belong to the taxonomic unit(s) in the Local_taxa field.
+\item Local_taxa.include_missing (Field only present if both a path to a local taxa list is provided and the include_missing argument is set to \code{TRUE}): Local sister taxonomic groups without reference sequences are added to the local taxa suggestions from the Local_taxa field.
+\item Local_species.include_missing (Field only present if both a path to a local taxa list is provided and include_missing argument is set to \code{TRUE}): Species binomials of all local species which belong to the taxonomic unit(s) in the Local_taxa.include_missing field.
 }
 }
 \examples{
@@ -88,6 +93,7 @@ local_taxa_tool(path_to_sequences_to_classify=path_to_query_sequences,
                 path_to_BLAST_database=path_to_reference_database,
                 path_to_output_file=path_to_output_CSV_file,
                 path_to_list_of_local_taxa=path_to_local_taxa_list,
+                include_missing=TRUE,
                 full_names=TRUE,
                 underscores=TRUE)
 \dontshow{\}) # examplesIf}
