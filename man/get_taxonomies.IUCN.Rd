@@ -24,7 +24,7 @@ get_taxonomies.IUCN(
 \item{path_to_taxonomy_edits}{String specifying path to taxonomy edits file in CSV format. The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon. If no taxonomy edits are desired, then set this variable to \code{NA} (the default).}
 }
 \description{
-Formats taxonomies from IUCN Red List taxonomy.csv and common_names.csv files for use with the \code{local_taxa_tool} function.
+Formats taxonomies from IUCN Red List taxonomy.csv and common_names.csv files for use with the \code{\link[=local_taxa_tool]{local_taxa_tool}} function.
 }
 \examples{
 # Get path to example taxonomy CSV file.
@@ -46,4 +46,7 @@ path_to_output_file<-tempfile(fileext=".csv")
 get_taxonomies.IUCN(path_to_IUCN_taxonomies=path_to_taxonomy_file,
                     path_to_IUCN_common_names=path_to_common_names_file,
                     path_to_output_local_taxa_list=path_to_output_file)
+}
+\seealso{
+\code{\link[=get_taxonomies.species_binomials]{get_taxonomies.species_binomials}} for remotely fetching NCBI taxonomies from species binomials.
 }

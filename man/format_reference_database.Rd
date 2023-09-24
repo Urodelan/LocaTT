@@ -30,7 +30,7 @@ format_reference_database(
 \item{makeblastdb_command}{String specifying path to the makeblastdb program, which is a part of BLAST. The default (\code{'makeblastdb'}) should work for standard BLAST installations. The user can provide a path to the makeblastdb program for non-standard BLAST installations.}
 }
 \description{
-Formats reference databases from MIDORI or UNITE for use with the \code{local_taxa_tool} function.
+Formats reference databases from MIDORI or UNITE for use with the \code{\link[=local_taxa_tool]{local_taxa_tool}} function.
 }
 \examples{
 \dontshow{if (blast_command_found(blast_command="makeblastdb")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

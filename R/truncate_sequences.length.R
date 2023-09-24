@@ -5,6 +5,9 @@
 #' @param length Numeric. The length to truncate DNA sequences to.
 #' @param quality_scores An optional character vector of DNA sequence quality scores. If supplied, these will be truncated to their corresponding truncated DNA sequences.
 #' @returns If quality scores are not provided, then a character vector of truncated DNA sequences is returned. If quality scores are provided, then a list containing two elements is returned. The first element is a character vector of truncated DNA sequences, and the second element is a character vector of quality scores which have been truncated to their corresponding truncated DNA sequences.
+#' @seealso
+#' [`truncate_sequences.quality_score`][truncate_sequences.quality_score()] for truncating DNA sequences by Phred quality score. \cr
+#' [`truncate_sequences.probability`][truncate_sequences.probability()] for truncating DNA sequences by cumulative probability that all bases were called correctly.
 #' @examples
 #' truncate_sequences.length(sequences=c("ATATAGCGCG","TGCCGATATA","ATCTATCACCGC"),
 #'                           length=5,

@@ -5,6 +5,9 @@
 #' @param quality_scores A character vector of DNA sequence quality scores encoded in Sanger format.
 #' @param threshold Numeric. The Phred quality score threshold used for truncation. The default is `3` (*i.e.*, each base in a trimmed sequence has a greater than 50% probability of having been called correctly).
 #' @returns A list containing two elements. The first element is a character vector of truncated DNA sequences, and the second element is a character vector of quality scores which have been truncated to their corresponding truncated DNA sequences.
+#' @seealso
+#' [`truncate_sequences.length`][truncate_sequences.length()] for truncating DNA sequences to a specified length. \cr
+#' [`truncate_sequences.probability`][truncate_sequences.probability()] for truncating DNA sequences by cumulative probability that all bases were called correctly.
 #' @examples
 #' truncate_sequences.quality_score(sequences=c("ATATAGCGCG","TGCCGATATA","ATCTATCACCGC"),
 #'                                  quality_scores=c("989!.C;F@\"","A((#-#;,2F","HD8I/+67=1>?"),

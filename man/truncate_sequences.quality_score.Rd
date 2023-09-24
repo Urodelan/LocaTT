@@ -24,3 +24,7 @@ truncate_sequences.quality_score(sequences=c("ATATAGCGCG","TGCCGATATA","ATCTATCA
                                  quality_scores=c("989!.C;F@\"","A((#-#;,2F","HD8I/+67=1>?"),
                                  threshold=3)
 }
+\seealso{
+\code{\link[=truncate_sequences.length]{truncate_sequences.length}} for truncating DNA sequences to a specified length. \cr
+\code{\link[=truncate_sequences.probability]{truncate_sequences.probability}} for truncating DNA sequences by cumulative probability that all bases were called correctly.
+}

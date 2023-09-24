@@ -1,7 +1,7 @@
 #' Merge Forward and Reverse DNA Sequence Reads
 #'
 #' @description Merges forward and reverse DNA sequence reads.
-#' @details For each pair of forward and reverse DNA sequence reads, the reverse complement of the reverse read is internally derived using the `reverse_complement` function, and the read pair is merged into a single sequence if an overlap of at least the minimum length is found between the end of the forward read and the start of the reverse complement of the reverse read. If an overlap of the minimum length is not found, then an `NA` is returned for the merged read pair.
+#' @details For each pair of forward and reverse DNA sequence reads, the reverse complement of the reverse read is internally derived using the [`reverse_complement`][reverse_complement()] function, and the read pair is merged into a single sequence if an overlap of at least the minimum length is found between the end of the forward read and the start of the reverse complement of the reverse read. If an overlap of the minimum length is not found, then an `NA` is returned for the merged read pair.
 #' @param forward_reads A character vector of forward DNA sequence reads.
 #' @param reverse_reads A character vector of reverse DNA sequence reads.
 #' @param minimum_overlap Numeric. The minimum length of an overlap that must be found between the end of the forward read and the start of the reverse complement of the reverse read in order for a read pair to be merged. The default is `10`.

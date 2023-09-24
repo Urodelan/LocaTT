@@ -24,3 +24,7 @@ truncate_sequences.probability(sequences=c("ATATAGCGCG","TGCCGATATA","ATCTATCACC
                                quality_scores=c("989!.C;F@\"","A((#-#;,2F","HD8I/+67=1>?"),
                                threshold=0.5)
 }
+\seealso{
+\code{\link[=truncate_sequences.length]{truncate_sequences.length}} for truncating DNA sequences to a specified length. \cr
+\code{\link[=truncate_sequences.quality_score]{truncate_sequences.quality_score}} for truncating DNA sequences by Phred quality score.
+}

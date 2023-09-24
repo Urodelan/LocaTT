@@ -34,3 +34,8 @@ write.fasta(names=df$Name,
             sequences=df$Sequence,
             file=path_to_FASTA_file)
 }
+\seealso{
+\code{\link[=read.fasta]{read.fasta}} for reading FASTA files. \cr
+\code{\link[=write.fastq]{write.fastq}} for writing FASTQ files. \cr
+\code{\link[=read.fastq]{read.fastq}} for reading FASTQ files.
+}

@@ -1,6 +1,6 @@
 #' Format Reference Databases
 #'
-#' Formats reference databases from MIDORI or UNITE for use with the `local_taxa_tool` function.
+#' Formats reference databases from MIDORI or UNITE for use with the [`local_taxa_tool`][local_taxa_tool()] function.
 #' @param path_to_input_reference_database String specifying path to input reference database in FASTA format.
 #' @param path_to_output_BLAST_database String specifying path to output BLAST database in FASTA format. File path cannot contain spaces.
 #' @param input_reference_database_source String specifying input reference database source (`'MIDORI'` or `'UNITE'`). The default is `'MIDORI'`.

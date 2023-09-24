@@ -3,6 +3,10 @@
 #' Reads FASTQ files. Does not support the reading of FASTQ files with sequences or quality scores wrapping multiple lines.
 #' @param file A string specifying the path to a FASTQ file to read.
 #' @returns A data frame with fields for sequence names, sequences, comments, and quality scores.
+#' @seealso
+#' [`write.fastq`][write.fastq()] for writing FASTQ files. \cr
+#' [`read.fasta`][read.fasta()] for reading FASTA files. \cr
+#' [`write.fasta`][write.fasta()] for writing FASTA files.
 #' @examples
 #' # Get path to example FASTQ file.
 #' path_to_fastq_file<-system.file("extdata",

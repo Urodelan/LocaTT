@@ -1,7 +1,7 @@
 #' Binomial Test
 #'
 #' @description Performs binomial tests.
-#' @details Calls on the `pbinom` function in the stats package to perform vectorized binomial tests. Arguments are recycled as in `pbinom`. Only one-sided tests are supported, and only p-values are returned.
+#' @details Calls on the [`pbinom`][stats::pbinom()] function in the [stats][stats::stats] package to perform vectorized binomial tests. Arguments are recycled as in [`pbinom`][stats::pbinom()]. Only one-sided tests are supported, and only p-values are returned.
 #' @param k A numeric vector of the number of successes.
 #' @param n A numeric vector of the number of trials.
 #' @param p A numeric vector of the hypothesized probabilities of success.

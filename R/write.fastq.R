@@ -6,6 +6,10 @@
 #' @param quality_scores A character vector of quality scores.
 #' @param file A string specifying the path to a FASTQ file to write.
 #' @param comments An optional character vector of sequence comments.
+#' @seealso
+#' [`read.fastq`][read.fastq()] for reading FASTQ files. \cr
+#' [`write.fasta`][write.fasta()] for writing FASTA files. \cr
+#' [`read.fasta`][read.fasta()] for reading FASTA files.
 #' @examples
 #' # Get path to example sequences CSV file.
 #' path_to_CSV_file<-system.file("extdata",

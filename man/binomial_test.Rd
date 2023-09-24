@@ -22,7 +22,7 @@ A numeric vector of p-values from the binomial tests.
 Performs binomial tests.
 }
 \details{
-Calls on the \code{pbinom} function in the stats package to perform vectorized binomial tests. Arguments are recycled as in \code{pbinom}. Only one-sided tests are supported, and only p-values are returned.
+Calls on the \code{\link[stats:Binomial]{pbinom}} function in the \link[stats:stats-package]{stats} package to perform vectorized binomial tests. Arguments are recycled as in \code{\link[stats:Binomial]{pbinom}}. Only one-sided tests are supported, and only p-values are returned.
 }
 \examples{
 binomial_test(k=c(5,1,7,4),

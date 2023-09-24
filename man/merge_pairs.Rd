@@ -20,7 +20,7 @@ A character vector of merged DNA sequence read pairs. \code{NA}s are returned fo
 Merges forward and reverse DNA sequence reads.
 }
 \details{
-For each pair of forward and reverse DNA sequence reads, the reverse complement of the reverse read is internally derived using the \code{reverse_complement} function, and the read pair is merged into a single sequence if an overlap of at least the minimum length is found between the end of the forward read and the start of the reverse complement of the reverse read. If an overlap of the minimum length is not found, then an \code{NA} is returned for the merged read pair.
+For each pair of forward and reverse DNA sequence reads, the reverse complement of the reverse read is internally derived using the \code{\link[=reverse_complement]{reverse_complement}} function, and the read pair is merged into a single sequence if an overlap of at least the minimum length is found between the end of the forward read and the start of the reverse complement of the reverse read. If an overlap of the minimum length is not found, then an \code{NA} is returned for the merged read pair.
 }
 \examples{
 merge_pairs(forward_reads=c("CCTTACGAATCCTGT","TTCTCCACCCGCGGATA","CGCCCGGAGTCCCTGTAGTA"),

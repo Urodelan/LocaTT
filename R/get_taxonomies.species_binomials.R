@@ -5,6 +5,8 @@
 #' @param path_to_output_local_taxa_list String specifying path to output species list with added NCBI taxonomies. The output file will be in CSV format.
 #' @param path_to_taxonomy_edits String specifying path to taxonomy edits file in CSV format. The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon. If no taxonomy edits are desired, then set this variable to `NA` (the default).
 #' @param print_taxize_queries Logical. Whether taxa queries should be printed. The default is `TRUE`.
+#' @seealso
+#' [`get_taxonomies.IUCN`][get_taxonomies.IUCN()] for formatting taxonomies from the IUCN Red List.
 #' @examplesIf interactive()
 #' # Get path to example input species binomials CSV file.
 #' path_to_input_file<-system.file("extdata",

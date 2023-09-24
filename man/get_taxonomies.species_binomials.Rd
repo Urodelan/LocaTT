@@ -40,3 +40,6 @@ get_taxonomies.species_binomials(path_to_input_species_binomials=path_to_input_f
                                  print_taxize_queries=FALSE)
 \dontshow{\}) # examplesIf}
 }
+\seealso{
+\code{\link[=get_taxonomies.IUCN]{get_taxonomies.IUCN}} for formatting taxonomies from the IUCN Red List.
+}

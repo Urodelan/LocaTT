@@ -1,6 +1,6 @@
 Package: LocaTT
 Title: Geographically-Conscious Taxonomic Assignment for Metabarcoding
-Version: 1.0.30
+Version: 1.0.31
 Authors@R: c(
     person("Kenen", "Goodwin", email="urodelan@gmail.com", role=c("aut","cre"),
            comment=c(ORCID="0000-0002-9219-7693")),
