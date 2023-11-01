@@ -17,6 +17,9 @@ write.fastq(names, sequences, quality_scores, file, comments)
 
 \item{comments}{An optional character vector of sequence comments.}
 }
+\value{
+No return value. Writes a FASTQ file.
+}
 \description{
 Writes FASTQ files.
 }

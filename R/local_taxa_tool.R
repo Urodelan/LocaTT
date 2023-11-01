@@ -27,6 +27,8 @@
 #' @param underscores Logical. If `TRUE`, then taxa names in the output CSV file use underscores instead of spaces. If `FALSE` (the default), then taxa names in the output CSV file use spaces.
 #' @param separator String specifying the separator to use between taxa names in the output CSV file. The default is `', '`.
 #' @param blastn_command String specifying path to the blastn program. The default (`'blastn'`) should work for standard BLAST installations. The user can provide a path to the blastn program for non-standard BLAST installations.
+#' @returns No return value. Writes an output CSV file with fields defined in the details section.
+#' @references A manuscript describing this taxonomic assignment method is in preparation.
 #' @examplesIf blast_command_found(blast_command="blastn")
 #' # Get path to example query sequences FASTA file.
 #' path_to_query_sequences<-system.file("extdata",

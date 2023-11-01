@@ -13,6 +13,9 @@ write.fasta(names, sequences, file)
 
 \item{file}{A string specifying the path to a FASTA file to write.}
 }
+\value{
+No return value. Writes a FASTA file.
+}
 \description{
 Writes FASTA files.
 }

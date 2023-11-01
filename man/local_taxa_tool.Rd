@@ -44,6 +44,9 @@ local_taxa_tool(
 
 \item{blastn_command}{String specifying path to the blastn program. The default (\code{'blastn'}) should work for standard BLAST installations. The user can provide a path to the blastn program for non-standard BLAST installations.}
 }
+\value{
+No return value. Writes an output CSV file with fields defined in the details section.
+}
 \description{
 Performs taxonomic assignment of DNA metabarcoding sequences while considering geographic location.
 }
@@ -97,4 +100,7 @@ local_taxa_tool(path_to_sequences_to_classify=path_to_query_sequences,
                 full_names=TRUE,
                 underscores=TRUE)
 \dontshow{\}) # examplesIf}
+}
+\references{
+A manuscript describing this taxonomic assignment method is in preparation.
 }

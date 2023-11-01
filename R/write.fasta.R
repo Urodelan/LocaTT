@@ -4,6 +4,7 @@
 #' @param names A character vector of sequence names.
 #' @param sequences A character vector of sequences.
 #' @param file A string specifying the path to a FASTA file to write.
+#' @returns No return value. Writes a FASTA file.
 #' @seealso
 #' [`read.fasta`][read.fasta()] for reading FASTA files. \cr
 #' [`write.fastq`][write.fastq()] for writing FASTQ files. \cr

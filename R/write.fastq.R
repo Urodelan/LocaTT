@@ -6,6 +6,7 @@
 #' @param quality_scores A character vector of quality scores.
 #' @param file A string specifying the path to a FASTQ file to write.
 #' @param comments An optional character vector of sequence comments.
+#' @returns No return value. Writes a FASTQ file.
 #' @seealso
 #' [`read.fastq`][read.fastq()] for reading FASTQ files. \cr
 #' [`write.fasta`][write.fasta()] for writing FASTA files. \cr

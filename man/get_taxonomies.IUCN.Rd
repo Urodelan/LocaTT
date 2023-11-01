@@ -23,6 +23,9 @@ get_taxonomies.IUCN(
 
 \item{path_to_taxonomy_edits}{String specifying path to taxonomy edits file in CSV format. The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon. If no taxonomy edits are desired, then set this variable to \code{NA} (the default).}
 }
+\value{
+No return value. Writes an output CSV file with formatted taxonomies.
+}
 \description{
 Formats taxonomies from IUCN Red List taxonomy.csv and common_names.csv files for use with the \code{\link[=local_taxa_tool]{local_taxa_tool}} function.
 }

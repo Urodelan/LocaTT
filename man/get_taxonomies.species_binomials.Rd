@@ -20,6 +20,9 @@ get_taxonomies.species_binomials(
 
 \item{print_taxize_queries}{Logical. Whether taxa queries should be printed. The default is \code{TRUE}.}
 }
+\value{
+No return value. Writes an output CSV file with added taxonomies.
+}
 \description{
 Remotely fetches taxonomies from the NCBI taxonomy database for a list of species binomials.
 }
