@@ -3,11 +3,12 @@
 #' @description Calculates the cumulative probability that all bases were called correctly along each DNA sequence and truncates the DNA sequence immediately prior to the first occurrence of a probability being equal to or less than a specified value.
 #' @param sequences A character vector of DNA sequences to truncate.
 #' @param quality_scores A character vector of DNA sequence quality scores encoded in Sanger format.
-#' @param threshold Numeric. The probability threshold used for truncation. The default is `0.5` (*i.e.*, each trimmed sequence has a greater than 50% probability that all bases were called correctly).
+#' @param threshold Numeric. The probability threshold used for truncation. The default is `0.5` (*i.e.*, each truncated sequence has a greater than 50% probability that all bases were called correctly).
 #' @returns A list containing two elements. The first element is a character vector of truncated DNA sequences, and the second element is a character vector of quality scores which have been truncated to their corresponding truncated DNA sequences.
 #' @seealso
-#' [`truncate_sequences.length`][truncate_sequences.length()] for truncating DNA sequences to a specified length. \cr
-#' [`truncate_sequences.quality_score`][truncate_sequences.quality_score()] for truncating DNA sequences by Phred quality score.
+#' [`truncate_sequences.length`][truncate_sequences.length()] for truncating DNA sequences to a specified length. \cr \cr
+#' [`truncate_sequences.quality_score`][truncate_sequences.quality_score()] for truncating DNA sequences by Phred quality score. \cr \cr
+#' [`truncate_and_merge_pairs`][truncate_and_merge_pairs()] for truncating and merging forward and reverse DNA sequence reads.
 #' @examples
 #' truncate_sequences.probability(sequences=c("ATATAGCGCG","TGCCGATATA","ATCTATCACCGC"),
 #'                                quality_scores=c("989!.C;F@\"","A((#-#;,2F","HD8I/+67=1>?"),

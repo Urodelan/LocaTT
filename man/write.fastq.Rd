@@ -44,7 +44,7 @@ write.fastq(names=df$Name,
             comments=df$Comment)
 }
 \seealso{
-\code{\link[=read.fastq]{read.fastq}} for reading FASTQ files. \cr
-\code{\link[=write.fasta]{write.fasta}} for writing FASTA files. \cr
+\code{\link[=read.fastq]{read.fastq}} for reading FASTQ files. \cr \cr
+\code{\link[=write.fasta]{write.fasta}} for writing FASTA files. \cr \cr
 \code{\link[=read.fasta]{read.fasta}} for reading FASTA files.
 }

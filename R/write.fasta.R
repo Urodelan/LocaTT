@@ -6,8 +6,8 @@
 #' @param file A string specifying the path to a FASTA file to write.
 #' @returns No return value. Writes a FASTA file.
 #' @seealso
-#' [`read.fasta`][read.fasta()] for reading FASTA files. \cr
-#' [`write.fastq`][write.fastq()] for writing FASTQ files. \cr
+#' [`read.fasta`][read.fasta()] for reading FASTA files. \cr \cr
+#' [`write.fastq`][write.fastq()] for writing FASTQ files. \cr \cr
 #' [`read.fastq`][read.fastq()] for reading FASTQ files.
 #' @examples
 #' # Get path to example sequences CSV file.

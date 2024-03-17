@@ -8,8 +8,8 @@
 #' @param comments An optional character vector of sequence comments.
 #' @returns No return value. Writes a FASTQ file.
 #' @seealso
-#' [`read.fastq`][read.fastq()] for reading FASTQ files. \cr
-#' [`write.fasta`][write.fasta()] for writing FASTA files. \cr
+#' [`read.fastq`][read.fastq()] for reading FASTQ files. \cr \cr
+#' [`write.fasta`][write.fasta()] for writing FASTA files. \cr \cr
 #' [`read.fasta`][read.fasta()] for reading FASTA files.
 #' @examples
 #' # Get path to example sequences CSV file.

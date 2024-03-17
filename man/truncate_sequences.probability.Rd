@@ -11,7 +11,7 @@ truncate_sequences.probability(sequences, quality_scores, threshold = 0.5)
 
 \item{quality_scores}{A character vector of DNA sequence quality scores encoded in Sanger format.}
 
-\item{threshold}{Numeric. The probability threshold used for truncation. The default is \code{0.5} (\emph{i.e.}, each trimmed sequence has a greater than 50\% probability that all bases were called correctly).}
+\item{threshold}{Numeric. The probability threshold used for truncation. The default is \code{0.5} (\emph{i.e.}, each truncated sequence has a greater than 50\% probability that all bases were called correctly).}
 }
 \value{
 A list containing two elements. The first element is a character vector of truncated DNA sequences, and the second element is a character vector of quality scores which have been truncated to their corresponding truncated DNA sequences.
@@ -25,6 +25,7 @@ truncate_sequences.probability(sequences=c("ATATAGCGCG","TGCCGATATA","ATCTATCACC
                                threshold=0.5)
 }
 \seealso{
-\code{\link[=truncate_sequences.length]{truncate_sequences.length}} for truncating DNA sequences to a specified length. \cr
-\code{\link[=truncate_sequences.quality_score]{truncate_sequences.quality_score}} for truncating DNA sequences by Phred quality score.
+\code{\link[=truncate_sequences.length]{truncate_sequences.length}} for truncating DNA sequences to a specified length. \cr \cr
+\code{\link[=truncate_sequences.quality_score]{truncate_sequences.quality_score}} for truncating DNA sequences by Phred quality score. \cr \cr
+\code{\link[=truncate_and_merge_pairs]{truncate_and_merge_pairs}} for truncating and merging forward and reverse DNA sequence reads.
 }

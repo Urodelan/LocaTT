@@ -6,6 +6,8 @@
 #' @param reverse_reads A character vector of reverse DNA sequence reads.
 #' @param minimum_overlap Numeric. The minimum length of an overlap that must be found between the end of the forward read and the start of the reverse complement of the reverse read in order for a read pair to be merged. The default is `10`.
 #' @returns A character vector of merged DNA sequence read pairs. `NA`s are returned for read pairs which could not be merged, which occurs when an overlap of at least the minimum length is not found between the end of the forward read and the start of the reverse complement of the reverse read.
+#' @seealso
+#' [`truncate_and_merge_pairs`][truncate_and_merge_pairs()] for truncating and merging forward and reverse DNA sequence reads.
 #' @examples
 #' merge_pairs(forward_reads=c("CCTTACGAATCCTGT","TTCTCCACCCGCGGATA","CGCCCGGAGTCCCTGTAGTA"),
 #'             reverse_reads=c("GACAAACAGGATTCG","CAATATCCGCGGGTG","TACTACAGGGACTCC"))

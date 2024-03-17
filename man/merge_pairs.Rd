@@ -26,3 +26,6 @@ For each pair of forward and reverse DNA sequence reads, the reverse complement 
 merge_pairs(forward_reads=c("CCTTACGAATCCTGT","TTCTCCACCCGCGGATA","CGCCCGGAGTCCCTGTAGTA"),
             reverse_reads=c("GACAAACAGGATTCG","CAATATCCGCGGGTG","TACTACAGGGACTCC"))
 }
+\seealso{
+\code{\link[=truncate_and_merge_pairs]{truncate_and_merge_pairs}} for truncating and merging forward and reverse DNA sequence reads.
+}

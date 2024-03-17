@@ -4,8 +4,8 @@
 #' @param file A string specifying the path to a FASTA file to read.
 #' @returns A data frame with fields for sequence names and sequences.
 #' @seealso
-#' [`write.fasta`][write.fasta()] for writing FASTA files. \cr
-#' [`read.fastq`][read.fastq()] for reading FASTQ files. \cr
+#' [`write.fasta`][write.fasta()] for writing FASTA files. \cr \cr
+#' [`read.fastq`][read.fastq()] for reading FASTQ files. \cr \cr
 #' [`write.fastq`][write.fastq()] for writing FASTQ files.
 #' @examples
 #' # Get path to example FASTA file.

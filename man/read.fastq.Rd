@@ -26,7 +26,7 @@ path_to_fastq_file<-system.file("extdata",
 read.fastq(file=path_to_fastq_file)
 }
 \seealso{
-\code{\link[=write.fastq]{write.fastq}} for writing FASTQ files. \cr
-\code{\link[=read.fasta]{read.fasta}} for reading FASTA files. \cr
+\code{\link[=write.fastq]{write.fastq}} for writing FASTQ files. \cr \cr
+\code{\link[=read.fasta]{read.fasta}} for reading FASTA files. \cr \cr
 \code{\link[=write.fasta]{write.fasta}} for writing FASTA files.
 }
