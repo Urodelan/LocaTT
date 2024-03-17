@@ -41,7 +41,7 @@ filter_sequences(
 
 \item{binomial_test.alpha_level}{Numeric. The alpha level used in deciding whether the proportion of reads in a PCR replicate comprised by a sequence significantly exceeds a minimum threshold required for detection. See the \code{binomial_test.enabled} argument. The default is \code{0.05}. Ignored if \code{binomial_test.enabled = FALSE}.}
 
-\item{minimum_PCR_replicates}{Numeric. The minimum number of PCR replicates in which a sequence must be detected in order to be considered present in a sample (\emph{i.e.}, not erroneous). The default is \code{2}.}
+\item{minimum_PCR_replicates}{Numeric. The minimum number of PCR replicates in which a sequence must be detected in order to be considered present (\emph{i.e.}, not erroneous) in a sample. The default is \code{2}.}
 
 \item{delimiter.read_counts}{String specifying the delimiter between PCR replicate identifiers and sequence read counts in the Read_count_by_PCR_replicate field of the output CSV file (see details section). The default is \code{": "}.}
 
