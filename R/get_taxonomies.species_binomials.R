@@ -7,7 +7,8 @@
 #' @param print_taxize_queries Logical. Whether taxa queries should be printed. The default is `TRUE`.
 #' @returns No return value. Writes an output CSV file with added taxonomies.
 #' @seealso
-#' [`get_taxonomies.IUCN`][get_taxonomies.IUCN()] for formatting taxonomies from the IUCN Red List.
+#' [`get_taxonomies.IUCN`][get_taxonomies.IUCN()] for formatting taxonomies from the IUCN Red List. \cr \cr
+#' [`adjust_taxonomies`][adjust_taxonomies()] for adjusting a taxonomy system.
 #' @examplesIf interactive()
 #' # Get path to example input species binomials CSV file.
 #' path_to_input_file<-system.file("extdata",

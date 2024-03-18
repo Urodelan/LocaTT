@@ -51,3 +51,7 @@ format_reference_database(path_to_input_reference_database=path_to_input_file,
                           path_to_output_BLAST_database=path_to_output_file)
 \dontshow{\}) # examplesIf}
 }
+\seealso{
+\code{\link[=local_taxa_tool]{local_taxa_tool}} for performing geographically-conscious taxonomic assignment. \cr \cr
+\code{\link[=adjust_taxonomies]{adjust_taxonomies}} for adjusting a taxonomy system.
+}

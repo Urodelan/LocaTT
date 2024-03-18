@@ -51,5 +51,6 @@ get_taxonomies.IUCN(path_to_IUCN_taxonomies=path_to_taxonomy_file,
                     path_to_output_local_taxa_list=path_to_output_file)
 }
 \seealso{
-\code{\link[=get_taxonomies.species_binomials]{get_taxonomies.species_binomials}} for remotely fetching NCBI taxonomies from species binomials.
+\code{\link[=get_taxonomies.species_binomials]{get_taxonomies.species_binomials}} for remotely fetching NCBI taxonomies from species binomials. \cr \cr
+\code{\link[=adjust_taxonomies]{adjust_taxonomies}} for adjusting a taxonomy system.
 }

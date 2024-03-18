@@ -6,6 +6,9 @@
 #' @param full_names Logical. If `TRUE` (the default), then full taxonomies are returned down to the requested taxonomic level. If `FALSE`, then only the requested taxonomic level is returned.
 #' @param delimiter A character string of the delimiter between taxonomic levels in the input taxonomies. The default is `";"`.
 #' @returns A character vector containing the requested taxonomic level for each element of the input taxonomies.
+#' @seealso
+#' [`expand_taxonomies`][expand_taxonomies()] for extracting each taxonomic level from a vector of taxonomic strings. \cr \cr
+#' [`get_consensus_taxonomy`][get_consensus_taxonomy()] for generating a consensus taxonomy from taxonomic strings.
 #' @examples
 #' get_taxonomic_level(taxonomies=
 #'    c("Eukaryota;Chordata;Amphibia;Caudata;Ambystomatidae;Ambystoma;Ambystoma_mavortium",

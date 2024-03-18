@@ -9,6 +9,9 @@
 #' @param path_to_list_of_local_taxa_to_subset String specifying path to list of species (in CSV format) to subset the reference database to. This option is helpful if the user wants the reference database to include only the sequences of local species. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. There should be no duplicate species (*i.e.*, multiple records with the same species binomial and taxonomy) in the species list. Subsetting the reference database to the sequences of certain species is performed after taxonomy and sequence edits are applied to the reference database, and species must match at all taxonomic levels in order to be retained in the reference database. If subsetting the reference database to the sequences of certain species is not desired, set this variable to `NA` (the default).
 #' @param makeblastdb_command String specifying path to the makeblastdb program, which is a part of BLAST. The default (`'makeblastdb'`) should work for standard BLAST installations. The user can provide a path to the makeblastdb program for non-standard BLAST installations.
 #' @returns No return value. Writes formatted BLAST database files.
+#' @seealso
+#' [`local_taxa_tool`][local_taxa_tool()] for performing geographically-conscious taxonomic assignment. \cr \cr
+#' [`adjust_taxonomies`][adjust_taxonomies()] for adjusting a taxonomy system.
 #' @examplesIf blast_command_found(blast_command="makeblastdb")
 #' # Get path to example reference sequences FASTA file.
 #' path_to_input_file<-system.file("extdata",

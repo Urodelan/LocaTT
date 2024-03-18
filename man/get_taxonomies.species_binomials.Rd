@@ -44,5 +44,6 @@ get_taxonomies.species_binomials(path_to_input_species_binomials=path_to_input_f
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link[=get_taxonomies.IUCN]{get_taxonomies.IUCN}} for formatting taxonomies from the IUCN Red List.
+\code{\link[=get_taxonomies.IUCN]{get_taxonomies.IUCN}} for formatting taxonomies from the IUCN Red List. \cr \cr
+\code{\link[=adjust_taxonomies]{adjust_taxonomies}} for adjusting a taxonomy system.
 }

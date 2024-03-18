@@ -28,6 +28,10 @@
 #' @param separator String specifying the separator to use between taxa names in the output CSV file. The default is `', '`.
 #' @param blastn_command String specifying path to the blastn program. The default (`'blastn'`) should work for standard BLAST installations. The user can provide a path to the blastn program for non-standard BLAST installations.
 #' @returns No return value. Writes an output CSV file with fields defined in the details section.
+#' @seealso
+#' [`format_reference_database`][format_reference_database()] for formatting reference databases. \cr \cr
+#' [`get_taxonomies.species_binomials`][get_taxonomies.species_binomials()] and [`get_taxonomies.IUCN`][get_taxonomies.IUCN()] for creating local taxa lists. \cr \cr
+#' [`adjust_taxonomies`][adjust_taxonomies()] for adjusting a taxonomy system.
 #' @references A manuscript describing this taxonomic assignment method is in preparation.
 #' @examplesIf blast_command_found(blast_command="blastn")
 #' # Get path to example query sequences FASTA file.

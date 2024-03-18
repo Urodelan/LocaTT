@@ -104,3 +104,8 @@ local_taxa_tool(path_to_sequences_to_classify=path_to_query_sequences,
 \references{
 A manuscript describing this taxonomic assignment method is in preparation.
 }
+\seealso{
+\code{\link[=format_reference_database]{format_reference_database}} for formatting reference databases. \cr \cr
+\code{\link[=get_taxonomies.species_binomials]{get_taxonomies.species_binomials}} and \code{\link[=get_taxonomies.IUCN]{get_taxonomies.IUCN}} for creating local taxa lists. \cr \cr
+\code{\link[=adjust_taxonomies]{adjust_taxonomies}} for adjusting a taxonomy system.
+}

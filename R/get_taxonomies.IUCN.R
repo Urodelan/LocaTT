@@ -8,7 +8,8 @@
 #' @param path_to_taxonomy_edits String specifying path to taxonomy edits file in CSV format. The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon. If no taxonomy edits are desired, then set this variable to `NA` (the default).
 #' @returns No return value. Writes an output CSV file with formatted taxonomies.
 #' @seealso
-#' [`get_taxonomies.species_binomials`][get_taxonomies.species_binomials()] for remotely fetching NCBI taxonomies from species binomials.
+#' [`get_taxonomies.species_binomials`][get_taxonomies.species_binomials()] for remotely fetching NCBI taxonomies from species binomials. \cr \cr
+#' [`adjust_taxonomies`][adjust_taxonomies()] for adjusting a taxonomy system.
 #' @examples
 #' # Get path to example taxonomy CSV file.
 #' path_to_taxonomy_file<-system.file("extdata",

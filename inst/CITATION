@@ -5,7 +5,7 @@ bibentry(
   title="Local Taxa Tool (LocaTT): Geographically-conscious taxonomic assignment for DNA metabarcoding",
   author="Kenen B Goodwin and Taal Levi",
   year="2024",
-  note="R package version 1.1.8",
+  note="R package version 1.1.9",
   url="https://github.com/Urodelan/LocaTT",
-  textVersion="Kenen B Goodwin and Taal Levi (2024). Local Taxa Tool (LocaTT): Geographically-conscious taxonomic assignment for DNA metabarcoding. R package version 1.1.8, https://github.com/Urodelan/LocaTT."
+  textVersion="Kenen B Goodwin and Taal Levi (2024). Local Taxa Tool (LocaTT): Geographically-conscious taxonomic assignment for DNA metabarcoding. R package version 1.1.9, https://github.com/Urodelan/LocaTT."
 )

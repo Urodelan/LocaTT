@@ -27,3 +27,7 @@ get_consensus_taxonomy(taxonomies=
                        full_names=TRUE,
                        delimiter=";")
 }
+\seealso{
+\code{\link[=get_taxonomic_level]{get_taxonomic_level}} for extracting a taxonomic level from taxonomic strings. \cr \cr
+\code{\link[=expand_taxonomies]{expand_taxonomies}} for extracting each taxonomic level from a vector of taxonomic strings.
+}
