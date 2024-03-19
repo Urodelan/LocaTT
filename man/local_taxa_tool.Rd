@@ -5,10 +5,10 @@
 \title{Perform Geographically-Conscious Taxonomic Assignment}
 \usage{
 local_taxa_tool(
-  path_to_sequences_to_classify,
+  path_to_query_sequences,
   path_to_BLAST_database,
   path_to_output_file,
-  path_to_list_of_local_taxa = NA,
+  path_to_local_taxa_list = NA,
   include_missing = FALSE,
   blast_e_value = 1e-05,
   blast_max_target_seqs = 2000,
@@ -16,17 +16,18 @@ local_taxa_tool(
   full_names = FALSE,
   underscores = FALSE,
   separator = ", ",
-  blastn_command = "blastn"
+  blastn_command = "blastn",
+  ...
 )
 }
 \arguments{
-\item{path_to_sequences_to_classify}{String specifying path to FASTA file containing sequences to classify. File path cannot contain spaces.}
+\item{path_to_query_sequences}{String specifying path to FASTA file containing sequences to classify. File path cannot contain spaces.}
 
 \item{path_to_BLAST_database}{String specifying path to BLAST reference database in FASTA format. File path cannot contain spaces.}
 
 \item{path_to_output_file}{String specifying path to output file of classified sequences in CSV format.}
 
-\item{path_to_list_of_local_taxa}{String specifying path to list of local species in CSV format. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. There should be no duplicate species (\emph{i.e.}, multiple records with the same species binomial and taxonomy) in the local species list. If local taxa suggestions are not desired, set this variable to \code{NA} (the default).}
+\item{path_to_local_taxa_list}{String specifying path to list of local species in CSV format. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. There should be no duplicate species (\emph{i.e.}, multiple records with the same species binomial and taxonomy) in the local species list. If local taxa suggestions are not desired, set this variable to \code{NA} (the default).}
 
 \item{include_missing}{Logical. If \code{TRUE}, then additional fields are included in the output CSV file in which local sister taxonomic groups without reference sequences are added to the local taxa suggestions. If \code{FALSE} (the default), then this is not performed.}
 
@@ -43,6 +44,8 @@ local_taxa_tool(
 \item{separator}{String specifying the separator to use between taxa names in the output CSV file. The default is \code{', '}.}
 
 \item{blastn_command}{String specifying path to the blastn program. The default (\code{'blastn'}) should work for standard BLAST installations. The user can provide a path to the blastn program for non-standard BLAST installations.}
+
+\item{...}{Accepts former argument names for backwards compatibility.}
 }
 \value{
 No return value. Writes an output CSV file with fields defined in the details section.
@@ -76,11 +79,11 @@ path_to_query_sequences<-system.file("extdata",
                                      package="LocaTT",
                                      mustWork=TRUE)
 
-# Get path to example reference database FASTA file.
-path_to_reference_database<-system.file("extdata",
-                                        "example_blast_database.fasta",
-                                        package="LocaTT",
-                                        mustWork=TRUE)
+# Get path to example BLAST reference database FASTA file.
+path_to_BLAST_database<-system.file("extdata",
+                                    "example_blast_database.fasta",
+                                    package="LocaTT",
+                                    mustWork=TRUE)
 
 # Get path to example local taxa list CSV file.
 path_to_local_taxa_list<-system.file("extdata",
@@ -89,13 +92,13 @@ path_to_local_taxa_list<-system.file("extdata",
                                      mustWork=TRUE)
 
 # Create a temporary file path for the output CSV file.
-path_to_output_CSV_file<-tempfile(fileext=".csv")
+path_to_output_file<-tempfile(fileext=".csv")
 
 # Run the local taxa tool.
-local_taxa_tool(path_to_sequences_to_classify=path_to_query_sequences,
-                path_to_BLAST_database=path_to_reference_database,
-                path_to_output_file=path_to_output_CSV_file,
-                path_to_list_of_local_taxa=path_to_local_taxa_list,
+local_taxa_tool(path_to_query_sequences=path_to_query_sequences,
+                path_to_BLAST_database=path_to_BLAST_database,
+                path_to_output_file=path_to_output_file,
+                path_to_local_taxa_list=path_to_local_taxa_list,
                 include_missing=TRUE,
                 full_names=TRUE,
                 underscores=TRUE)

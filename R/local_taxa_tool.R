@@ -15,10 +15,10 @@
 #' * Local_species (Field only present if a path to a local taxa list is provided): Species binomials of all local species which belong to the taxonomic unit(s) in the Local_taxa field.
 #' * Local_taxa.include_missing (Field only present if both a path to a local taxa list is provided and the `include_missing` argument is set to `TRUE`): Local sister taxonomic groups without reference sequences are added to the local taxa suggestions from the Local_taxa field.
 #' * Local_species.include_missing (Field only present if both a path to a local taxa list is provided and `include_missing` argument is set to `TRUE`): Species binomials of all local species which belong to the taxonomic unit(s) in the Local_taxa.include_missing field.
-#' @param path_to_sequences_to_classify String specifying path to FASTA file containing sequences to classify. File path cannot contain spaces.
+#' @param path_to_query_sequences String specifying path to FASTA file containing sequences to classify. File path cannot contain spaces.
 #' @param path_to_BLAST_database String specifying path to BLAST reference database in FASTA format. File path cannot contain spaces.
 #' @param path_to_output_file String specifying path to output file of classified sequences in CSV format.
-#' @param path_to_list_of_local_taxa String specifying path to list of local species in CSV format. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. There should be no duplicate species (*i.e.*, multiple records with the same species binomial and taxonomy) in the local species list. If local taxa suggestions are not desired, set this variable to `NA` (the default).
+#' @param path_to_local_taxa_list String specifying path to list of local species in CSV format. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. There should be no duplicate species (*i.e.*, multiple records with the same species binomial and taxonomy) in the local species list. If local taxa suggestions are not desired, set this variable to `NA` (the default).
 #' @param include_missing Logical. If `TRUE`, then additional fields are included in the output CSV file in which local sister taxonomic groups without reference sequences are added to the local taxa suggestions. If `FALSE` (the default), then this is not performed.
 #' @param blast_e_value Numeric. Maximum E-value of returned BLAST hits (lower E-values are associated with more 'significant' matches). The default is `1e-05`.
 #' @param blast_max_target_seqs Numeric. Maximum number of BLAST target sequences returned per query sequence. Enough target sequences should be returned to ensure that all minimum E-value matches are returned for each query sequence. A warning will be produced if this value is not sufficient. The default is `2000`.
@@ -27,6 +27,7 @@
 #' @param underscores Logical. If `TRUE`, then taxa names in the output CSV file use underscores instead of spaces. If `FALSE` (the default), then taxa names in the output CSV file use spaces.
 #' @param separator String specifying the separator to use between taxa names in the output CSV file. The default is `', '`.
 #' @param blastn_command String specifying path to the blastn program. The default (`'blastn'`) should work for standard BLAST installations. The user can provide a path to the blastn program for non-standard BLAST installations.
+#' @param ... Accepts former argument names for backwards compatibility.
 #' @returns No return value. Writes an output CSV file with fields defined in the details section.
 #' @seealso
 #' [`format_reference_database`][format_reference_database()] for formatting reference databases. \cr \cr
@@ -40,11 +41,11 @@
 #'                                      package="LocaTT",
 #'                                      mustWork=TRUE)
 #' 
-#' # Get path to example reference database FASTA file.
-#' path_to_reference_database<-system.file("extdata",
-#'                                         "example_blast_database.fasta",
-#'                                         package="LocaTT",
-#'                                         mustWork=TRUE)
+#' # Get path to example BLAST reference database FASTA file.
+#' path_to_BLAST_database<-system.file("extdata",
+#'                                     "example_blast_database.fasta",
+#'                                     package="LocaTT",
+#'                                     mustWork=TRUE)
 #' 
 #' # Get path to example local taxa list CSV file.
 #' path_to_local_taxa_list<-system.file("extdata",
@@ -53,59 +54,191 @@
 #'                                      mustWork=TRUE)
 #' 
 #' # Create a temporary file path for the output CSV file.
-#' path_to_output_CSV_file<-tempfile(fileext=".csv")
+#' path_to_output_file<-tempfile(fileext=".csv")
 #' 
 #' # Run the local taxa tool.
-#' local_taxa_tool(path_to_sequences_to_classify=path_to_query_sequences,
-#'                 path_to_BLAST_database=path_to_reference_database,
-#'                 path_to_output_file=path_to_output_CSV_file,
-#'                 path_to_list_of_local_taxa=path_to_local_taxa_list,
+#' local_taxa_tool(path_to_query_sequences=path_to_query_sequences,
+#'                 path_to_BLAST_database=path_to_BLAST_database,
+#'                 path_to_output_file=path_to_output_file,
+#'                 path_to_local_taxa_list=path_to_local_taxa_list,
 #'                 include_missing=TRUE,
 #'                 full_names=TRUE,
 #'                 underscores=TRUE)
 #' @export
-local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,path_to_output_file,path_to_list_of_local_taxa=NA,include_missing=FALSE,blast_e_value=1e-5,blast_max_target_seqs=2000,blast_task="megablast",full_names=FALSE,underscores=FALSE,separator=", ",blastn_command="blastn"){
+local_taxa_tool<-function(path_to_query_sequences,path_to_BLAST_database,path_to_output_file,path_to_local_taxa_list=NA,include_missing=FALSE,blast_e_value=1e-5,blast_max_target_seqs=2000,blast_task="megablast",full_names=FALSE,underscores=FALSE,separator=", ",blastn_command="blastn",...){
   
-  # Throw an error if the blastn command cannot not be found.
+  ### Ensure backwards compatibility.
+  
+  # Handle changes in argument names.
+  ## Define data frame relating former to current argument names.
+  back.compat<-data.frame(arg.former=c("path_to_sequences_to_classify",
+                                       "path_to_list_of_local_taxa"),
+                          arg.current=c("path_to_query_sequences",
+                                        "path_to_local_taxa_list"),
+                          stringsAsFactors=FALSE)
+  ## Collect extra arguments.
+  dots<-list(...)
+  ## If there are extra arguments.
+  if(!missing(...)){
+    ## Loop through each extra argument.
+    for(i in 1:length(dots)){
+      ## Get the extra argument.
+      dot<-dots[i]
+      ## If the extra argument is a former argument.
+      if(names(dot) %in% back.compat$arg.former){
+        ## Get the argument translation record.
+        arg<-back.compat[back.compat$arg.former==names(dot),]
+        ## Throw an error if the former argument name matches multiple current argument names.
+        if(nrow(arg) > 1) stop("Former argument name matches multiple current argument names.")
+        ## If the current argument is missing.
+        if(do.call(missing,list(arg$arg.current))){
+          ## Pass the former argument to the current argument.
+          assign(x=arg$arg.current,value=dot[[1]])
+          ## Provide a warning that the former argument has been
+          ## renamed to the current argument.
+          warning(paste0("Former argument '",names(dot),
+                         "' has been renamed to current argument '",
+                         arg$arg.current,"'."))
+        } else { ## If the current argument is not missing.
+          ## If both old and current arguments are provided, throw an error.
+          stop(paste0("Multiple equivalent arguments found for current argument '",
+                      arg$arg.current,"' (former argument '",arg$arg.former,"')."))
+        }
+      } else { # If the extra argument is not a former argument.
+        # Throw an error for the unused argument.
+        stop(paste0("unused argument (",names(dot)," = ",unname(unlist(dot)),")"))
+      }
+    }
+  }
+  
+  ### Check BLAST installation.
+  
+  # blastn command.
+  ## Throw an error if the blastn command is not a character string.
+  if(!is.character(blastn_command)) stop("blastn_command must be a character string.")
+  ## Throw an error if the blastn command has multiple elements.
+  if(length(blastn_command) > 1) stop("blastn_command cannot have multiple elements.")
+  ## Throw an error if the blastn command is NA.
+  if(is.na(blastn_command)) stop("blastn_command cannot be NA.")
+  ## Throw an error if the blastn command cannot not be found.
   if(!blast_command_found(blast_command=blastn_command)) stop("The blastn command could not be found. If using a non-standard installation of BLAST, set the path to the blastn command using the blastn_command argument.")
   
-  # Throw an error if the path to the user-defined fasta file to classify contains spaces.
-  if(grepl(pattern=" ",x=path_to_sequences_to_classify)) stop("There cannot be spaces in path_to_sequences_to_classify.")
+  ### Check arguments.
   
-  # Throw an error if the path to the user-defined BLAST database contains spaces.
-  if(grepl(pattern=" ",x=path_to_BLAST_database)) stop("There cannot be spaces in path_to_BLAST_database.")
+  # Path to query sequences.
+  ## Throw an error if the path to query sequences is not a character string.
+  if(!is.character(path_to_query_sequences)) stop("The path to query sequences must be a character string.")
+  ## Throw an error if the path to query sequences has multiple elements.
+  if(length(path_to_query_sequences) > 1) stop("The path to query sequences cannot have multiple elements.")
+  ## Throw an error if the path to query sequences is NA.
+  if(is.na(path_to_query_sequences)) stop("The path to query sequences cannot be NA.")
+  ## Throw an error if the path to query sequences contains spaces.
+  if(grepl(pattern=" ",x=path_to_query_sequences)) stop("There cannot be spaces in the path to query sequences.")
   
-  # Throw an error if the include missing argument is not TRUE or FALSE.
-  if(!is.logical(include_missing) | is.na(include_missing)) stop("The include_missing argument must be TRUE or FALSE.")
+  # Path to BLAST database.
+  ## Throw an error if the path to BLAST database is not a character string.
+  if(!is.character(path_to_BLAST_database)) stop("The path to BLAST database must be a character string.")
+  ## Throw an error if the path to BLAST database has multiple elements.
+  if(length(path_to_BLAST_database) > 1) stop("The path to BLAST database cannot have multiple elements.")
+  ## Throw an error if the path to BLAST database is NA.
+  if(is.na(path_to_BLAST_database)) stop("The path to BLAST database cannot be NA.")
+  ## Throw an error if the path to BLAST database contains spaces.
+  if(grepl(pattern=" ",x=path_to_BLAST_database)) stop("There cannot be spaces in the path to BLAST database.")
   
-  # Throw an error if the full names argument is not TRUE or FALSE.
-  if(!is.logical(full_names) | is.na(full_names)) stop("The full_names argument must be TRUE or FALSE.")
+  # Path to output file.
+  ## Throw an error if the path to output file is not a character string.
+  if(!is.character(path_to_output_file)) stop("The path to output file must be a character string.")
+  ## Throw an error if the path to output file has multiple elements.
+  if(length(path_to_output_file) > 1) stop("The path to output file cannot have multiple elements.")
+  ## Throw an error if the path to output file is NA.
+  if(is.na(path_to_output_file)) stop("The path to output file cannot be NA.")
   
-  # Throw an error if the underscores argument is not TRUE or FALSE.
-  if(!is.logical(underscores) | is.na(underscores)) stop("The underscores argument must be TRUE or FALSE.")
+  # Path to local taxa list.
+  ## Throw an error if the path to local taxa list is not a vector.
+  if(!is.vector(path_to_local_taxa_list)) stop("The path to local taxa list must be a vector.")
+  ## Throw an error if the path to local taxa list has multiple elements.
+  if(length(path_to_local_taxa_list) > 1) stop("The path to local taxa list cannot have multiple elements.")
+  ## Throw an error if the path to local taxa list is not a character string, and not NA.
+  if(!(is.na(path_to_local_taxa_list) | is.character(path_to_local_taxa_list))) stop("The path to local taxa list must be a character string or NA.")
   
-  # Throw an error if the separator argument is not a character string.
+  # Include missing argument.
+  ## Throw an error if the include missing argument is not logical.
+  if(!is.logical(include_missing)) stop("The include missing argument must be logical.")
+  ## Throw an error if the include missing argument has multiple elements.
+  if(length(include_missing) > 1) stop("The include missing argument cannot have multiple elements.")
+  ## Throw an error if the include missing argument is NA.
+  if(is.na(include_missing)) stop("The include missing argument cannot be NA.")
+  
+  # BLAST E-value.
+  ## Throw an error if the BLAST E-value argument is not numeric.
+  if(!is.numeric(blast_e_value)) stop("The BLAST E-value argument must be numeric.")
+  ## Throw an error if the BLAST E-value argument has multiple elements.
+  if(length(blast_e_value) > 1) stop("The BLAST E-value argument cannot have multiple elements.")
+  ## Throw an error if the BLAST E-value argument is NA.
+  if(is.na(blast_e_value)) stop("The BLAST E-value argument cannot be NA.")
+  
+  # BLAST maximum target sequences.
+  ## Throw an error if the BLAST maximum target sequences argument is not numeric.
+  if(!is.numeric(blast_max_target_seqs)) stop("The BLAST maximum target sequences argument must be numeric.")
+  ## Throw an error if the BLAST maximum target sequences argument has multiple elements.
+  if(length(blast_max_target_seqs) > 1) stop("The BLAST maximum target sequences argument cannot have multiple elements.")
+  ## Throw an error if the BLAST maximum target sequences argument is NA.
+  if(is.na(blast_max_target_seqs)) stop("The BLAST maximum target sequences argument cannot be NA.")
+  ## Throw an error if the BLAST maximum target sequences argument is not an integer value.
+  if(round(x=blast_max_target_seqs,digits=0)!=blast_max_target_seqs) stop("The BLAST maximum target sequences argument must be an integer value.")
+  
+  # BLAST task argument.
+  ## Throw an error if the BLAST task argument is not a character string.
+  if(!is.character(blast_task)) stop("The BLAST task argument must be a character string.")
+  ## Throw an error if the BLAST task argument has multiple elements.
+  if(length(blast_task) > 1) stop("The BLAST task argument cannot have multiple elements.")
+  ## Throw an error if the BLAST task argument is NA.
+  if(is.na(blast_task)) stop("The BLAST task argument cannot be NA.")
+  
+  # Full names argument.
+  ## Throw an error if the full names argument is not logical.
+  if(!is.logical(full_names)) stop("The full names argument must be logical.")
+  ## Throw an error if the full names argument has multiple elements.
+  if(length(full_names) > 1) stop("The full names argument cannot have multiple elements.")
+  ## Throw an error if the full names argument is NA.
+  if(is.na(full_names)) stop("The full names argument cannot be NA.")
+  
+  # Underscores argument.
+  ## Throw an error if the underscores argument is not logical.
+  if(!is.logical(underscores)) stop("The underscores argument must be logical.")
+  ## Throw an error if the underscores argument has multiple elements.
+  if(length(underscores) > 1) stop("The underscores argument cannot have multiple elements.")
+  ## Throw an error if the underscores argument is NA.
+  if(is.na(underscores)) stop("The underscores argument cannot be NA.")
+  
+  # Separator argument.
+  ## Throw an error if the separator argument is not a character string.
   if(!is.character(separator)) stop("The separator argument must be a character string.")
+  ## Throw an error if the separator argument has multiple elements.
+  if(length(separator) > 1) stop("The separator argument cannot have multiple elements.")
+  ## Throw an error if the separator argument is NA.
+  if(is.na(separator)) stop("The separator argument cannot be NA.")
   
   # Throw a warning if include missing is enabled but a local taxa list is not provided.
-  if(include_missing & is.na(path_to_list_of_local_taxa)) warning("The include_missing argument is ignored if a local taxa list is not provided.")
+  if(include_missing & is.na(path_to_local_taxa_list)) warning("The include missing argument is ignored if a local taxa list is not provided.")
+  
+  ### Begin operations.
   
   # Read in sequences to classify.
-  sequences_to_classify<-read.fasta(file=path_to_sequences_to_classify)
+  sequences_to_classify<-read.fasta(file=path_to_query_sequences)
   colnames(sequences_to_classify)[1]<-"Sequence_name"
   
-  # Throw an error if there are NAs or blanks in the fasta file of sequences to classify.
-  if(any(is.na(sequences_to_classify) | sequences_to_classify=="")) stop("NAs or blanks are present in the sequence names or sequences of the fasta file containing the sequences to classify.")
+  # Throw an error if there are NAs or blanks in the fasta file of query sequences.
+  if(any(is.na(sequences_to_classify) | sequences_to_classify=="")) stop("NAs or blanks are present in the sequence names or sequences of the fasta file containing the query sequences.")
   
-  # Throw an error if not all sequence names are unique in the fasta file of sequences
-  # to classify.
-  if(any(duplicated(sequences_to_classify$Sequence_name))) stop("Not all sequence names are unique in the fasta file of sequences to classify.")
+  # Throw an error if not all sequence names are unique in the fasta file of query sequences.
+  if(any(duplicated(sequences_to_classify$Sequence_name))) stop("Not all sequence names are unique in the fasta file containing the query sequences.")
   
   # Perform the command line BLAST algorithm between the query and reference sequences.
   blast_output<-system2(command=blastn_command,
                         args=c(paste0('-task ',blast_task),
                                paste0('-db ',path_to_BLAST_database),
-                               paste0('-query ',path_to_sequences_to_classify),
+                               paste0('-query ',path_to_query_sequences),
                                '-outfmt "6 qseqid sseqid evalue bitscore qcovs pident"',
                                paste0('-max_target_seqs ',blast_max_target_seqs),
                                paste0('-evalue ',blast_e_value)),
@@ -220,10 +353,10 @@ local_taxa_tool<-function(path_to_sequences_to_classify,path_to_BLAST_database,p
   }
   
   # If a local taxa list is provided.
-  if(!is.na(path_to_list_of_local_taxa)){
+  if(!is.na(path_to_local_taxa_list)){
     
     # Read in local taxa list.
-    local<-utils::read.csv(file=path_to_list_of_local_taxa,stringsAsFactors=FALSE)
+    local<-utils::read.csv(file=path_to_local_taxa_list,stringsAsFactors=FALSE)
     
     # Check that the correct fields are present in the local taxa list.
     if(!identical(colnames(local),c("Common_Name","Domain","Phylum","Class","Order",

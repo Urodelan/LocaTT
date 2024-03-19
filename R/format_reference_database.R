@@ -1,13 +1,14 @@
 #' Format Reference Databases
 #'
 #' Formats reference databases from MIDORI or UNITE for use with the [`local_taxa_tool`][local_taxa_tool()] function.
-#' @param path_to_input_reference_database String specifying path to input reference database in FASTA format.
-#' @param path_to_output_BLAST_database String specifying path to output BLAST database in FASTA format. File path cannot contain spaces.
-#' @param input_reference_database_source String specifying input reference database source (`'MIDORI'` or `'UNITE'`). The default is `'MIDORI'`.
+#' @param path_to_input_database String specifying path to input reference database in FASTA format.
+#' @param path_to_output_database String specifying path to output BLAST database in FASTA format. File path cannot contain spaces.
+#' @param input_database_source String specifying input reference database source (`'MIDORI'` or `'UNITE'`). The default is `'MIDORI'`.
 #' @param path_to_taxonomy_edits String specifying path to taxonomy edits file in CSV format. The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon. If no taxonomy edits are desired, then set this variable to `NA` (the default).
 #' @param path_to_sequence_edits String specifying path to sequence edits file in CSV format. The file must contain the following fields: 'Action', 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species', 'Sequence', 'Notes'. The values in the 'Action' field must be either 'Add' or 'Remove', which will add or remove the respective sequence from the reference database. Values in the 'Common_Name' field are optional. Values should be supplied to all taxonomy fields. If using a reference database from MIDORI, then use NCBI superkingdom names (*e.g.*, 'Eukaryota') in the 'Domain' field. If using a reference database from UNITE, then use kingdom names (*e.g.*, 'Fungi') in the 'Domain' field. The 'Species' field should contain species binomials. Sequence edits are performed after taxonomy edits, if applied. If no sequence edits are desired, then set this variable to `NA` (the default).
-#' @param path_to_list_of_local_taxa_to_subset String specifying path to list of species (in CSV format) to subset the reference database to. This option is helpful if the user wants the reference database to include only the sequences of local species. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no 'NA's or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. There should be no duplicate species (*i.e.*, multiple records with the same species binomial and taxonomy) in the species list. Subsetting the reference database to the sequences of certain species is performed after taxonomy and sequence edits are applied to the reference database, and species must match at all taxonomic levels in order to be retained in the reference database. If subsetting the reference database to the sequences of certain species is not desired, set this variable to `NA` (the default).
+#' @param path_to_taxa_subset_list String specifying path to list of species (in CSV format) to subset the reference database to. This option is helpful if the user wants the reference database to include only the sequences of local species. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no `NA`s or blanks in the taxonomy fields. The species field should contain the binomial name without subspecies or other information below the species level. There should be no duplicate species (*i.e.*, multiple records with the same species binomial and taxonomy) in the species list. Subsetting the reference database to the sequences of certain species is performed after taxonomy and sequence edits are applied to the reference database, and species must match at all taxonomic levels in order to be retained in the reference database. If subsetting the reference database to the sequences of certain species is not desired, set this variable to `NA` (the default).
 #' @param makeblastdb_command String specifying path to the makeblastdb program, which is a part of BLAST. The default (`'makeblastdb'`) should work for standard BLAST installations. The user can provide a path to the makeblastdb program for non-standard BLAST installations.
+#' @param ... Accepts former argument names for backwards compatibility.
 #' @returns No return value. Writes formatted BLAST database files.
 #' @seealso
 #' [`local_taxa_tool`][local_taxa_tool()] for performing geographically-conscious taxonomic assignment. \cr \cr
@@ -23,25 +24,132 @@
 #' path_to_output_file<-tempfile(fileext=".fasta")
 #' 
 #' # Format reference database.
-#' format_reference_database(path_to_input_reference_database=path_to_input_file,
-#'                           path_to_output_BLAST_database=path_to_output_file)
+#' format_reference_database(path_to_input_database=path_to_input_file,
+#'                           path_to_output_database=path_to_output_file)
 #' @export
-format_reference_database<-function(path_to_input_reference_database,path_to_output_BLAST_database,input_reference_database_source="MIDORI",path_to_taxonomy_edits=NA,path_to_sequence_edits=NA,path_to_list_of_local_taxa_to_subset=NA,makeblastdb_command="makeblastdb"){
+format_reference_database<-function(path_to_input_database,path_to_output_database,input_database_source="MIDORI",path_to_taxonomy_edits=NA,path_to_sequence_edits=NA,path_to_taxa_subset_list=NA,makeblastdb_command="makeblastdb",...){
   
-  # Throw an error if the makeblastdb command cannot not be found.
+  ### Ensure backwards compatibility.
+  
+  # Handle changes in argument names.
+  ## Define data frame relating former to current argument names.
+  back.compat<-data.frame(arg.former=c("path_to_input_reference_database",
+                                       "path_to_output_BLAST_database",
+                                       "input_reference_database_source",
+                                       "path_to_list_of_local_taxa_to_subset"),
+                          arg.current=c("path_to_input_database",
+                                        "path_to_output_database",
+                                        "input_database_source",
+                                        "path_to_taxa_subset_list"),
+                          stringsAsFactors=FALSE)
+  ## Collect extra arguments.
+  dots<-list(...)
+  ## If there are extra arguments.
+  if(!missing(...)){
+    ## Loop through each extra argument.
+    for(i in 1:length(dots)){
+      ## Get the extra argument.
+      dot<-dots[i]
+      ## If the extra argument is a former argument.
+      if(names(dot) %in% back.compat$arg.former){
+        ## Get the argument translation record.
+        arg<-back.compat[back.compat$arg.former==names(dot),]
+        ## Throw an error if the former argument name matches multiple current argument names.
+        if(nrow(arg) > 1) stop("Former argument name matches multiple current argument names.")
+        ## If the current argument is missing.
+        if(do.call(missing,list(arg$arg.current))){
+          ## Pass the former argument to the current argument.
+          assign(x=arg$arg.current,value=dot[[1]])
+          ## Provide a warning that the former argument has been
+          ## renamed to the current argument.
+          warning(paste0("Former argument '",names(dot),
+                         "' has been renamed to current argument '",
+                         arg$arg.current,"'."))
+        } else { ## If the current argument is not missing.
+          ## If both old and current arguments are provided, throw an error.
+          stop(paste0("Multiple equivalent arguments found for current argument '",
+                      arg$arg.current,"' (former argument '",arg$arg.former,"')."))
+        }
+      } else { # If the extra argument is not a former argument.
+        # Throw an error for the unused argument.
+        stop(paste0("unused argument (",names(dot)," = ",unname(unlist(dot)),")"))
+      }
+    }
+  }
+  
+  ### Check BLAST installation.
+  
+  # makeblastdb command.
+  ## Throw an error if the makeblastdb command is not a character string.
+  if(!is.character(makeblastdb_command)) stop("makeblastdb_command must be a character string.")
+  ## Throw an error if the makeblastdb command has multiple elements.
+  if(length(makeblastdb_command) > 1) stop("makeblastdb_command cannot have multiple elements.")
+  ## Throw an error if the makeblastdb command is NA.
+  if(is.na(makeblastdb_command)) stop("makeblastdb_command cannot be NA.")
+  ## Throw an error if the makeblastdb command cannot not be found.
   if(!blast_command_found(blast_command=makeblastdb_command)) stop("The makeblastdb command could not be found. If using a non-standard installation of BLAST, set the path to the makeblastdb command using the makeblastdb_command argument.")
   
-  # Throw an error if the user-defined reference database source is not MIDORI or UNITE.
-  if(!(input_reference_database_source %in% c("MIDORI","UNITE"))) stop("User-defined input reference database source must be 'MIDORI' or 'UNITE'.")
+  ### Check arguments.
   
-  # Throw an error if the path to the user-defined output BLAST database contains spaces.
-  if(grepl(pattern=" ",x=path_to_output_BLAST_database)) stop("There cannot be spaces in path_to_output_BLAST_database.")
+  # Path to input database.
+  ## Throw an error if the path to input database is not a character string.
+  if(!is.character(path_to_input_database)) stop("The path to input database must be a character string.")
+  ## Throw an error if the path to input database has multiple elements.
+  if(length(path_to_input_database) > 1) stop("The path to input database cannot have multiple elements.")
+  ## Throw an error if the path to input database is NA.
+  if(is.na(path_to_input_database)) stop("The path to input database cannot be NA.")
+  
+  # Path to output database.
+  ## Throw an error if the path to output database is not a character string.
+  if(!is.character(path_to_output_database)) stop("The path to output database must be a character string.")
+  ## Throw an error if the path to output database has multiple elements.
+  if(length(path_to_output_database) > 1) stop("The path to output database cannot have multiple elements.")
+  ## Throw an error if the path to output database is NA.
+  if(is.na(path_to_output_database)) stop("The path to output database cannot be NA.")
+  ## Throw an error if the path to the user-defined output BLAST database contains spaces.
+  if(grepl(pattern=" ",x=path_to_output_database)) stop("There cannot be spaces in the path to output database.")
+  
+  # Input database source.
+  ## Throw an error if the input database source argument is not a character string.
+  if(!is.character(input_database_source)) stop("The input database source argument must be a character string.")
+  ## Throw an error if the input database source argument has multiple elements.
+  if(length(input_database_source) > 1) stop("The input database source argument cannot have multiple elements.")
+  ## Throw an error if the input database source argument is NA.
+  if(is.na(input_database_source)) stop("The input database source argument cannot be NA.")
+  ## Throw an error if the input database source argument is not MIDORI or UNITE.
+  if(!(input_database_source %in% c("MIDORI","UNITE"))) stop("The input database source argument must be 'MIDORI' or 'UNITE'.")
+  
+  # Path to taxonomy edits.
+  ## Throw an error if the path to taxonomy edits is not a vector.
+  if(!is.vector(path_to_taxonomy_edits)) stop("The path to taxonomy edits must be a vector.")
+  ## Throw an error if the path to taxonomy edits has multiple elements.
+  if(length(path_to_taxonomy_edits) > 1) stop("The path to taxonomy edits cannot have multiple elements.")
+  ## Throw an error if the path to taxonomy edits is not a character string, and not NA.
+  if(!(is.na(path_to_taxonomy_edits) | is.character(path_to_taxonomy_edits))) stop("The path to taxonomy edits must be a character string or NA.")
+  
+  # Path to sequence edits.
+  ## Throw an error if the path to sequence edits is not a vector.
+  if(!is.vector(path_to_sequence_edits)) stop("The path to sequence edits must be a vector.")
+  ## Throw an error if the path to sequence edits has multiple elements.
+  if(length(path_to_sequence_edits) > 1) stop("The path to sequence edits cannot have multiple elements.")
+  ## Throw an error if the path to sequence edits is not a character string, and not NA.
+  if(!(is.na(path_to_sequence_edits) | is.character(path_to_sequence_edits))) stop("The path to sequence edits must be a character string or NA.")
+  
+  # Path to taxa subset list.
+  ## Throw an error if the path to taxa subset list is not a vector.
+  if(!is.vector(path_to_taxa_subset_list)) stop("The path to taxa subset list must be a vector.")
+  ## Throw an error if the path to taxa subset list has multiple elements.
+  if(length(path_to_taxa_subset_list) > 1) stop("The path to taxa subset list cannot have multiple elements.")
+  ## Throw an error if the path to taxa subset list is not a character string, and not NA.
+  if(!(is.na(path_to_taxa_subset_list) | is.character(path_to_taxa_subset_list))) stop("The path to taxa subset list must be a character string or NA.")
+  
+  ### Begin operations.
   
   # Read in reference database.
-  reference<-read.fasta(file=path_to_input_reference_database)
+  reference<-read.fasta(file=path_to_input_database)
   
   # If the reference database is from MIDORI.
-  if(input_reference_database_source=="MIDORI"){
+  if(input_database_source=="MIDORI"){
     
     # Remove everything in the reference names before and including ###root;.
     reference$Name<-sub(pattern="^.*###root_1;",replacement="",x=reference$Name)
@@ -207,25 +315,25 @@ format_reference_database<-function(path_to_input_reference_database,path_to_out
   }
   
   # If a local taxa list to subset the reference database to is provided.
-  if(!is.na(path_to_list_of_local_taxa_to_subset)){
+  if(!is.na(path_to_taxa_subset_list)){
     
     # Read in local taxa list.
-    local<-utils::read.csv(file=path_to_list_of_local_taxa_to_subset,stringsAsFactors=FALSE)
+    local<-utils::read.csv(file=path_to_taxa_subset_list,stringsAsFactors=FALSE)
     
     # Check that the correct fields are present in the local taxa list.
-    if(!identical(colnames(local),c("Common_Name","Domain","Phylum","Class","Order","Family","Genus","Species"))) stop('The field names in the local taxa list file should be: "Common_Name", "Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species".')
+    if(!identical(colnames(local),c("Common_Name","Domain","Phylum","Class","Order","Family","Genus","Species"))) stop('The field names in the taxa subset list file should be: "Common_Name", "Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species".')
     
     # Check that there are no NAs in the taxonomies of the local taxa list.
-    if(any(is.na(local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")]) | local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")]=="")) stop("There are NAs or blanks in the taxonomies of the local taxa list file. Please ensure that all taxonomy fields have entries for all records.")
+    if(any(is.na(local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")]) | local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")]=="")) stop("There are NAs or blanks in the taxonomies of the taxa subset list file. Please ensure that all taxonomy fields have entries for all records.")
     
     # Check that there are no underscores in the taxonomy fields of the local taxa list.
-    if(any(t(apply(X=local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")],MARGIN=1,FUN=grepl,pattern="_")))) stop("There cannot be underscores in the taxonomy fields of the local taxa list file.")
+    if(any(t(apply(X=local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")],MARGIN=1,FUN=grepl,pattern="_")))) stop("There cannot be underscores in the taxonomy fields of the taxa subset list file.")
     
     # Collapse local taxa names by semi-colons.
     local$Name<-apply(X=local[,c("Domain","Phylum","Class","Order","Family","Genus","Species")],MARGIN=1,FUN=paste,collapse=";")
     
     # Check that all species are unique.
-    if(any(duplicated(local$Name))) stop("There are duplicate species (i.e., there are multiple records with the same taxonomy) in the local taxa list file.")
+    if(any(duplicated(local$Name))) stop("There are duplicate species (i.e., there are multiple records with the same taxonomy) in the taxa subset list file.")
     
     # Replace spaces in the local name field with underscores.
     local$Name<-gsub(pattern=" ",replacement="_",x=local$Name)
@@ -239,7 +347,7 @@ format_reference_database<-function(path_to_input_reference_database,path_to_out
     } else { # If no sequences of local species are present in the reference database.
       
       # Throw an error.
-      stop("No sequences of local species are present in the reference database.")
+      stop("No sequences of subset species are present in the reference database.")
       
     }
     
@@ -247,10 +355,10 @@ format_reference_database<-function(path_to_input_reference_database,path_to_out
   
   # Write out the formatted reference database.
   write.fasta(names=reference$Name,sequences=reference$Sequence,
-              file=path_to_output_BLAST_database)
+              file=path_to_output_database)
   
   # Make a BLAST database out of the formatted reference database fasta file.
-  system2(command=makeblastdb_command,args=c(paste0("-in ",path_to_output_BLAST_database),
+  system2(command=makeblastdb_command,args=c(paste0("-in ",path_to_output_database),
                                              "-dbtype nucl"),
           stdout=FALSE)
   
