@@ -1,9 +1,9 @@
 #' Adjust Taxonomies
 #'
 #' Performs adjustments to a taxonomy system according to a taxonomy edits file.
-#' @param input_file String specifying path to list of species (in CSV format) whose taxonomies are to be adjusted. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no `NA`s or blanks in the taxonomy fields, and the species field should contain the binomial name. Additional fields may be present in the input file, and fields can be in any order.
-#' @param output_file String specifying path to output species list with adjusted taxonomies. The output file will be in CSV format.
-#' @param taxonomy_edits String specifying path to taxonomy edits file in CSV format. The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon.
+#' @param path_to_input_file String specifying path to list of species (in CSV format) whose taxonomies are to be adjusted. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no `NA`s or blanks in the taxonomy fields, and the species field should contain the binomial name. Additional fields may be present in the input file, and fields can be in any order.
+#' @param path_to_output_file String specifying path to output species list with adjusted taxonomies. The output file will be in CSV format.
+#' @param path_to_taxonomy_edits String specifying path to taxonomy edits file in CSV format. The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon.
 #' @returns No return value. Writes an output CSV file with adjusted taxonomies.
 #' @seealso
 #' [`get_taxonomies.species_binomials`][get_taxonomies.species_binomials()] for remotely fetching NCBI taxonomies from species binomials. \cr \cr
@@ -11,38 +11,38 @@
 #' @examples
 #' print("Insert example here.")
 #' @export
-adjust_taxonomies<-function(input_file,output_file,taxonomy_edits){
+adjust_taxonomies<-function(path_to_input_file,path_to_output_file,path_to_taxonomy_edits){
   
   # Check arguments.
   
   # Input file.
   ## Throw an error if the input file path is not a character string.
-  if(!is.character(input_file)) stop("The input file path must be a character string.")
+  if(!is.character(path_to_input_file)) stop("The input file path must be a character string.")
   ## Throw an error if the input file path has multiple elements.
-  if(length(input_file) > 1) stop("The input file path cannot have multiple elements.")
+  if(length(path_to_input_file) > 1) stop("The input file path cannot have multiple elements.")
   ## Throw an error if the input file path is NA.
-  if(is.na(input_file)) stop("The input file path cannot be NA.")
+  if(is.na(path_to_input_file)) stop("The input file path cannot be NA.")
   
   # Output file.
   ## Throw an error if the output file path is not a character string.
-  if(!is.character(output_file)) stop("The output file path must be a character string.")
+  if(!is.character(path_to_output_file)) stop("The output file path must be a character string.")
   ## Throw an error if the output file path has multiple elements.
-  if(length(output_file) > 1) stop("The output file path cannot have multiple elements.")
+  if(length(path_to_output_file) > 1) stop("The output file path cannot have multiple elements.")
   ## Throw an error if the output file path is NA.
-  if(is.na(output_file)) stop("The output file path cannot be NA.")
+  if(is.na(path_to_output_file)) stop("The output file path cannot be NA.")
   
   # Taxonomy edits file.
   ## Throw an error if the path to the taxonomy edits file is not a character string.
-  if(!is.character(taxonomy_edits)) stop("The path to the taxonomy edits file must be a character string.")
+  if(!is.character(path_to_taxonomy_edits)) stop("The path to the taxonomy edits file must be a character string.")
   ## Throw an error if the path to the taxonomy edits file has multiple elements.
-  if(length(taxonomy_edits) > 1) stop("The path to the taxonomy edits file path cannot have multiple elements.")
+  if(length(path_to_taxonomy_edits) > 1) stop("The path to the taxonomy edits file path cannot have multiple elements.")
   ## Throw an error if the path to the taxonomy edits file is NA.
-  if(is.na(taxonomy_edits)) stop("The path to the taxonomy edits file cannot be NA.")
+  if(is.na(path_to_taxonomy_edits)) stop("The path to the taxonomy edits file cannot be NA.")
   
   # Begin operations.
   
   # Read in input csv file.
-  df<-utils::read.csv(file=input_file,stringsAsFactors=FALSE)
+  df<-utils::read.csv(file=path_to_input_file,stringsAsFactors=FALSE)
   
   # Set vector of required fields.
   required_fields<-c("Common_Name","Domain","Phylum","Class","Order","Family","Genus","Species")
@@ -71,7 +71,7 @@ adjust_taxonomies<-function(input_file,output_file,taxonomy_edits){
   taxa_names<-gsub(pattern=" ",replacement="_",x=taxa_names)
   
   # Read in taxonomy edits.
-  taxonomy_edits<-utils::read.csv(file=taxonomy_edits,stringsAsFactors=FALSE)
+  taxonomy_edits<-utils::read.csv(file=path_to_taxonomy_edits,stringsAsFactors=FALSE)
   
   # Throw an error if the fields of the taxonomy edits file are not
   # Old_Taxonomy, New_Taxonomy, Notes.
@@ -126,6 +126,6 @@ adjust_taxonomies<-function(input_file,output_file,taxonomy_edits){
   df[,required_fields]<-updated_taxonomies
   
   # Write out adjusted taxonomies.
-  utils::write.csv(x=df,file=output_file,row.names=FALSE)
+  utils::write.csv(x=df,file=path_to_output_file,row.names=FALSE)
   
 }

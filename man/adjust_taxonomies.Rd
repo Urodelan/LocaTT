@@ -4,14 +4,18 @@
 \alias{adjust_taxonomies}
 \title{Adjust Taxonomies}
 \usage{
-adjust_taxonomies(input_file, output_file, taxonomy_edits)
+adjust_taxonomies(
+  path_to_input_file,
+  path_to_output_file,
+  path_to_taxonomy_edits
+)
 }
 \arguments{
-\item{input_file}{String specifying path to list of species (in CSV format) whose taxonomies are to be adjusted. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no \code{NA}s or blanks in the taxonomy fields, and the species field should contain the binomial name. Additional fields may be present in the input file, and fields can be in any order.}
+\item{path_to_input_file}{String specifying path to list of species (in CSV format) whose taxonomies are to be adjusted. The file should contain the following fields: 'Common_Name', 'Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'. There should be no \code{NA}s or blanks in the taxonomy fields, and the species field should contain the binomial name. Additional fields may be present in the input file, and fields can be in any order.}
 
-\item{output_file}{String specifying path to output species list with adjusted taxonomies. The output file will be in CSV format.}
+\item{path_to_output_file}{String specifying path to output species list with adjusted taxonomies. The output file will be in CSV format.}
 
-\item{taxonomy_edits}{String specifying path to taxonomy edits file in CSV format. The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon.}
+\item{path_to_taxonomy_edits}{String specifying path to taxonomy edits file in CSV format. The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon.}
 }
 \value{
 No return value. Writes an output CSV file with adjusted taxonomies.
