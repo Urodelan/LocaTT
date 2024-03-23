@@ -5,23 +5,26 @@
 \title{Get Taxonomies from IUCN Red List Files}
 \usage{
 get_taxonomies.IUCN(
-  path_to_IUCN_taxonomies,
-  path_to_IUCN_common_names,
-  path_to_output_local_taxa_list,
-  domain_name = "Eukaryota",
-  path_to_taxonomy_edits = NA
+  path_to_taxonomies,
+  path_to_common_names,
+  path_to_output_file,
+  domain = "Eukaryota",
+  path_to_taxonomy_edits = NA,
+  ...
 )
 }
 \arguments{
-\item{path_to_IUCN_taxonomies}{String specifying path to input IUCN Red List taxonomy.csv file.}
+\item{path_to_taxonomies}{String specifying path to input IUCN Red List taxonomy.csv file.}
 
-\item{path_to_IUCN_common_names}{String specifying path to input IUCN Red List common_names.csv file.}
+\item{path_to_common_names}{String specifying path to input IUCN Red List common_names.csv file.}
 
-\item{path_to_output_local_taxa_list}{String specifying path to output species list (in CSV format) with formatted taxonomies.}
+\item{path_to_output_file}{String specifying path to output species list (in CSV format) with formatted taxonomies.}
 
-\item{domain_name}{String specifying the domain name to use for all species. The IUCN Red List files do not include domain information, so a domain name must be provided. If using a reference database from UNITE, provide a kingdom name here (\emph{e.g.}, \code{'Fungi'}). The default is \code{'Eukaryota'}.}
+\item{domain}{String specifying the domain name to use for all species. The IUCN Red List files do not include domain information, so a domain name must be provided. If using a reference database from UNITE, provide a kingdom name here (\emph{e.g.}, \code{'Fungi'}). The default is \code{'Eukaryota'}.}
 
 \item{path_to_taxonomy_edits}{String specifying path to taxonomy edits file in CSV format. The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon. If no taxonomy edits are desired, then set this variable to \code{NA} (the default).}
+
+\item{...}{Accepts former argument names for backwards compatibility.}
 }
 \value{
 No return value. Writes an output CSV file with formatted taxonomies.
@@ -31,24 +34,24 @@ Formats taxonomies from IUCN Red List taxonomy.csv and common_names.csv files fo
 }
 \examples{
 # Get path to example taxonomy CSV file.
-path_to_taxonomy_file<-system.file("extdata",
-                                   "example_taxonomy.csv",
-                                   package="LocaTT",
-                                   mustWork=TRUE)
+path_to_taxonomies<-system.file("extdata",
+                                "example_taxonomy.csv",
+                                package="LocaTT",
+                                mustWork=TRUE)
 
 # Get path to example common names CSV file.
-path_to_common_names_file<-system.file("extdata",
-                                       "example_common_names.csv",
-                                       package="LocaTT",
-                                       mustWork=TRUE)
+path_to_common_names<-system.file("extdata",
+                                  "example_common_names.csv",
+                                  package="LocaTT",
+                                  mustWork=TRUE)
 
 # Create a temporary file path for the output CSV file.
 path_to_output_file<-tempfile(fileext=".csv")
 
 # Format common names and taxonomies.
-get_taxonomies.IUCN(path_to_IUCN_taxonomies=path_to_taxonomy_file,
-                    path_to_IUCN_common_names=path_to_common_names_file,
-                    path_to_output_local_taxa_list=path_to_output_file)
+get_taxonomies.IUCN(path_to_taxonomies=path_to_taxonomies,
+                    path_to_common_names=path_to_common_names,
+                    path_to_output_file=path_to_output_file)
 }
 \seealso{
 \code{\link[=get_taxonomies.species_binomials]{get_taxonomies.species_binomials}} for remotely fetching NCBI taxonomies from species binomials. \cr \cr

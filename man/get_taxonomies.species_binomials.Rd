@@ -5,23 +5,26 @@
 \title{Get NCBI Taxonomies from Species Binomials}
 \usage{
 get_taxonomies.species_binomials(
-  path_to_input_species_binomials,
-  path_to_output_local_taxa_list,
+  path_to_species_binomials,
+  path_to_output_file,
   path_to_taxonomy_edits = NA,
-  print_taxize_queries = TRUE
+  print_queries = TRUE,
+  ...
 )
 }
 \arguments{
-\item{path_to_input_species_binomials}{String specifying path to input species list with common and scientific names. The file should be in CSV format and contain the following fields: 'Common_Name', 'Scientific_Name'. Values in the 'Common_Name' field are optional. Values in the 'Scientific_Name' field are required.}
+\item{path_to_species_binomials}{String specifying path to input species list with common and scientific names. The file should be in CSV format and contain the following fields: 'Common_Name', 'Scientific_Name'. Values in the 'Common_Name' field are optional. Values in the 'Scientific_Name' field are required.}
 
-\item{path_to_output_local_taxa_list}{String specifying path to output species list with added NCBI taxonomies. The output file will be in CSV format.}
+\item{path_to_output_file}{String specifying path to output species list with added NCBI taxonomies. The output file will be in CSV format.}
 
 \item{path_to_taxonomy_edits}{String specifying path to taxonomy edits file in CSV format. The file must contain the following fields: 'Old_Taxonomy', 'New_Taxonomy', 'Notes'. Old taxonomies are replaced with new taxonomies in the order the records appear in the file. The taxonomic levels in the 'Old_Taxonomy' and 'New_Taxonomy' fields should be delimited by a semi-colon. If no taxonomy edits are desired, then set this variable to \code{NA} (the default).}
 
-\item{print_taxize_queries}{Logical. Whether taxa queries should be printed. The default is \code{TRUE}.}
+\item{print_queries}{Logical. Whether taxa queries should be printed. The default is \code{TRUE}.}
+
+\item{...}{Accepts former argument names for backwards compatibility.}
 }
 \value{
-No return value. Writes an output CSV file with added taxonomies.
+No return value. Writes an output CSV file with added taxonomies. Species which could not be found in the NCBI taxonomy database appear in the top records of the output file.
 }
 \description{
 Remotely fetches taxonomies from the NCBI taxonomy database for a list of species binomials.
@@ -29,18 +32,18 @@ Remotely fetches taxonomies from the NCBI taxonomy database for a list of specie
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Get path to example input species binomials CSV file.
-path_to_input_file<-system.file("extdata",
-                                "example_species_binomials.csv",
-                                 package="LocaTT",
-                                 mustWork=TRUE)
+path_to_species_binomials<-system.file("extdata",
+                                       "example_species_binomials.csv",
+                                       package="LocaTT",
+                                       mustWork=TRUE)
 
 # Create a temporary file path for the output CSV file.
 path_to_output_file<-tempfile(fileext=".csv")
 
 # Fetch taxonomies from species binomials.
-get_taxonomies.species_binomials(path_to_input_species_binomials=path_to_input_file,
-                                 path_to_output_local_taxa_list=path_to_output_file,
-                                 print_taxize_queries=FALSE)
+get_taxonomies.species_binomials(path_to_species_binomials=path_to_species_binomials,
+                                 path_to_output_file=path_to_output_file,
+                                 print_queries=FALSE)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
