@@ -27,6 +27,13 @@
 #' @export
 get_taxonomies.species_binomials<-function(path_to_species_binomials,path_to_output_file,path_to_taxonomy_edits=NA,print_queries=TRUE,...){
   
+  ### Check dependencies.
+  
+  # Ensure that the taxize package is installed.
+  if(!requireNamespace(package="taxize",quietly=TRUE)){
+    stop("Please install package 'taxize' to use this function.")
+  }
+  
   ### Ensure backwards compatibility.
   
   # Handle changes in argument names.
