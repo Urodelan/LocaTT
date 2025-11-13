@@ -1,7 +1,7 @@
 #' Summarize Quality Scores
 #'
-#' @description For each base pair position, summarizes Phred quality scores and the cumulative probability that all bases were called correctly.
-#' @details For each combination of base pair position and read direction, calculates summary statistics of Phred quality scores and the cumulative probability that all bases were called correctly. The cumulative probability is calculated from the first base pair up to the current position. Quality scores are assumed to be encoded in Sanger format. Read pairs are selected by randomly sampling up to `n.each` read pairs from each pair of input FASTQ files. By default, `n.each` is derived from `n.total`, and `n.total` will be ignored if `n.each` is provided. By default, [`mean`][mean()] is used to compute the summary statistics, but the user may provide another summary function instead (*e.g.*, [`median`][stats::median()]). Functions which return multiple summary statistics are also supported (*e.g.*, [`summary`][summary()] and [`quantile`][stats::quantile()]). Arguments in `...` are passed to the summary function.
+#' @description For each base pair position, summarizes read length, Phred quality score, and the cumulative probability that all bases were called correctly.
+#' @details For each combination of base pair position and read direction, calculates summary statistics of read length, Phred quality score, and the cumulative probability that all bases were called correctly. The cumulative probability is calculated from the first base pair up to the current position. Quality scores are assumed to be encoded in Sanger format. Read pairs are selected by randomly sampling up to `n.each` read pairs from each pair of input FASTQ files. By default, `n.each` is derived from `n.total`, and `n.total` will be ignored if `n.each` is provided. By default, [`mean`][mean()] is used to compute the summary statistics, but the user may provide another summary function instead (*e.g.*, [`median`][stats::median()]). Functions which return multiple summary statistics are also supported (*e.g.*, [`summary`][summary()] and [`quantile`][stats::quantile()]). Arguments in `...` are passed to the summary function.
 #' @param forward_files A character vector of file paths to FASTQ files containing forward DNA sequence reads.
 #' @param reverse_files A character vector of file paths to FASTQ files containing reverse DNA sequence reads.
 #' @param n.total Numeric. The number of read pairs to randomly sample from the input FASTQ files. Ignored if `n.each` is specified. The default is `10000`.
@@ -9,9 +9,10 @@
 #' @param seed Numeric. The seed for randomly sampling read pairs. If `NULL` (the default), then a random seed is used.
 #' @param FUN A function to compute summary statistics of the quality scores. The default is [`mean`][mean()].
 #' @param ... Additional arguments passed to `FUN`.
-#' @returns Returns a data frame containing summary statistics of quality scores at each base pair position. The returned data frame contains the following fields:
+#' @returns Returns a data frame containing summary statistics of read length and quality score at each base pair position. The returned data frame contains the following fields:
 #' * Direction: The read direction (_i.e._, "Forward" or "Reverse").
 #' * Position: The base pair position.
+#' * Length: The summary statistic(s) of read lengths. If `FUN` returns multiple summary statistics, then a matrix of the summary statistics will be stored in this field, which can be accessed with [`$Length`][Extract()].
 #' * Score: The summary statistic(s) of Phred quality scores. If `FUN` returns multiple summary statistics, then a matrix of the summary statistics will be stored in this field, which can be accessed with [`$Score`][Extract()].
 #' * Probability: The summary statistic(s) of the cumulative probability that all bases were called correctly. If `FUN` returns multiple summary statistics, then a matrix of the summary statistics will be stored in this field, which can be accessed with [`$Probability`][Extract()].
 #' @seealso
@@ -156,7 +157,7 @@ summarize_quality_scores<-function(forward_files,reverse_files,n.total=10000,n.e
   ## Reverse.
   len.rev<-sapply(X=decoded.rev,FUN=length)
   
-  # Define cumulative probability function using decode quality scores.
+  # Define cumulative probability function using decoded quality scores.
   cumprob<-function(decoded){
     # Convert quality scores into probabilities that each base call was incorrect.
     prob_error<-10^(-decoded/10)
@@ -183,13 +184,16 @@ summarize_quality_scores<-function(forward_files,reverse_files,n.total=10000,n.e
   for(i in 1:max(len.fwd)){
     ## Set the position.
     position<-i
+    ## Check if each read includes position.
+    len.pos<-as.numeric(position <= unname(len.fwd))
     ## Get the decoded quality scores at the position.
-    decoded<-sapply(X=decoded.fwd,FUN="[",position,simplify=TRUE)
+    decoded<-unname(sapply(X=decoded.fwd,FUN="[",position,simplify=TRUE))
     ## Get the cumulative probability at the position.
-    probability<-sapply(X=prob.fwd,FUN="[",position,simplify=TRUE)
+    probability<-unname(sapply(X=prob.fwd,FUN="[",position,simplify=TRUE))
     ## Collect the information for the position into a data frame.
     df.position<-data.frame(Direction="Forward",
                             Position=position,
+                            Length=len.pos,
                             Score=decoded,
                             Probability=probability,
                             stringsAsFactors=FALSE)
@@ -200,13 +204,16 @@ summarize_quality_scores<-function(forward_files,reverse_files,n.total=10000,n.e
   for(i in 1:max(len.rev)){
     ## Set the position.
     position<-i
+    ## Check if each read includes position.
+    len.pos<-as.numeric(position <= unname(len.rev))
     ## Get the decoded quality scores at the position.
-    decoded<-sapply(X=decoded.rev,FUN="[",position,simplify=TRUE)
+    decoded<-unname(sapply(X=decoded.rev,FUN="[",position,simplify=TRUE))
     ## Get the cumulative probability at the position.
-    probability<-sapply(X=prob.rev,FUN="[",position,simplify=TRUE)
+    probability<-unname(sapply(X=prob.rev,FUN="[",position,simplify=TRUE))
     ## Collect the information for the position into a data frame.
     df.position<-data.frame(Direction="Reverse",
                             Position=position,
+                            Length=len.pos,
                             Score=decoded,
                             Probability=probability,
                             stringsAsFactors=FALSE)
@@ -215,12 +222,16 @@ summarize_quality_scores<-function(forward_files,reverse_files,n.total=10000,n.e
   }
   
   # Summarize quality scores.
+  ## Length.
+  sum.length<-stats::aggregate(Length~Direction+Position,data=df.full,FUN=FUN,...)
   ## Score.
   sum.score<-stats::aggregate(Score~Direction+Position,data=df.full,FUN=FUN,...)
   ## Probability.
   sum.prob<-stats::aggregate(Probability~Direction+Position,data=df.full,FUN=FUN,...)
-  ## Combine score and probability information into a single data frame.
-  summarized<-merge(x=sum.score,y=sum.prob)
+  ## Combine length and score information into a single data frame.
+  summarized<-merge(x=sum.length,y=sum.score)
+  ## Combine length, score, and probability information into a single data frame.
+  summarized<-merge(x=summarized,y=sum.prob)
   ## Re-order records by direction and position.
   summarized<-summarized[order(summarized$Direction,summarized$Position),]
   ## Reset row names.

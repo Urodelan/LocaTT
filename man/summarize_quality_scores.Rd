@@ -30,19 +30,20 @@ summarize_quality_scores(
 \item{...}{Additional arguments passed to \code{FUN}.}
 }
 \value{
-Returns a data frame containing summary statistics of quality scores at each base pair position. The returned data frame contains the following fields:
+Returns a data frame containing summary statistics of read length and quality score at each base pair position. The returned data frame contains the following fields:
 \itemize{
 \item Direction: The read direction (\emph{i.e.}, "Forward" or "Reverse").
 \item Position: The base pair position.
+\item Length: The summary statistic(s) of read lengths. If \code{FUN} returns multiple summary statistics, then a matrix of the summary statistics will be stored in this field, which can be accessed with \code{\link[=Extract]{$Length}}.
 \item Score: The summary statistic(s) of Phred quality scores. If \code{FUN} returns multiple summary statistics, then a matrix of the summary statistics will be stored in this field, which can be accessed with \code{\link[=Extract]{$Score}}.
 \item Probability: The summary statistic(s) of the cumulative probability that all bases were called correctly. If \code{FUN} returns multiple summary statistics, then a matrix of the summary statistics will be stored in this field, which can be accessed with \code{\link[=Extract]{$Probability}}.
 }
 }
 \description{
-For each base pair position, summarizes Phred quality scores and the cumulative probability that all bases were called correctly.
+For each base pair position, summarizes read length, Phred quality score, and the cumulative probability that all bases were called correctly.
 }
 \details{
-For each combination of base pair position and read direction, calculates summary statistics of Phred quality scores and the cumulative probability that all bases were called correctly. The cumulative probability is calculated from the first base pair up to the current position. Quality scores are assumed to be encoded in Sanger format. Read pairs are selected by randomly sampling up to \code{n.each} read pairs from each pair of input FASTQ files. By default, \code{n.each} is derived from \code{n.total}, and \code{n.total} will be ignored if \code{n.each} is provided. By default, \code{\link[=mean]{mean}} is used to compute the summary statistics, but the user may provide another summary function instead (\emph{e.g.}, \code{\link[stats:median]{median}}). Functions which return multiple summary statistics are also supported (\emph{e.g.}, \code{\link[=summary]{summary}} and \code{\link[stats:quantile]{quantile}}). Arguments in \code{...} are passed to the summary function.
+For each combination of base pair position and read direction, calculates summary statistics of read length, Phred quality score, and the cumulative probability that all bases were called correctly. The cumulative probability is calculated from the first base pair up to the current position. Quality scores are assumed to be encoded in Sanger format. Read pairs are selected by randomly sampling up to \code{n.each} read pairs from each pair of input FASTQ files. By default, \code{n.each} is derived from \code{n.total}, and \code{n.total} will be ignored if \code{n.each} is provided. By default, \code{\link[=mean]{mean}} is used to compute the summary statistics, but the user may provide another summary function instead (\emph{e.g.}, \code{\link[stats:median]{median}}). Functions which return multiple summary statistics are also supported (\emph{e.g.}, \code{\link[=summary]{summary}} and \code{\link[stats:quantile]{quantile}}). Arguments in \code{...} are passed to the summary function.
 }
 \examples{
 print("Insert example here.")

@@ -1,10 +1,13 @@
 Package: LocaTT
 Title: Geographically-Conscious Taxonomic Assignment for Metabarcoding
-Version: 1.1.15
+Version: 1.1.17
 Authors@R: c(
-    person("Kenen", "Goodwin", email="urodelan@gmail.com", role=c("aut","cre"),
+    person(given="Kenen B", family="Goodwin",
+           email="urodelan@gmail.com", role=c("aut","cre"),
            comment=c(ORCID="0000-0002-9219-7693")),
-    person("Taal","Levi",role="aut")
+    person(given="Christopher", family="Cousins", role="ctb"),
+    person(given="Taal", family="Levi", role="ctb"),
+    person(given="Tiffany S", family="Garcia", role="ths")
     )
 Description: A bioinformatics pipeline for performing taxonomic
     assignment of DNA metabarcoding sequence data while considering
@@ -18,4 +21,6 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports: 
-    utils, stats, parallel, taxize
+    utils, stats, parallel
+Suggests: 
+    taxize
