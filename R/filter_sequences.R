@@ -42,7 +42,28 @@
 #' [`local_taxa_tool`][local_taxa_tool()] for performing geographically-conscious taxonomic assignment of filtered sequences.
 #' @references A manuscript describing these methods is in preparation.
 #' @examples
-#' print("Insert example here.")
+#' # Get example FASTA files.
+#' input_files<-system.file("extdata",
+#'                          paste0(rep(x=paste0("S0",1:3),
+#'                                     each=3),
+#'                                 "P0",1:3,".fasta"),
+#'                          package="LocaTT",
+#'                          mustWork=TRUE)
+#' 
+#' # Create path for temporary output file.
+#' output_file<-tempfile(fileext=".csv")
+#' 
+#' # Specify samples.
+#' samples<-rep(x=paste0("S0",1:3),each=3)
+#' 
+#' # Specify replicates.
+#' PCR_replicates<-rep(x=paste0("P0",1:3),times=3)
+#' 
+#' # Filter sequences.
+#' filter_sequences(input_files=input_files,
+#'                  samples=samples,
+#'                  PCR_replicates=PCR_replicates,
+#'                  output_file=output_file)
 #' @export
 filter_sequences<-function(input_files,samples,PCR_replicates,output_file,minimum_reads.PCR_replicate=1,minimum_reads.sequence=1,minimum_proportion.sequence=0.005,binomial_test.enabled=TRUE,binomial_test.p.adjust.method="none",binomial_test.alpha_level=0.05,minimum_PCR_replicates=2,delimiter.read_counts=": ",delimiter.PCR_replicates=", "){
   

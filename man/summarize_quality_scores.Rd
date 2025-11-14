@@ -46,7 +46,20 @@ For each base pair position, summarizes read length, Phred quality score, and th
 For each combination of base pair position and read direction, calculates summary statistics of read length, Phred quality score, and the cumulative probability that all bases were called correctly. The cumulative probability is calculated from the first base pair up to the current position. Quality scores are assumed to be encoded in Sanger format. Read pairs are selected by randomly sampling up to \code{n.each} read pairs from each pair of input FASTQ files. By default, \code{n.each} is derived from \code{n.total}, and \code{n.total} will be ignored if \code{n.each} is provided. By default, \code{\link[=mean]{mean}} is used to compute the summary statistics, but the user may provide another summary function instead (\emph{e.g.}, \code{\link[stats:median]{median}}). Functions which return multiple summary statistics are also supported (\emph{e.g.}, \code{\link[=summary]{summary}} and \code{\link[stats:quantile]{quantile}}). Arguments in \code{...} are passed to the summary function.
 }
 \examples{
-print("Insert example here.")
+# Get example forward FASTQ files.
+forward_files<-system.file("extdata",
+                           paste0("S0",1:3,"F.fastq"),
+                           package="LocaTT",
+                           mustWork=TRUE)
+
+# Get example reverse FASTQ files.
+reverse_files<-system.file("extdata",
+                           paste0("S0",1:3,"R.fastq"),
+                           package="LocaTT",
+                           mustWork=TRUE)
+
+# Summarize quality scores.
+summarize_quality_scores(forward_files,reverse_files)
 }
 \seealso{
 \code{\link[=decode_quality_scores]{decode_quality_scores}} for decoding quality scores.

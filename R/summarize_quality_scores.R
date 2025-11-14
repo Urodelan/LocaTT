@@ -18,7 +18,20 @@
 #' @seealso
 #' [`decode_quality_scores`][decode_quality_scores()] for decoding quality scores.
 #' @examples
-#' print("Insert example here.")
+#' # Get example forward FASTQ files.
+#' forward_files<-system.file("extdata",
+#'                            paste0("S0",1:3,"F.fastq"),
+#'                            package="LocaTT",
+#'                            mustWork=TRUE)
+#' 
+#' # Get example reverse FASTQ files.
+#' reverse_files<-system.file("extdata",
+#'                            paste0("S0",1:3,"R.fastq"),
+#'                            package="LocaTT",
+#'                            mustWork=TRUE)
+#' 
+#' # Summarize quality scores.
+#' summarize_quality_scores(forward_files,reverse_files)
 #' @export
 summarize_quality_scores<-function(forward_files,reverse_files,n.total=10000,n.each=ceiling(n.total/length(forward_files)),seed=NULL,FUN=mean,...){
   

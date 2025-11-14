@@ -30,7 +30,12 @@ Returns a data frame of extracted taxonomic levels. One record for each element 
 Extracts each taxonomic level from a vector of taxonomic strings.
 }
 \examples{
-print("Insert example here.")
+expand_taxonomies(taxonomies=
+   c("Eukaryota;Chordata;Amphibia;Caudata;Ambystomatidae;Ambystoma;Ambystoma mavortium",
+     "Eukaryota;Chordata;Amphibia;Anura;Bufonidae;Anaxyrus;Anaxyrus boreas",
+     "Eukaryota;Chordata;Amphibia;Anura;Ranidae;Rana;Rana luteiventris"),
+                       full_names=FALSE,
+                       delimiter=";")
 }
 \seealso{
 \code{\link[=get_taxonomic_level]{get_taxonomic_level}} for extracting a taxonomic level from taxonomic strings. \cr \cr

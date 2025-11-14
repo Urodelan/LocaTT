@@ -46,7 +46,25 @@ For each pair of input FASTQ files, removes DNA read pairs containing ambiguous 
 Multicore parallel processing is supported on Mac and Linux operating systems (not available on Windows). When \code{cores > 1} (parallel processing enabled), warnings and errors are printed to the console in addition to being invisibly returned as a list (see the return value section), and errors produced while processing a pair of FASTQ files will not interrupt the processing of other FASTQ file pairs. When \code{cores = 1}, FASTQ file pairs are processed sequentially on a single core, and errors will prevent the processing of subsequent FASTQ file pairs (but warnings will not).
 }
 \examples{
-print("Insert example here.")
+# Get example forward FASTQ files.
+forward_files<-system.file("extdata",
+                           paste0("S0",1:3,"F.fastq"),
+                           package="LocaTT",
+                           mustWork=TRUE)
+
+# Get example reverse FASTQ files.
+reverse_files<-system.file("extdata",
+                           paste0("S0",1:3,"R.fastq"),
+                           package="LocaTT",
+                           mustWork=TRUE)
+
+# Create paths for temporary output files.
+output_files<-tempfile(pattern=paste0("O",1:3),fileext=".fasta")
+
+# Truncate and merge pairs.
+truncate_and_merge_pairs(forward_files=forward_files,
+                         reverse_files=reverse_files,
+                         output_files=output_files)
 }
 \references{
 A manuscript describing these methods is in preparation.

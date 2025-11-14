@@ -22,7 +22,25 @@
 #' [`filter_sequences`][filter_sequences()] for filtering merged read pairs by PCR replicate.
 #' @references A manuscript describing these methods is in preparation.
 #' @examples
-#' print("Insert example here.")
+#' # Get example forward FASTQ files.
+#' forward_files<-system.file("extdata",
+#'                            paste0("S0",1:3,"F.fastq"),
+#'                            package="LocaTT",
+#'                            mustWork=TRUE)
+#' 
+#' # Get example reverse FASTQ files.
+#' reverse_files<-system.file("extdata",
+#'                            paste0("S0",1:3,"R.fastq"),
+#'                            package="LocaTT",
+#'                            mustWork=TRUE)
+#' 
+#' # Create paths for temporary output files.
+#' output_files<-tempfile(pattern=paste0("O",1:3),fileext=".fasta")
+#' 
+#' # Truncate and merge pairs.
+#' truncate_and_merge_pairs(forward_files=forward_files,
+#'                          reverse_files=reverse_files,
+#'                          output_files=output_files)
 #' @export
 truncate_and_merge_pairs<-function(forward_files,reverse_files,output_files,truncation_length=NA,threshold.quality_score=3,threshold.probability=0.5,minimum_overlap=10,cores=1,progress=FALSE){
   

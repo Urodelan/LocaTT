@@ -9,7 +9,25 @@
 #' [`get_taxonomies.species_binomials`][get_taxonomies.species_binomials()] for remotely fetching NCBI taxonomies from species binomials. \cr \cr
 #' [`get_taxonomies.IUCN`][get_taxonomies.IUCN()] for formatting taxonomies from the IUCN Red List.
 #' @examples
-#' print("Insert example here.")
+#' # Get path to input file.
+#' path_to_input_file<-system.file("extdata",
+#'                                 "example_local_taxa_list.csv",
+#'                                 package="LocaTT",
+#'                                 mustWork=TRUE)
+#' 
+#' # Get path to taxonomy edits.
+#' path_to_taxonomy_edits<-system.file("extdata",
+#'                                     "example_taxonomy_edits.csv",
+#'                                     package="LocaTT",
+#'                                     mustWork=TRUE)
+#' 
+#' # Create temporary output file path.
+#' path_to_output_file<-tempfile(fileext=".csv")
+#' 
+#' # Adjust taxonomies.
+#' adjust_taxonomies(path_to_input_file=path_to_input_file,
+#'                   path_to_output_file=path_to_output_file,
+#'                   path_to_taxonomy_edits=path_to_taxonomy_edits)
 #' @export
 adjust_taxonomies<-function(path_to_input_file,path_to_output_file,path_to_taxonomy_edits){
   
