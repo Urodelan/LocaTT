@@ -1,0 +1,3 @@
+"Old_Taxonomy","New_Taxonomy","Notes"
+"Domain_1;Phylum_1;Class_1;","Domain_1;Phylum_1;Class_3;","Assign class 1 to class 3 (domain 1, phylum 1)."
+"Domain_2;Phylum_2;","Domain_2;Phylum_3;","Assign phylum 2 to phylum 3 (domain 2)."
