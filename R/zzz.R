@@ -5,7 +5,7 @@
            "   ______  ______  ______   Geographically-conscious\n",
            "    |  | \\/ |  | \\/ |  |    taxonomic assignment\n",
            "   _|__|_/\\_|__|_/\\_|__|_   for DNA metabarcoding.\n",
-           "For a detailed tutorial, see: https://urodelan.github.io/Local_Taxa_Tool_Tutorial/\n",
+           "For a tutorial, see: https://urodelan.github.io/LocaTT_Tutorial/\n",
            "Command line BLAST is required, see tutorial for details.\n",
            "See citation('LocaTT') if used in publications."))
 }

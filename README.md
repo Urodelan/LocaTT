@@ -4,7 +4,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The Local Taxa Tool (LocaTT, pronounced “locate”) is an R package for performing taxonomic assignment of DNA metabarcoding sequence data while considering geographic location. A detailed tutorial is available at <https://urodelan.github.io/Local_Taxa_Tool_Tutorial/>.
+The Local Taxa Tool (LocaTT, pronounced “locate”) is an R package for performing taxonomic assignment of DNA metabarcoding sequence data while considering geographic location. A detailed tutorial is available at <https://urodelan.github.io/LocaTT_Tutorial/>.
 
 ## Installation
 
