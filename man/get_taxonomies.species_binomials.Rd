@@ -27,7 +27,7 @@ get_taxonomies.species_binomials(
 No return value. Writes an output CSV file with added taxonomies. Species which could not be found in the NCBI taxonomy database appear in the top records of the output file.
 }
 \description{
-Remotely fetches taxonomies from the NCBI taxonomy database for a list of species binomials.
+Remotely fetches taxonomies from the NCBI taxonomy database for a list of species binomials. Installation of the \code{taxize} package is required to use this function.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
