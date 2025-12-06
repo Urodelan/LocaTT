@@ -30,7 +30,7 @@ No return value. Writes an output CSV file with added taxonomies. Species which 
 Remotely fetches taxonomies from the NCBI taxonomy database for a list of species binomials. Installation of the \code{taxize} package is required to use this function.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 # Get path to example input species binomials CSV file.
 path_to_species_binomials<-system.file("extdata",
                                        "example_species_binomials.csv",

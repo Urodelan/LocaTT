@@ -23,7 +23,7 @@ Draws circle polygon.
 Draws a circle polygon of a given radius. The circle is drawn about the origin (\emph{i.e.}, x = 0, y = 0). Intended for use with \code{\link[=template]{template}} to generate \code{\link[=detection]{detection}} and \code{\link{proportion}} plots.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 template(l=1)
 circle(r=1)
 \dontshow{\}) # examplesIf}

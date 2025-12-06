@@ -45,7 +45,7 @@ Generates a detection plot for a singular group.
 Produces a pie-chart-like detection plot without grouping structure. Each sector represents a sample, and each sub-sector represents a replicate. Filled replicates represent detections. Samples are sorted alphabetically and arranged in a clockwise orientation (from angle zero). This plot design is specialized for visualizing binary detection data.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 set.seed(1234)
 n.samples<-6
 n.replicates<-3

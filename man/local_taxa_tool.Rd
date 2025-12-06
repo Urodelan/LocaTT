@@ -72,7 +72,7 @@ Sequences are BLASTed against a global reference database, and the tool suggests
 }
 }
 \examples{
-\dontshow{if (blast_command_found(blast_command="blastn")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (blast_command_found(blast_command="blastn")) withAutoprint(\{ # examplesIf}
 # Get path to example query sequences FASTA file.
 path_to_query_sequences<-system.file("extdata",
                                      "example_query_sequences.fasta",

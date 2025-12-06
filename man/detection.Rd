@@ -45,7 +45,7 @@ Generates detection plots for a multiple groups.
 Produces a pie-chart-like detection plot with grouping structure. Each circle represents a group. Each sector represents a sample, and each sub-sector represents a replicate. Filled replicates represent detections. Groups are sorted alphabetically and arranged from left to right and top to bottom. Samples are sorted alphabetically and arranged in a clockwise orientation (from angle zero). Samples are sorted independently for each group. This plot design is specialized for visualizing binary detection data.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 set.seed(1234)
 n.groups<-6
 n.samples<-6

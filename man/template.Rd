@@ -21,7 +21,7 @@ Initiates a blank template plot.
 Initiates a blank template plot with limits \code{l} and buffer \code{b} about the origin (\emph{i.e.}, x = 0, y = 0). \code{l} is used for axis limits in both the negative and positive directions. \code{b} extends the limits beyond \code{l} by a fixed proportion (\emph{i.e.}, \code{l} * (1 + \code{b})). Intended for use with \code{\link[=circle]{circle}} and \code{\link[=sector]{sector}}.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 template(l=1)
 circle(r=1)
 \dontshow{\}) # examplesIf}

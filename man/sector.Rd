@@ -27,7 +27,7 @@ Draws sector polygon.
 Draws a sector polygon given a start angle, end angle, and circle radius. The sector is drawn about the origin (\emph{i.e.}, x = 0, y = 0). Intended for use with \code{\link[=template]{template}} to generate \code{\link[=detection]{detection}} and \code{\link{proportion}} plots.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 template(l=1)
 sector(s=0,e=45,r=1)
 \dontshow{\}) # examplesIf}

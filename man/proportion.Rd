@@ -51,7 +51,7 @@ Generates proportion plots for multiple groups.
 Produces a pie-chart-like proportion plot with grouping structure. Each circle represents a group, and each sector represents a sample. When \code{a} = \code{TRUE} (the default), then the proportion of each sector filled with color represents the within-sample proportional abundance. Groups are sorted alphabetically and arranged from left to right and top to bottom. When \code{s} = \code{FALSE} (the default), then samples are sorted alphabetically and arranged in a clockwise orientation (from angle zero). When \code{s} = \code{TRUE}, then samples are sorted by decreasing proportional abundance. Samples are sorted independently for each group. This plot design is specialized for visualizing proportional abundance data.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 set.seed(1234)
 n.groups<-6
 n.samples<-6

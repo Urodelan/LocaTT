@@ -51,7 +51,7 @@ Generates a proportion plot for a singular group.
 Produces a pie-chart-like proportion plot without grouping structure. Each sector represents a sample. When \code{a} = \code{TRUE} (the default), then the proportion of each sector filled with color represents the within-sample proportional abundance. When \code{s} = \code{FALSE} (the default), then samples are sorted alphabetically and arranged in a clockwise orientation (from angle zero). When \code{s} = \code{TRUE}, then samples are sorted by decreasing proportional abundance. This plot design is specialized for visualizing proportional abundance data.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 set.seed(1234)
 n.samples<-6
 data<-list(s=letters[1:n.samples],
