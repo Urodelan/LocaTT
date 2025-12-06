@@ -132,13 +132,13 @@ get_taxonomies.species_binomials<-function(path_to_species_binomials,path_to_out
   # Get NCBI taxonomies from the scientific names.
   # Species synonyms are accounted for (if the synonyms are present in NCBI),
   # but mispellings are not.
-  taxonomies<-taxize::tax_name(sci=taxa$Scientific_Name,get=c("superkingdom","phylum","class","order","family","genus","species"),db="ncbi",messages=print_queries)
+  taxonomies<-taxize::tax_name(sci=taxa$Scientific_Name,get=c("domain","phylum","class","order","family","genus","species"),db="ncbi",messages=print_queries)
   
   # Add common name to the taxonomies.
   taxonomies$Common_Name<-taxa$Common_Name
   
   # Subset to just desired fields.
-  taxa<-taxonomies[,c("Common_Name","query","superkingdom","phylum","class","order","family","genus","species")]
+  taxa<-taxonomies[,c("Common_Name","query","domain","phylum","class","order","family","genus","species")]
   
   # Rename fields.
   colnames(taxa)<-c("Common_Name","Query","Domain","Phylum","Class","Order","Family","Genus","Species")
