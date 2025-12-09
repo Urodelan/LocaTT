@@ -2,7 +2,7 @@
 #'
 #' @description Generates a detection plot for a singular group.
 #' @details Produces a pie-chart-like detection plot without grouping structure. Each sector represents a sample, and each sub-sector represents a replicate. Filled replicates represent detections. Samples are sorted alphabetically and arranged in a clockwise orientation (from angle zero). This plot design is specialized for visualizing binary detection data.
-#' @param x A list of vectors named `"s"`, `"r"`, and `"d"`. The elements of vector `"s"` (character or numeric) specify the sample. The elements of vector `"r"` (numeric) specify the number of replicates within sample `"s"`. The elements of vector `"r"` (numeric) specify the number of replicates within sample `"s"` with detections.
+#' @param x A list of vectors named `"s"`, `"r"`, and `"d"`. The elements of vector `"s"` (character or numeric) specify the sample. The elements of vector `"r"` (numeric) specify the number of replicates within sample `"s"`. The elements of vector `"d"` (numeric) specify the number of replicates within sample `"s"` with detections.
 #' @param r Numeric scalar. Radius of plot circle (default = `1`).
 #' @param b Numeric scalar. Plot radius buffer (proportion; default = `0.025`).
 #' @param v Numeric scalar. Vertex count of plot circle (default = `1000`).

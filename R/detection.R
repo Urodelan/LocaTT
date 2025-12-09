@@ -1,8 +1,8 @@
 #' Grouped Detection Plot
 #'
 #' @description Generates detection plots for a multiple groups.
-#' @details Produces a pie-chart-like detection plot with grouping structure. Each circle represents a group. Each sector represents a sample, and each sub-sector represents a replicate. Filled replicates represent detections. Groups are sorted alphabetically and arranged from left to right and top to bottom. Samples are sorted alphabetically and arranged in a clockwise orientation (from angle zero). Samples are sorted independently for each group. This plot design is specialized for visualizing binary detection data.
-#' @param x A list of vectors named `"g"`, `"s"`, `"r"`, and `"d"`. The elements of vector `"g"` (character or numeric) specify the group. The elements of vector `"s"` (character or numeric) specify the sample. The elements of vector `"r"` (numeric) specify the number of replicates within sample `"s"`. The elements of vector `"r"` (numeric) specify the number of replicates within sample `"s"` with detections.
+#' @details Produces a pie-chart-like detection plot with grouping structure. Each circle represents a group. Each sector represents a sample, and each sub-sector represents a replicate. Filled replicates represent detections. Groups are sorted alphabetically (or inherit factor level ordering) and arranged from left to right and top to bottom. Samples are sorted alphabetically and arranged in a clockwise orientation (from angle zero). Samples are sorted independently for each group. This plot design is specialized for visualizing binary detection data.
+#' @param x A list of vectors named `"g"`, `"s"`, `"r"`, and `"d"`. The elements of vector `"g"` (character, numeric, or factor) specify the group. The elements of vector `"s"` (character or numeric) specify the sample. The elements of vector `"r"` (numeric) specify the number of replicates within sample `"s"`. The elements of vector `"d"` (numeric) specify the number of replicates within sample `"s"` with detections.
 #' @param r Numeric scalar. Radius of plot circle (default = `1`).
 #' @param b Numeric scalar. Plot radius buffer (proportion; default = `0.025`).
 #' @param v Numeric scalar. Vertex count of plot circle (default = `1000`).
@@ -40,10 +40,13 @@ detection<-function(x,r=1,b=0.025,v=1e3,w=1,f=0.5,c="lightskyblue",m=3,...){
   ## Subset data to vectors "g", "s", "r", and "d".
   x<-x[c("g","s","r","d")]
   ## Ensure data contains vector elements.
-  if(!all(sapply(X=x,FUN=is.vector))) stop("Non-vector elements in data.")
-  ## Ensure group vector is numeric or character.
-  if(!(is.numeric(x[["g"]]) | is.character(x[["g"]]))){
-    stop("Group vector must be numeric or character.")
+  ### Group element.
+  if(!(is.vector(x[["g"]]) | is.factor(x[["g"]]))) stop("Non-vector elements in data.")
+  ### Remaining elements.
+  if(!all(sapply(X=x[c("s","r","d")],FUN=is.vector))) stop("Non-vector elements in data.")
+  ## Ensure group vector is numeric, character, or factor.
+  if(!(is.numeric(x[["g"]]) | is.character(x[["g"]]) | is.factor(x[["g"]]))){
+    stop("Group vector must be numeric, character, or factor.")
   }
   ## Ensure sample vector is numeric or character.
   if(!(is.numeric(x[["s"]]) | is.character(x[["s"]]))){
@@ -119,7 +122,18 @@ detection<-function(x,r=1,b=0.025,v=1e3,w=1,f=0.5,c="lightskyblue",m=3,...){
   if(is.na(m)) stop("Column cannot be NA.")
   
   # Sort group values.
-  o<-sort(unique(x[["g"]]))
+  if(is.factor(x[["g"]])){
+    ## If group is a factor,
+    ## use factor level order.
+    o<-levels(x[["g"]])
+  } else {
+    ## If group is not a factor,
+    ## sort groups alphabetically.
+    o<-sort(unique(x[["g"]]))
+  }
+  
+  # Remove missing groups.
+  o<-o[o %in% x[["g"]]]
   
   # Retrieve number of groups.
   l<-length(o)

@@ -1,8 +1,8 @@
 #' Grouped Proportion Plot
 #'
 #' @description Generates proportion plots for multiple groups.
-#' @details Produces a pie-chart-like proportion plot with grouping structure. Each circle represents a group, and each sector represents a sample. When `a` = `TRUE` (the default), then the proportion of each sector filled with color represents the within-sample proportional abundance. Groups are sorted alphabetically and arranged from left to right and top to bottom. When `s` = `FALSE` (the default), then samples are sorted alphabetically and arranged in a clockwise orientation (from angle zero). When `s` = `TRUE`, then samples are sorted by decreasing proportional abundance. Samples are sorted independently for each group. This plot design is specialized for visualizing proportional abundance data.
-#' @param x A list of vectors named `"g"`, `"s"`, and `"p"`. The elements of vector `"g"` (character or numeric) specify the group. The elements of vector `"s"` (character or numeric) specify the sample. The elements of vector `"p"` (numeric) specify the proportional abundance within sample `"s"`.
+#' @details Produces a pie-chart-like proportion plot with grouping structure. Each circle represents a group, and each sector represents a sample. When `a` = `TRUE` (the default), then the proportion of each sector filled with color represents the within-sample proportional abundance. Groups are sorted alphabetically (or inherit factor level ordering) and arranged from left to right and top to bottom. When `s` = `FALSE` (the default), then samples are sorted alphabetically and arranged in a clockwise orientation (from angle zero). When `s` = `TRUE`, then samples are sorted by decreasing proportional abundance. Samples are sorted independently for each group. This plot design is specialized for visualizing proportional abundance data.
+#' @param x A list of vectors named `"g"`, `"s"`, and `"p"`. The elements of vector `"g"` (character, numeric, or factor) specify the group. The elements of vector `"s"` (character or numeric) specify the sample. The elements of vector `"p"` (numeric) specify the proportional abundance within sample `"s"`.
 #' @param r Numeric scalar. Radius of plot circle (default = `1`).
 #' @param b Numeric scalar. Plot radius buffer (proportion; default = `0.025`).
 #' @param v Numeric scalar. Vertex count of plot circle (default = `1000`).
@@ -40,10 +40,13 @@ proportion<-function(x,r=1,b=0.025,v=1e3,w=1,f=0.5,c="lightskyblue",s=FALSE,a=TR
   ## Subset data to vectors "g", "s", and "p".
   x<-x[c("g","s","p")]
   ## Ensure data contains vector elements.
-  if(!all(sapply(X=x,FUN=is.vector))) stop("Non-vector elements in data.")
-  ## Ensure group vector is numeric or character.
-  if(!(is.numeric(x[["g"]]) | is.character(x[["g"]]))){
-    stop("Group vector must be numeric or character.")
+  ### Group element.
+  if(!(is.vector(x[["g"]]) | is.factor(x[["g"]]))) stop("Non-vector elements in data.")
+  ### Remaining elements.
+  if(!all(sapply(X=x[c("s","p")],FUN=is.vector))) stop("Non-vector elements in data.")
+  ## Ensure group vector is numeric, character, or factor.
+  if(!(is.numeric(x[["g"]]) | is.character(x[["g"]]) | is.factor(x[["g"]]))){
+    stop("Group vector must be numeric, character, or factor.")
   }
   ## Ensure sample vector is numeric or character.
   if(!(is.numeric(x[["s"]]) | is.character(x[["s"]]))){
@@ -135,7 +138,18 @@ proportion<-function(x,r=1,b=0.025,v=1e3,w=1,f=0.5,c="lightskyblue",s=FALSE,a=TR
   if(is.na(m)) stop("Column cannot be NA.")
   
   # Sort group values.
-  o<-sort(unique(x[["g"]]))
+  if(is.factor(x[["g"]])){
+    ## If group is a factor,
+    ## use factor level order.
+    o<-levels(x[["g"]])
+  } else {
+    ## If group is not a factor,
+    ## sort groups alphabetically.
+    o<-sort(unique(x[["g"]]))
+  }
+  
+  # Remove missing groups.
+  o<-o[o %in% x[["g"]]]
   
   # Retrieve number of groups.
   l<-length(o)
