@@ -19,7 +19,7 @@ proportion(
 )
 }
 \arguments{
-\item{x}{A list of vectors named \code{"g"}, \code{"s"}, and \code{"p"}. The elements of vector \code{"g"} (character or numeric) specify the group. The elements of vector \code{"s"} (character or numeric) specify the sample. The elements of vector \code{"p"} (numeric) specify the proportional abundance within sample \code{"s"}.}
+\item{x}{A list of vectors named \code{"g"}, \code{"s"}, and \code{"p"}. The elements of vector \code{"g"} (character, numeric, or factor) specify the group. The elements of vector \code{"s"} (character or numeric) specify the sample. The elements of vector \code{"p"} (numeric) specify the proportional abundance within sample \code{"s"}.}
 
 \item{r}{Numeric scalar. Radius of plot circle (default = \code{1}).}
 
@@ -48,7 +48,7 @@ No return value.
 Generates proportion plots for multiple groups.
 }
 \details{
-Produces a pie-chart-like proportion plot with grouping structure. Each circle represents a group, and each sector represents a sample. When \code{a} = \code{TRUE} (the default), then the proportion of each sector filled with color represents the within-sample proportional abundance. Groups are sorted alphabetically and arranged from left to right and top to bottom. When \code{s} = \code{FALSE} (the default), then samples are sorted alphabetically and arranged in a clockwise orientation (from angle zero). When \code{s} = \code{TRUE}, then samples are sorted by decreasing proportional abundance. Samples are sorted independently for each group. This plot design is specialized for visualizing proportional abundance data.
+Produces a pie-chart-like proportion plot with grouping structure. Each circle represents a group, and each sector represents a sample. When \code{a} = \code{TRUE} (the default), then the proportion of each sector filled with color represents the within-sample proportional abundance. Groups are sorted alphabetically (or inherit factor level ordering) and arranged from left to right and top to bottom. When \code{s} = \code{FALSE} (the default), then samples are sorted alphabetically and arranged in a clockwise orientation (from angle zero). When \code{s} = \code{TRUE}, then samples are sorted by decreasing proportional abundance. Samples are sorted independently for each group. This plot design is specialized for visualizing proportional abundance data.
 }
 \examples{
 \dontshow{if (interactive()) withAutoprint(\{ # examplesIf}

@@ -17,7 +17,7 @@ singular.detection(
 )
 }
 \arguments{
-\item{x}{A list of vectors named \code{"s"}, \code{"r"}, and \code{"d"}. The elements of vector \code{"s"} (character or numeric) specify the sample. The elements of vector \code{"r"} (numeric) specify the number of replicates within sample \code{"s"}. The elements of vector \code{"r"} (numeric) specify the number of replicates within sample \code{"s"} with detections.}
+\item{x}{A list of vectors named \code{"s"}, \code{"r"}, and \code{"d"}. The elements of vector \code{"s"} (character or numeric) specify the sample. The elements of vector \code{"r"} (numeric) specify the number of replicates within sample \code{"s"}. The elements of vector \code{"d"} (numeric) specify the number of replicates within sample \code{"s"} with detections.}
 
 \item{r}{Numeric scalar. Radius of plot circle (default = \code{1}).}
 

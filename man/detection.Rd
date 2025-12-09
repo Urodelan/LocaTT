@@ -17,7 +17,7 @@ detection(
 )
 }
 \arguments{
-\item{x}{A list of vectors named \code{"g"}, \code{"s"}, \code{"r"}, and \code{"d"}. The elements of vector \code{"g"} (character or numeric) specify the group. The elements of vector \code{"s"} (character or numeric) specify the sample. The elements of vector \code{"r"} (numeric) specify the number of replicates within sample \code{"s"}. The elements of vector \code{"r"} (numeric) specify the number of replicates within sample \code{"s"} with detections.}
+\item{x}{A list of vectors named \code{"g"}, \code{"s"}, \code{"r"}, and \code{"d"}. The elements of vector \code{"g"} (character, numeric, or factor) specify the group. The elements of vector \code{"s"} (character or numeric) specify the sample. The elements of vector \code{"r"} (numeric) specify the number of replicates within sample \code{"s"}. The elements of vector \code{"d"} (numeric) specify the number of replicates within sample \code{"s"} with detections.}
 
 \item{r}{Numeric scalar. Radius of plot circle (default = \code{1}).}
 
@@ -42,7 +42,7 @@ No return value.
 Generates detection plots for a multiple groups.
 }
 \details{
-Produces a pie-chart-like detection plot with grouping structure. Each circle represents a group. Each sector represents a sample, and each sub-sector represents a replicate. Filled replicates represent detections. Groups are sorted alphabetically and arranged from left to right and top to bottom. Samples are sorted alphabetically and arranged in a clockwise orientation (from angle zero). Samples are sorted independently for each group. This plot design is specialized for visualizing binary detection data.
+Produces a pie-chart-like detection plot with grouping structure. Each circle represents a group. Each sector represents a sample, and each sub-sector represents a replicate. Filled replicates represent detections. Groups are sorted alphabetically (or inherit factor level ordering) and arranged from left to right and top to bottom. Samples are sorted alphabetically and arranged in a clockwise orientation (from angle zero). Samples are sorted independently for each group. This plot design is specialized for visualizing binary detection data.
 }
 \examples{
 \dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
