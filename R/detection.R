@@ -1,6 +1,6 @@
 #' Grouped Detection Plot
 #'
-#' @description Generates detection plots for a multiple groups.
+#' @description Generates detection plots for multiple groups.
 #' @details Produces a pie-chart-like detection plot with grouping structure. Each circle represents a group. Each sector represents a sample, and each sub-sector represents a replicate. Filled replicates represent detections. Groups are sorted alphabetically (or inherit factor level ordering) and arranged from left to right and top to bottom. Samples are sorted alphabetically and arranged in a clockwise orientation (from angle zero). Samples are sorted independently for each group. This plot design is specialized for visualizing binary detection data.
 #' @param x A list of vectors named `"g"`, `"s"`, `"r"`, and `"d"`. The elements of vector `"g"` (character, numeric, or factor) specify the group. The elements of vector `"s"` (character or numeric) specify the sample. The elements of vector `"r"` (numeric) specify the number of replicates within sample `"s"`. The elements of vector `"d"` (numeric) specify the number of replicates within sample `"s"` with detections.
 #' @param r Numeric scalar. Radius of plot circle (default = `1`).
