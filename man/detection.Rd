@@ -39,7 +39,7 @@ detection(
 No return value.
 }
 \description{
-Generates detection plots for a multiple groups.
+Generates detection plots for multiple groups.
 }
 \details{
 Produces a pie-chart-like detection plot with grouping structure. Each circle represents a group. Each sector represents a sample, and each sub-sector represents a replicate. Filled replicates represent detections. Groups are sorted alphabetically (or inherit factor level ordering) and arranged from left to right and top to bottom. Samples are sorted alphabetically and arranged in a clockwise orientation (from angle zero). Samples are sorted independently for each group. This plot design is specialized for visualizing binary detection data.
