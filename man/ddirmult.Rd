@@ -4,7 +4,7 @@
 \alias{ddirmult}
 \title{Density of the Dirichlet-Multinomial Distribution}
 \usage{
-ddirmult(x, p, theta, log = FALSE)
+ddirmult(x, p, theta, alpha, log = FALSE)
 }
 \arguments{
 \item{x}{Numeric vector or matrix of counts. If matrix, then a vector of probability densities is returned with an element for each record of the matrix. Matrix records represent observations, and matrix fields represent dimensions.}
@@ -12,6 +12,8 @@ ddirmult(x, p, theta, log = FALSE)
 \item{p}{Numeric vector or matrix of proportions. Matrix records represent observations, and matrix fields represent dimensions. If vector, then \code{p} is recycled for each record of matrix \code{x}.}
 
 \item{theta}{Numeric vector. Precision parameter with domain (\code{-Inf}, \code{Inf}). If scalar, then \code{theta} is recycled for each record of matrix \code{x}.}
+
+\item{alpha}{Numeric vector or matrix of conventional alpha values. Matrix records represent observations, and matrix fields represent dimensions. If vector, then \code{alpha} is recycled for each record of matrix \code{x}.}
 
 \item{log}{Logical scalar. If \code{TRUE}, then probabilities are given as \code{log(density)}.}
 }
@@ -22,7 +24,7 @@ Numeric vector of probability densities.
 Density function for the Dirichlet-multinomial distribution.
 }
 \details{
-Computes the probability mass of the Dirichlet-multinomial distribution. Under this parameterization, the alpha parameters of the conventional Dirichlet-multinomial distribution are derived as the product of a proportion vector (\code{p}) and an exponentiated precision parameter (\code{\link[=exp]{exp}}\code{(theta)}). The precision parameter controls the degree of overdispersion relative to the multinomial distribution, where higher values of \code{theta} are associated with reduced overdispersion. When \code{theta = 0}, the alpha parameters of the conventional Dirichlet-multinomial distribution are equal to the proportion vector (\code{p}). To ensure a simplex, the values of \code{p} (vector or matrix records) are internally normalized to sum to one.
+Computes the probability mass of the Dirichlet-multinomial distribution. Under the proportion parameterization, the alpha parameters of the conventional Dirichlet-multinomial distribution are derived as the product of a proportion vector (\code{p}) and an exponentiated precision parameter (\code{\link[=exp]{exp}}\code{(theta)}). The precision parameter controls the degree of overdispersion relative to the multinomial distribution, where higher values of \code{theta} are associated with reduced overdispersion. When \code{theta = 0}, the alpha parameters of the conventional Dirichlet-multinomial distribution are equal to the proportion vector (\code{p}). To ensure a simplex, the values of \code{p} (vector or matrix records) are internally normalized to sum to one. If \code{alpha} is provided, then the conventional alpha parameterization of the Dirichlet-multinomial distribution is used.
 }
 \examples{
 # Compute log probability density.
