@@ -45,6 +45,8 @@ dmWAIC<-function(Y,X,H,ones=TRUE,method=2,priors=c(B.mu=0,B.sd=1,theta.mu=0,thet
   # Check Y input data.
   ## Check for matrix format.
   if(!is.matrix(Y)) stop("Y must be a matrix.")
+  ## Check for at least two columns.
+  if(ncol(Y) < 2) stop("Y must have at least two columns.")
   ## Check that matrix does not contain NAs.
   if(any(is.na(Y))) stop("Y cannot contain NAs.")
   ## Check that matrix is numeric.
