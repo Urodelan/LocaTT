@@ -10,7 +10,8 @@
 #' @seealso
 #' [`dmreg`][dmreg()] for fitting Dirichlet-multinomial regression models. \cr \cr
 #' [`dmpredict`][dmpredict()] for generating predictions from Dirichlet-multinomial regression models. \cr \cr
-#' [`diversity`][diversity()] for computing Hill diversity from proportional abundances.
+#' [`diversity`][diversity()] for computing Hill diversity from proportional abundances. \cr \cr
+#' [`richness`][richness()] for computing species richness from occupancy probabilities.
 #' @references Bray JR, and Curtis JT. 1957. An ordination of the upland forest communities of southern Wisconsin. *Ecological Monographs*, 27(4): 325-349. DOI: 10.2307/1942268 \cr \cr
 #' Legendre P, and Legendre L. 2012. *Numerical Ecology: Third Edition*. Elsevier. \cr \cr
 #' Odum EP. 1950. Bird populations of the Highlands (North Carolina) Plateau in relation to plant succession and avian invasion. *Ecology*, 31(4): 587-605. DOI: 10.2307/1931577

@@ -11,6 +11,7 @@
 #' @seealso
 #' [`waic`][waic()] for generic function to compute widely applicable information criterion. \cr \cr
 #' [`dmWAIC`][dmWAIC()] for computing widely applicable information criteria for Dirichlet-multinomial regression models.
+#' @references Minka TP. 2000. Estimating a Dirichlet distribution.
 #' @examples
 #' # Compute log probability density.
 #' ddirmult(x=c(33,115,95,359),

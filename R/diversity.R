@@ -6,7 +6,8 @@
 #' @param alpha Numeric scalar or vector. Continuous positive alpha parameter of the Hill diversity formula. If scalar, then `alpha` is recycled for each record of matrix `p`. If vector, then each element of `alpha` is applied to the corresponding record of matrix `p`. With the default of `alpha = 2`, Hill diversity is equal to the inverse Simpson index.
 #' @returns Numeric scalar or vector of Hill diversity values.
 #' @seealso
-#' [`dissimilarity`][dissimilarity()] for computing Bray-Curtis dissimilarity from proportional abundances.
+#' [`dissimilarity`][dissimilarity()] for computing Bray-Curtis dissimilarity from proportional abundances. \cr \cr
+#' [`richness`][richness()] for computing species richness from occupancy probabilities.
 #' @references Hill MO. 1973. Diversity and evenness: A unifying notation and its consequences. *Ecology*, 54(2): 427-432. DOI: 10.2307/1934352
 #' @examples
 #' # Compute Hill diversity.

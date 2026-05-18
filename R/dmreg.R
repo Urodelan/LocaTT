@@ -8,7 +8,7 @@
 #' @param X Numeric predictor matrix. Each record represents an observation, and each field represents a predictor variable. Matrix cells contain predictor values.
 #' @param H Numeric vector or matrix (optional). If provided, then hierarchical effects are included in the model. Vector or matrix elements contain integer identifiers for values of hierarchical variables. If vector, then a single hierarchical variable is included, with each element representing an observation. If matrix, then each record represents an observation, and each field represents a hierarchical variable. Up to four hierarchical variables are supported (each with an arbitrary number of hierarchical levels).
 #' @param ones Logical scalar. If `TRUE` (the default), then one is added to each cell of the response matrix. This avoids numerical errors which occur when distributional parameters in the model approach zero. For more information, see Harrison *et al.* (2020). If the response matrix contains no zeros, then `ones` may be set to `FALSE`.
-#' @param priors Named numeric vector. Elements represent the prior values of their respective named parameters. When predictors are centered and scaled, the defaults generally represent weakly informative priors. Regression coefficients (`B`) and the precision parameter (`theta`) receive normal priors (with standard normal as the default). If hierarchical variables (argument `H`) are provided, then the common variances receive inverse-gamma priors (with default `alpha` and `beta` parameters of 0.01).
+#' @param priors Named numeric vector. Elements represent the prior values of their respective named parameters. When predictors are centered and scaled, the defaults generally represent weakly informative priors. Regression coefficients (`B`) and the precision parameter (`theta`) receive normal priors (with standard normal as the default). If hierarchical variables (argument `H`) are provided, then the common variances receive inverse-gamma priors (with default `alpha` and `beta` parameters of `0.01`).
 #' @param control Named list of parameters which control the behavior of the Stan sampler. Passed to the `control` argument of the `rstan::sampling` function.
 #' @param ... Additional arguments passed to the `rstan::sampling` function.
 #' @returns Returns a `stanfit` object of the fitted Bayesian Dirichlet-multinomial regression model.
@@ -445,6 +445,100 @@ dmreg<-function(Y,X,H,ones=TRUE,priors=c(B.mu=0,B.sd=1,theta.mu=0,theta.sd=1,sig
     
   }
   
+  # Define posterior check function with threshold argument
+  # for Bayesian fraction of missing information.
+  check_posterior<-function(fit,threshold=0.2){
+    
+    # Divergent transitions.
+    ## Get number of divergent transitions.
+    n_d<-rstan::get_num_divergent(fit)
+    ## If there are divergent transitions.
+    if(n_d > 0){
+      ## Produce a warning.
+      warning(paste0("There were ",n_d," divergent transitions after warmup. See\n",
+                     "https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup\n",
+                     "to find out why this is a problem and how to eliminate them."),
+              call.=FALSE)
+    }
+    
+    # Maximum tree depth.
+    ## Retrieve control parameters.
+    control<-fit@stan_args[[1]]$control
+    ## Retrieve maximum tree depth (if present), or set to default (if absent).
+    max_td<-ifelse(is.null(control),10,control$max_treedepth)
+    ## Get number of transitions that exceed maximum tree depth.
+    n_m<-rstan::get_num_max_treedepth(fit)
+    ## If there are transitions that exceed maximum tree depth.
+    if(n_m > 0){
+      ## Produce a warning.
+      warning(paste0("There were ",n_m,
+                     " transitions after warmup that exceeded the maximum treedepth.",
+                     " Increase max_treedepth above ",max_td,". See\n",
+                     "https://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded"),
+              call.=FALSE)
+    }
+    
+    # Bayesian fraction of missing information.
+    ## Get number of chains with low Bayesian fraction of missing information.
+    n_e<-sum(rstan::get_bfmi(fit) < threshold)
+    ## If there are chains with low Bayesian fraction of missing information.
+    if(n_e > 0){
+      ## Produce a warning.
+      warning(paste0("There were ",n_e,
+                     " chains where the estimated Bayesian Fraction of Missing Information",
+                     " was low. See\n","https://mc-stan.org/misc/warnings.html#bfmi-low"),
+              call.=FALSE)
+    }
+    
+    # If there are diagnostic issues.
+    if(n_d > 0 || n_m > 0 || n_e > 0){
+      # Encourage examination of pairs plot.
+      warning("Examine the pairs() plot to diagnose sampling problems\n",
+              call.=FALSE,noBreaks.=TRUE)
+    }
+    
+    # Retrieve model fit as an array.
+    sims<-as.array(fit)
+    
+    # R-hat convergence diagnostic.
+    ## Compute R-hat convergence diagnostics.
+    rhat<-apply(X=sims,MARGIN=3,FUN=rstan::Rhat)
+    ## If any R-hat convergence diagnostics are too high.
+    if(any(rhat > 1.05,na.rm=TRUE)){
+      ## Produce a warning.
+      warning(paste0("The largest R-hat is ",round(max(rhat,na.rm=TRUE),digits=2),
+                     ", indicating chains have not mixed.\n",
+                     "Running the chains for more iterations may help. See\n",
+                     "https://mc-stan.org/misc/warnings.html#r-hat"),
+              call.=FALSE)
+    }
+    
+    # Bulk effective sample size.
+    ## Compute bulk effective sample sizes.
+    bulk_ess<-apply(X=sims,MARGIN=3,FUN=rstan::ess_bulk)
+    ## If any bulk effective sample sizes are too low.
+    if(any(bulk_ess < (100*ncol(sims)),na.rm=TRUE)){
+      ## Produce a warning.
+      warning(paste0("Bulk Effective Samples Size (ESS) is too low, ",
+                     "indicating posterior means and medians may be unreliable.\n",
+                     "Running the chains for more iterations may help. See\n",
+                     "https://mc-stan.org/misc/warnings.html#bulk-ess"),call.=FALSE)
+    }
+    
+    # Tail effective sample size.
+    ## Compute tail effective sample sizes.
+    tail_ess<-apply(X=sims,MARGIN=3,FUN=rstan::ess_tail)
+    ## If any tail effective samples sizes are too low.
+    if(any(tail_ess < (100*ncol(sims)),na.rm=TRUE)){
+      ## Produce a warning.
+      warning(paste0("Tail Effective Samples Size (ESS) is too low, indicating ",
+                     "posterior variances and tail quantiles may be unreliable.\n",
+                     "Running the chains for more iterations may help. See\n",
+                     "https://mc-stan.org/misc/warnings.html#tail-ess"),call.=FALSE)
+    }
+    
+  }
+  
   # Define model file.
   file<-paste0("dmreg_h",J,".stan")
   
@@ -455,12 +549,17 @@ dmreg<-function(Y,X,H,ones=TRUE,priors=c(B.mu=0,B.sd=1,theta.mu=0,theta.sd=1,sig
   model<-rstan::stan_model(file=path,model_name="dmreg")
   
   # Fit the model.
-  fit<-rstan::sampling(object=model,
-                       data=data,
-                       pars=pars,
-                       init=init,
-                       control=control,
-                       ...)
+  suppressWarnings(
+    fit<-rstan::sampling(object=model,
+                         data=data,
+                         pars=pars,
+                         init=init,
+                         control=control,
+                         ...)
+  )
+  
+  # Check posterior.
+  check_posterior(fit=fit)
   
   # Return fit.
   return(fit)
