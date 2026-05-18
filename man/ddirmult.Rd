@@ -32,6 +32,9 @@ ddirmult(x=c(33,115,95,359),
          p=c(0.075,0.201,0.175,0.549),
          theta=4.027,log=TRUE)
 }
+\references{
+Minka TP. 2000. Estimating a Dirichlet distribution.
+}
 \seealso{
 \code{\link[=waic]{waic}} for generic function to compute widely applicable information criterion. \cr \cr
 \code{\link[=dmWAIC]{dmWAIC}} for computing widely applicable information criteria for Dirichlet-multinomial regression models.

@@ -35,5 +35,6 @@ Odum EP. 1950. Bird populations of the Highlands (North Carolina) Plateau in rel
 \seealso{
 \code{\link[=dmreg]{dmreg}} for fitting Dirichlet-multinomial regression models. \cr \cr
 \code{\link[=dmpredict]{dmpredict}} for generating predictions from Dirichlet-multinomial regression models. \cr \cr
-\code{\link[=diversity]{diversity}} for computing Hill diversity from proportional abundances.
+\code{\link[=diversity]{diversity}} for computing Hill diversity from proportional abundances. \cr \cr
+\code{\link[=richness]{richness}} for computing species richness from occupancy probabilities.
 }

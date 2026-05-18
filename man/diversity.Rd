@@ -28,5 +28,6 @@ diversity(p=c(0.15,0.25,0.4,0.2))
 Hill MO. 1973. Diversity and evenness: A unifying notation and its consequences. \emph{Ecology}, 54(2): 427-432. DOI: 10.2307/1934352
 }
 \seealso{
-\code{\link[=dissimilarity]{dissimilarity}} for computing Bray-Curtis dissimilarity from proportional abundances.
+\code{\link[=dissimilarity]{dissimilarity}} for computing Bray-Curtis dissimilarity from proportional abundances. \cr \cr
+\code{\link[=richness]{richness}} for computing species richness from occupancy probabilities.
 }

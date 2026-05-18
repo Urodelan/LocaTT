@@ -27,7 +27,7 @@ dmWAIC(
 
 \item{method}{Numeric scalar. Options are \code{1} or \code{2}, representing the alternative WAIC bias correction formulas (\emph{p}WAIC1 and \emph{p}WAIC2, respectively) described in Gelman \emph{et al.} (2014). As recommended by Gelman \emph{et al.} (2014), the default \code{method} (\code{2}) uses the \emph{p}WAIC2 bias correction formula.}
 
-\item{priors}{Named numeric vector. Elements represent the prior values of their respective named parameters. When predictors are centered and scaled, the defaults generally represent weakly informative priors. Regression coefficients (\code{B}) and the precision parameter (\code{theta}) receive normal priors (with standard normal as the default). If hierarchical variables (argument \code{H}) are provided, then the common variances receive inverse-gamma priors (with default \code{alpha} and \code{beta} parameters of 0.01).}
+\item{priors}{Named numeric vector. Elements represent the prior values of their respective named parameters. When predictors are centered and scaled, the defaults generally represent weakly informative priors. Regression coefficients (\code{B}) and the precision parameter (\code{theta}) receive normal priors (with standard normal as the default). If hierarchical variables (argument \code{H}) are provided, then the common variances receive inverse-gamma priors (with default \code{alpha} and \code{beta} parameters of \code{0.01}).}
 
 \item{control}{Named list of parameters which control the behavior of the Stan sampler. Passed to the \code{control} argument of the \code{rstan::sampling} function.}
 

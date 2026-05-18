@@ -38,6 +38,6 @@ Gelman A, Hwang J, and Vehtari A. 2014. Understanding predictive information cri
 Watanabe S. 2010. Asymptotic equivalence of Bayes cross validation and widely applicable information criterion in singular learning theory. \emph{Journal of Machine Learning Research}, 11(116): 3571-3594.
 }
 \seealso{
-\code{\link[=ddirmult]{ddirmult}} for probability mass function of the Dirichlet-multinomial distribution. \cr \cr
-\code{\link[=dmWAIC]{dmWAIC}} for computing widely applicable information criteria for Dirichlet-multinomial regression models.
+\code{\link[=dmWAIC]{dmWAIC}} for computing widely applicable information criteria for Dirichlet-multinomial regression models. \cr \cr
+\code{\link[=mlWAIC]{mlWAIC}} for computing widely applicable information criteria for multivariate logistic regression models.
 }

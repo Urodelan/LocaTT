@@ -24,7 +24,7 @@ dmreg(
 
 \item{ones}{Logical scalar. If \code{TRUE} (the default), then one is added to each cell of the response matrix. This avoids numerical errors which occur when distributional parameters in the model approach zero. For more information, see Harrison \emph{et al.} (2020). If the response matrix contains no zeros, then \code{ones} may be set to \code{FALSE}.}
 
-\item{priors}{Named numeric vector. Elements represent the prior values of their respective named parameters. When predictors are centered and scaled, the defaults generally represent weakly informative priors. Regression coefficients (\code{B}) and the precision parameter (\code{theta}) receive normal priors (with standard normal as the default). If hierarchical variables (argument \code{H}) are provided, then the common variances receive inverse-gamma priors (with default \code{alpha} and \code{beta} parameters of 0.01).}
+\item{priors}{Named numeric vector. Elements represent the prior values of their respective named parameters. When predictors are centered and scaled, the defaults generally represent weakly informative priors. Regression coefficients (\code{B}) and the precision parameter (\code{theta}) receive normal priors (with standard normal as the default). If hierarchical variables (argument \code{H}) are provided, then the common variances receive inverse-gamma priors (with default \code{alpha} and \code{beta} parameters of \code{0.01}).}
 
 \item{control}{Named list of parameters which control the behavior of the Stan sampler. Passed to the \code{control} argument of the \code{rstan::sampling} function.}
 
