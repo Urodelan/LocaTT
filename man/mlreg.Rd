@@ -7,6 +7,7 @@
 mlreg(
   Y,
   X,
+  multivariate = TRUE,
   priors = c(B.mu = 0, B.sd = 1, lkj = 1),
   iter = 20000,
   thin = 20,
@@ -18,6 +19,8 @@ mlreg(
 \item{Y}{Numeric response matrix. Each record represents an observation, and each field represents a response dimension. Matrix cells contain binary values (\emph{i.e.}, \code{0} or \code{1}).}
 
 \item{X}{Numeric predictor matrix. Each record represents an observation, and each field represents a predictor variable. Matrix cells contain predictor values.}
+
+\item{multivariate}{Logical scalar. If \code{TRUE} (the default), then fits a multivariate logistic regression. If \code{FALSE}, then fits stacked univariate logistic regressions.}
 
 \item{priors}{Named numeric vector. Elements represent the prior values of their respective named parameters. When predictors are centered and scaled, the defaults generally represent weakly informative priors. Regression coefficients (\code{B}) receive normal priors (with standard normal as the default). The residual correlation matrix (\code{R}) receives an LKJ prior (with default shape parameter of \code{1}).}
 

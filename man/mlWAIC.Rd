@@ -7,6 +7,7 @@
 mlWAIC(
   Y,
   X,
+  multivariate = TRUE,
   method = 2,
   priors = c(B.mu = 0, B.sd = 1, lkj = 1),
   iter = 20000,
@@ -19,6 +20,8 @@ mlWAIC(
 \item{Y}{Numeric response matrix. Each record represents an observation, and each field represents a response dimension. Matrix cells contain binary values (\emph{i.e.}, \code{0} or \code{1}).}
 
 \item{X}{Numeric predictor matrix. Each record represents an observation, and each field represents a predictor variable. Matrix cells contain predictor values.}
+
+\item{multivariate}{Logical scalar. If \code{TRUE} (the default), then fits a multivariate logistic regression. If \code{FALSE}, then fits stacked univariate logistic regressions.}
 
 \item{method}{Numeric scalar. Options are \code{1} or \code{2}, representing the alternative WAIC bias correction formulas (\emph{p}WAIC1 and \emph{p}WAIC2, respectively) described in Gelman \emph{et al.} (2014). As recommended by Gelman \emph{et al.} (2014), the default \code{method} (\code{2}) uses the \emph{p}WAIC2 bias correction formula.}
 
