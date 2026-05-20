@@ -445,9 +445,8 @@ dmreg<-function(Y,X,H,ones=TRUE,priors=c(B.mu=0,B.sd=1,theta.mu=0,theta.sd=1,sig
     
   }
   
-  # Define posterior check function with threshold argument
-  # for Bayesian fraction of missing information.
-  check_posterior<-function(fit,threshold=0.2){
+  # Define diagnostics function.
+  diagnostics<-function(fit){
     
     # Divergent transitions.
     ## Get number of divergent transitions.
@@ -480,7 +479,7 @@ dmreg<-function(Y,X,H,ones=TRUE,priors=c(B.mu=0,B.sd=1,theta.mu=0,theta.sd=1,sig
     
     # Bayesian fraction of missing information.
     ## Get number of chains with low Bayesian fraction of missing information.
-    n_e<-sum(rstan::get_bfmi(fit) < threshold)
+    n_e<-sum(rstan::get_bfmi(fit) < 0.2)
     ## If there are chains with low Bayesian fraction of missing information.
     if(n_e > 0){
       ## Produce a warning.
@@ -558,8 +557,8 @@ dmreg<-function(Y,X,H,ones=TRUE,priors=c(B.mu=0,B.sd=1,theta.mu=0,theta.sd=1,sig
                          ...)
   )
   
-  # Check posterior.
-  check_posterior(fit=fit)
+  # Check diagnostics.
+  diagnostics(fit=fit)
   
   # Return fit.
   return(fit)

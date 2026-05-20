@@ -48,6 +48,9 @@ mlcor<-function(fit,probs=c(0.025,0.25,0.5,0.75,0.975),dimnames){
   # Subset to residual correlations.
   MCMC.R<-MCMC[,grepl(pattern="^R\\[",x=colnames(MCMC)),drop=FALSE]
   
+  # Throw an error if correlation matrix is not found.
+  if(ncol(MCMC.R)==0) stop("Correlation matrix not found.")
+  
   # Retrieve number of response variables.
   ## Removing leading characters.
   D<-sub(pattern="^R\\[",replacement="",x=colnames(MCMC.R))

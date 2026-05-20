@@ -5,6 +5,7 @@
 #' 
 #' @param Y Numeric response matrix. Each record represents an observation, and each field represents a response dimension. Matrix cells contain binary values (*i.e.*, `0` or `1`).
 #' @param X Numeric predictor matrix. Each record represents an observation, and each field represents a predictor variable. Matrix cells contain predictor values.
+#' @param multivariate Logical scalar. If `TRUE` (the default), then fits a multivariate logistic regression. If `FALSE`, then fits stacked univariate logistic regressions.
 #' @param method Numeric scalar. Options are `1` or `2`, representing the alternative WAIC bias correction formulas (*p*WAIC1 and *p*WAIC2, respectively) described in Gelman *et al.* (2014). As recommended by Gelman *et al.* (2014), the default `method` (`2`) uses the *p*WAIC2 bias correction formula.
 #' @param priors Named numeric vector. Elements represent the prior values of their respective named parameters. When predictors are centered and scaled, the defaults generally represent weakly informative priors. Regression coefficients (`B`) receive normal priors (with standard normal as the default). The residual correlation matrix (`R`) receives an LKJ prior (with default shape parameter of `1`).
 #' @param iter Numeric scalar. Integer value specifying the number of iterations for each chain (including warmup). The default is `20000`. Passed to the `iter` argument of the `rstan::sampling` function.
@@ -35,7 +36,7 @@
 #' # Compute WAIC for multivariate logistic regression.
 #' out<-mlWAIC(Y=data$Y,X=data$X)
 #' @export
-mlWAIC<-function(Y,X,method=2,priors=c(B.mu=0,B.sd=1,lkj=1),iter=20000,thin=20,control=list(adapt_delta=0.99,max_treedepth=20,stepsize=0.01),...){
+mlWAIC<-function(Y,X,multivariate=TRUE,method=2,priors=c(B.mu=0,B.sd=1,lkj=1),iter=20000,thin=20,control=list(adapt_delta=0.99,max_treedepth=20,stepsize=0.01),...){
   
   # Ensure that the rstan package is installed.
   if(!requireNamespace(package="rstan",quietly=TRUE)){
@@ -43,7 +44,9 @@ mlWAIC<-function(Y,X,method=2,priors=c(B.mu=0,B.sd=1,lkj=1),iter=20000,thin=20,c
   }
   
   # Fit regression.
-  fit<-mlreg(Y=Y,X=X,priors=priors,iter=iter,thin=thin,control=control,...)
+  fit<-mlreg(Y=Y,X=X,multivariate=multivariate,
+             priors=priors,iter=iter,thin=thin,
+             control=control,...)
   
   # Generate predictions.
   P<-mlpredict(X=X,fit=fit)

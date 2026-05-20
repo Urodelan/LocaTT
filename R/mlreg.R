@@ -4,6 +4,7 @@
 #' @details Fits a multivariate logistic regression model using the `rstan` interface to Stan (Carpenter *et al.* 2017). The multivariate logistic regression follows that of Ovaskainen *et al.* 2010, where the Bernoulli marginals are reparameterized as truncated continuous latent variables (Albert & Chib 1993). The latent variables `z` receive a positive constraint when `y = 1` and a negative constraint when `y = 0`, where `z` is a linear combination of predictors with correlated standard logistic errors. Equivalently, the latent variables follow a multivariate logistic distribution with scale parameters fixed at one (O'Brien & Dunson 2004), constructed in Stan as a Gaussian copula with logistic marginals (Song 2000). A `stanfit` object of the fitted model is returned, which can be used with standard `rstan` functions to evaluate model convergence (*e.g.*, posterior trace plots, R-hat convergence diagnostics, and effective sample sizes). By default, weakly informative priors are used on the regression coefficients (`B`) and residual correlation matrix (`R`).
 #' @param Y Numeric response matrix. Each record represents an observation, and each field represents a response dimension. Matrix cells contain binary values (*i.e.*, `0` or `1`).
 #' @param X Numeric predictor matrix. Each record represents an observation, and each field represents a predictor variable. Matrix cells contain predictor values.
+#' @param multivariate Logical scalar. If `TRUE` (the default), then fits a multivariate logistic regression. If `FALSE`, then fits stacked univariate logistic regressions.
 #' @param priors Named numeric vector. Elements represent the prior values of their respective named parameters. When predictors are centered and scaled, the defaults generally represent weakly informative priors. Regression coefficients (`B`) receive normal priors (with standard normal as the default). The residual correlation matrix (`R`) receives an LKJ prior (with default shape parameter of `1`).
 #' @param iter Numeric scalar. Integer value specifying the number of iterations for each chain (including warmup). The default is `20000`. Passed to the `iter` argument of the `rstan::sampling` function.
 #' @param thin Numeric scalar. Integer value specifying the thinning interval. The default is `20`. Passed to the `thin` argument of the `rstan::sampling` function.
@@ -31,7 +32,7 @@
 #' # Fit multivariate logistic regression.
 #' out<-mlreg(Y=data$Y,X=data$X)
 #' @export
-mlreg<-function(Y,X,priors=c(B.mu=0,B.sd=1,lkj=1),iter=20000,thin=20,control=list(adapt_delta=0.99,max_treedepth=20,stepsize=0.01),...){
+mlreg<-function(Y,X,multivariate=TRUE,priors=c(B.mu=0,B.sd=1,lkj=1),iter=20000,thin=20,control=list(adapt_delta=0.99,max_treedepth=20,stepsize=0.01),...){
   
   # Ensure that the rstan package is installed.
   if(!requireNamespace(package="rstan",quietly=TRUE)){
@@ -59,6 +60,16 @@ mlreg<-function(Y,X,priors=c(B.mu=0,B.sd=1,lkj=1),iter=20000,thin=20,control=lis
   # Check for matching dimensions between X and Y.
   if(nrow(Y)!=nrow(X)) stop("Dimension mismatch between X and Y.")
   
+  # Check multivariate argument.
+  ## Check that multivariate is a vector.
+  if(!is.vector(multivariate)) stop("multivariate must be a vector.")
+  ## Check that multivariate is logical.
+  if(!is.logical(multivariate)) stop("multivariate must be logical.")
+  ## Check that multivariate has length 1.
+  if(length(multivariate)!=1) stop("multivariate must have length 1.")
+  ## Check that multivariate is not NA.
+  if(is.na(multivariate)) stop("multivariate cannot be NA.")
+  
   # Check format of priors.
   ## Check that priors are provided as a vector.
   if(!is.vector(priors)) stop("Priors must be provided as named vector.")
@@ -70,32 +81,79 @@ mlreg<-function(Y,X,priors=c(B.mu=0,B.sd=1,lkj=1),iter=20000,thin=20,control=lis
   if(!is.numeric(priors)) stop("Priors must be numeric.")
   
   # Define required priors.
-  check<-c("B.mu","B.sd","lkj")
+  ## Univariate logistic regressions.
+  uni<-c("B.mu","B.sd")
+  ## Multivariate logistic regression.
+  multi<-c(uni,"lkj")
   
-  # If any priors are absent.
-  if(!all(check %in% names(priors))){
+  # If multivariate logistic regression.
+  if(multivariate){
     
-    # Retrieve absent prior names.
-    absent<-check[!(check %in% names(priors))]
+    # If any priors are absent.
+    if(!all(multi %in% names(priors))){
+      
+      # Retrieve absent prior names.
+      absent<-multi[!(multi %in% names(priors))]
+      
+      # Throw error providing absent prior names.
+      stop(paste("Missing priors for variable(s):",paste(absent,collapse=", ")))
+      
+    }
     
-    # Throw error providing absent prior names.
-    stop(paste("Missing priors for variable(s):",paste(absent,collapse=", ")))
+    # Retrieve relevant priors.
+    priors<-priors[multi]
+    
+  }else{ # If univariate logistic regressions.
+    
+    # If any priors are absent.
+    if(!all(uni %in% names(priors))){
+      
+      # Retrieve absent prior names.
+      absent<-uni[!(uni %in% names(priors))]
+      
+      # Throw error providing absent prior names.
+      stop(paste("Missing priors for variable(s):",paste(absent,collapse=", ")))
+      
+    }
+    
+    # Retrieve relevant priors.
+    priors<-priors[uni]
     
   }
   
   # Define model parameters.
-  data<-list(
-    ### Define variables.
-    "N"=nrow(Y), # Number of observations.
-    "D"=ncol(Y), # Number of response variables.
-    "K"=ncol(X), # Number of predictors.
-    "Y"=Y, # Response matrix.
-    "X"=X, # Predictor matrix.
-    ### Define priors.
-    "B_mu"=unname(priors["B.mu"]), # Regression coefficients prior mean.
-    "B_sd"=unname(priors["B.sd"]), # Regression coefficients prior standard deviation.
-    "lkj"=unname(priors["lkj"]) # LKJ prior correlation.
-  )
+  if(multivariate){ # If multivariate logistic regression.
+    
+    # Define model parameters.
+    data<-list(
+      ### Define variables.
+      "N"=nrow(Y), # Number of observations.
+      "D"=ncol(Y), # Number of response variables.
+      "K"=ncol(X), # Number of predictors.
+      "Y"=Y, # Response matrix.
+      "X"=X, # Predictor matrix.
+      ### Define priors.
+      "B_mu"=unname(priors["B.mu"]), # Regression coefficients prior mean.
+      "B_sd"=unname(priors["B.sd"]), # Regression coefficients prior standard deviation.
+      "lkj"=unname(priors["lkj"]) # LKJ prior correlation.
+    )
+    
+  }else{ # If univariate logistic regressions.
+    
+    # Define model parameters.
+    data<-list(
+      ### Define variables.
+      "N"=nrow(Y), # Number of observations.
+      "D"=ncol(Y), # Number of response variables.
+      "K"=ncol(X), # Number of predictors.
+      "Y"=Y, # Response matrix.
+      "X"=X, # Predictor matrix.
+      ### Define priors.
+      "B_mu"=unname(priors["B.mu"]), # Regression coefficients prior mean.
+      "B_sd"=unname(priors["B.sd"]) # Regression coefficients prior standard deviation.
+    )
+    
+  }
   
   # Generate initial values for regression coefficients.
   ## Initialize matrix of zeros.
@@ -107,18 +165,30 @@ mlreg<-function(Y,X,priors=c(B.mu=0,B.sd=1,lkj=1),iter=20000,thin=20,control=lis
   ## Initialize intercept at inverted values.
   B.init[,1]<-stats::qlogis(p=p)
   
-  # Generate initial values for correlation matrix.
-  L.init<-diag(ncol(Y))
+  # If multivariate logistic regression.
+  if(multivariate){
+    
+    # Generate initial values for correlation matrix.
+    L.init<-diag(ncol(Y))
+    
+    # Collect initial values in a function.
+    init<-function(...) list(B=B.init,L=L.init)
+    
+    # Define parameters.
+    pars<-c("B","R")
+    
+  }else{ # If univariate logistic regressions.
+    
+    # Collect initial values in a function.
+    init<-function(...) list(B=B.init)
+    
+    # Define parameters.
+    pars<-"B"
+    
+  }
   
-  # Collect initial values in a function.
-  init<-function(...) list(B=B.init,L=L.init)
-  
-  # Define parameters.
-  pars<-c("B","R")
-  
-  # Define posterior check function with threshold argument
-  # for Bayesian fraction of missing information.
-  check_posterior<-function(fit,threshold=0.2){
+  # Define diagnostics function.
+  diagnostics<-function(fit){
     
     # Divergent transitions.
     ## Get number of divergent transitions.
@@ -151,7 +221,7 @@ mlreg<-function(Y,X,priors=c(B.mu=0,B.sd=1,lkj=1),iter=20000,thin=20,control=lis
     
     # Bayesian fraction of missing information.
     ## Get number of chains with low Bayesian fraction of missing information.
-    n_e<-sum(rstan::get_bfmi(fit) < threshold)
+    n_e<-sum(rstan::get_bfmi(fit) < 0.2)
     ## If there are chains with low Bayesian fraction of missing information.
     if(n_e > 0){
       ## Produce a warning.
@@ -210,8 +280,18 @@ mlreg<-function(Y,X,priors=c(B.mu=0,B.sd=1,lkj=1),iter=20000,thin=20,control=lis
     
   }
   
-  # Define model file.
-  file<-"mlreg.stan"
+  # If multivariate logistic regression.
+  if(multivariate){
+    
+    # Define model file.
+    file<-"mlreg.stan"
+    
+  }else{ # If univariate logistic regressions.
+    
+    # Define model file.
+    file<-"ulreg.stan"
+    
+  }
   
   # Define model path.
   path<-system.file("intdata",file,package="LocaTT",mustWork=TRUE)
@@ -231,8 +311,8 @@ mlreg<-function(Y,X,priors=c(B.mu=0,B.sd=1,lkj=1),iter=20000,thin=20,control=lis
                          ...)
   )
   
-  # Check posterior.
-  check_posterior(fit=fit)
+  # Check diagnostics.
+  diagnostics(fit=fit)
   
   # Return fit.
   return(fit)
