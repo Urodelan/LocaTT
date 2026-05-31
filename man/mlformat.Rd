@@ -2,14 +2,14 @@
 % Please edit documentation in R/mlformat.R
 \name{mlformat}
 \alias{mlformat}
-\title{Formatting Multivariate Logistic Regression Models}
+\title{Formatting Multivariate Logistic Regression Output}
 \usage{
 mlformat(fit, mode = "B", ci = 0.95, digits = 3, names.x, names.y)
 }
 \arguments{
 \item{fit}{A \code{stanfit} object returned from the \code{\link[=mlreg]{mlreg}} function. The fitted multivariate logistic regression model.}
 
-\item{mode}{Character scalar. Specifies which parameter set to summarize. When \code{mode = "B"} (the default), generates summaries of regression coefficient estimates. When \code{mode = "R"}, generates summaries of residual correlation estimates (if \code{\link[=mlreg]{mlreg}} was fit with \code{multivariate = TRUE}).}
+\item{mode}{Character scalar. Specifies which parameter set to summarize. When \code{mode = "B"} (the default), generates summaries of regression coefficient estimates. When \code{mode = "R"}, generates summaries of residual correlation estimates (if \code{\link[=mlreg]{mlreg}} is fit with \code{multivariate = TRUE}).}
 
 \item{ci}{Numeric scalar. Defines the credible interval for parameter summaries. When \code{ci = 0.95} (the default), generates 95\% credible intervals for parameter estimates. \code{ci} must be between \code{0} and \code{1}.}
 
@@ -26,7 +26,7 @@ Numeric matrix of posterior summaries.
 Format output of multivariate logistic regression models.
 }
 \details{
-Formats output of a multivariate logistic regression model fit using the \code{\link[=mlreg]{mlreg}} function. When \code{mode = "B"} (the default), returns regression coefficient estimates. When \code{mode = "R"}, returns residual correlation estimates (if \code{\link[=mlreg]{mlreg}} was fit with \code{multivariate = TRUE}). Summarizes parameters by the quantiles of their posterior distributions, with a point estimate at the 50th percentile (\emph{i.e.}, the posterior median). Lower and upper limits are defined by the credible interval argument. At the default \code{ci = 0.95}, returns 95\% credible intervals. When a credible interval does not overlap zero, the point estimate is appended with an asterisk.
+Formats output of a multivariate logistic regression model fit using the \code{\link[=mlreg]{mlreg}} function. When \code{mode = "B"} (the default), returns regression coefficient estimates. When \code{mode = "R"}, returns residual correlation estimates (if \code{\link[=mlreg]{mlreg}} is fit with \code{multivariate = TRUE}). Summarizes parameters by the quantiles of their posterior distributions, with a point estimate at the 50th percentile (\emph{i.e.}, the posterior median). Lower and upper limits are defined by the credible interval argument. At the default \code{ci = 0.95}, returns 95\% credible intervals. When a credible interval does not overlap zero, the point estimate is appended with an asterisk.
 }
 \examples{
 # Define example data file path.
