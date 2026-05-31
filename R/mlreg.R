@@ -12,6 +12,7 @@
 #' @param ... Additional arguments passed to the `rstan::sampling` function.
 #' @returns Returns a `stanfit` object of the fitted multivariate logistic regression model.
 #' @seealso
+#' [`mlformat`][mlformat()] for formatting output of multivariate logistic regression models. \cr \cr
 #' [`mlpredict`][mlpredict()] for generating predictions from multivariate logistic regression models. \cr \cr
 #' [`mlWAIC`][mlWAIC()] for computing widely applicable information criteria for multivariate logistic regression models.
 #' @references Albert JH, and Chib S. 1993. Bayesian analysis of binary and polychotomous response data. *Journal of the American Statistical Association*, 88(422): 669-679. \cr \cr

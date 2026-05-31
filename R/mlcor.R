@@ -8,7 +8,8 @@
 #' @returns Numeric 3-dimensional array of residual correlation posterior quantiles.
 #' @seealso
 #' [`mlreg`][mlreg()] for fitting multivariate logistic regression models. \cr \cr
-#' [`mlcoef`][mlcoef()] for extracting regression coefficients from multivariate logistic regression models.
+#' [`mlcoef`][mlcoef()] for extracting regression coefficients from multivariate logistic regression models. \cr \cr
+#' [`mlformat`][mlformat()] for formatting output of multivariate logistic regression models.
 #' @examples
 #' # Define example data file path.
 #' path<-system.file("extdata",

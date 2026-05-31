@@ -8,6 +8,7 @@
 #' @returns A list whose elements contain numeric matrices of posterior predictions. Within the list, one element is returned for each record of `X`. Element names are taken from the row names of `X`.
 #' @seealso
 #' [`mlreg`][mlreg()] for fitting multivariate logistic regression models. \cr \cr
+#' [`mlformat`][mlformat()] for formatting output of multivariate logistic regression models. \cr \cr
 #' [`mlWAIC`][mlWAIC()] for computing widely applicable information criteria for multivariate logistic regression models.
 #' @examples
 #' # Define example data file path.
