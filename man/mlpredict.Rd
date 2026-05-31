@@ -37,5 +37,6 @@ out<-mlpredict(X=data$X,fit=data$fit,names=colnames(data$Y))
 }
 \seealso{
 \code{\link[=mlreg]{mlreg}} for fitting multivariate logistic regression models. \cr \cr
+\code{\link[=mlformat]{mlformat}} for formatting output of multivariate logistic regression models. \cr \cr
 \code{\link[=mlWAIC]{mlWAIC}} for computing widely applicable information criteria for multivariate logistic regression models.
 }

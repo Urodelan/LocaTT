@@ -37,5 +37,6 @@ out<-mlcor(fit=data$fit)
 }
 \seealso{
 \code{\link[=mlreg]{mlreg}} for fitting multivariate logistic regression models. \cr \cr
-\code{\link[=mlcoef]{mlcoef}} for extracting regression coefficients from multivariate logistic regression models.
+\code{\link[=mlcoef]{mlcoef}} for extracting regression coefficients from multivariate logistic regression models. \cr \cr
+\code{\link[=mlformat]{mlformat}} for formatting output of multivariate logistic regression models.
 }

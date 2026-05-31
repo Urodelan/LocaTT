@@ -64,6 +64,7 @@ Ovaskainen O, Hottola J, and Siitonen J. 2010. Modeling species co-occurrence by
 Song P. 2000. Multivariate dispersion models generated from Gaussian copula. \emph{Scandinavian Journal of Statistics}, 27(2): 305-320. DOI: 10.1111/1467-9469.00191
 }
 \seealso{
+\code{\link[=mlformat]{mlformat}} for formatting output of multivariate logistic regression models. \cr \cr
 \code{\link[=mlpredict]{mlpredict}} for generating predictions from multivariate logistic regression models. \cr \cr
 \code{\link[=mlWAIC]{mlWAIC}} for computing widely applicable information criteria for multivariate logistic regression models.
 }
