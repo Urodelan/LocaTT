@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlformat.R
 \name{mlformat}
 \alias{mlformat}
-\title{Formatting Multivariate Logistic Regression Output}
+\title{Format Multivariate Logistic Regression Output}
 \usage{
 mlformat(fit, mode = "B", ci = 0.95, digits = 3, names.x, names.y)
 }
