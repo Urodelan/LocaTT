@@ -1,4 +1,4 @@
-#' Formatting Multivariate Logistic Regression Output
+#' Format Multivariate Logistic Regression Output
 #'
 #' @description Format output of multivariate logistic regression models.
 #' @details Formats output of a multivariate logistic regression model fit using the [`mlreg`][mlreg()] function. When `mode = "B"` (the default), returns regression coefficient estimates. When `mode = "R"`, returns residual correlation estimates (if [`mlreg`][mlreg()] is fit with `multivariate = TRUE`). Summarizes parameters by the quantiles of their posterior distributions, with a point estimate at the 50th percentile (*i.e.*, the posterior median). Lower and upper limits are defined by the credible interval argument. At the default `ci = 0.95`, returns 95% credible intervals. When a credible interval does not overlap zero, the point estimate is appended with an asterisk.
